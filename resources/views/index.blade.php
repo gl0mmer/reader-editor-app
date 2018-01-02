@@ -12,8 +12,6 @@
   <!-- iOS Safari -->
   <meta name="apple-mobile-web-app-status-bar-style" content="#75C7C3">
 
-  <title>{{ trans('laravel-filemanager::lfm.title-page') }}</title>
-  <link rel="shortcut icon" type="image/png" href="{{ asset('vendor/laravel-filemanager/img/folder.png') }}">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <style>{!! \File::get(base_path('vendor/unisharp/laravel-filemanager/public/css/lfm.css')) !!}</style>
@@ -187,16 +185,11 @@
 	
 	
 	
-  <div id="lfm-loader">
-    <img src="{{asset('vendor/laravel-filemanager/img/loader.svg')}}">
-  </div>
+  <div id="lfm-loader"></div>
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
-  <script src="{{ asset('vendor/laravel-filemanager/js/jquery.form.min.js') }}"></script>
-  <script src="{{ asset('vendor/laravel-filemanager/js/dropzone.min.js') }}"></script>
    <script language=JavaScript type="text/javascript" src="{{ URL::to('js/plugins/jquery.foggy.min.js') }}"></script>
   <script>
     var route_prefix = "{{ url('/') }}";
@@ -230,6 +223,7 @@
   
   
   <script>
+	  /*
     Dropzone.options.uploadForm = {
       paramName: "upload[]", // The name that will be used to transfer the file
       uploadMultiple: false,
@@ -249,7 +243,9 @@
       },
       acceptedFiles: "{{ lcfirst(str_singular(request('type'))) == 'image' ? implode(',', config('lfm.valid_image_mimetypes')) : implode(',', config('lfm.valid_file_mimetypes')) }}",
       maxFilesize: ({{ lcfirst(str_singular(request('type'))) == 'image' ? config('lfm.max_image_size') : config('lfm.max_file_size') }} / 1000)
+    
     }
+    */
   </script>
 </body>
 </html>

@@ -55,6 +55,15 @@ var files = {
 		if (elem) { type=elem.getAttribute('title'); }
 		return type;
 	},
+	get_fpath: function(i){
+		//var path = files.home+files.dir+'/'+files.entries[i];
+		var path = '';
+		if (this.entrytype[i]=='file'){
+			path = 'http://localhost/laravel-filemanager/files';
+		}
+		path += files.dir+'/'+files.entries[i];
+		return path;
+	},
 }                                                        
 
 //-- start ---------------------------------------------------------------
@@ -107,34 +116,41 @@ function files_update(){                                                 console
 			localStorage.setItem("show_welcome",'no');
 		}
 	}else{
-		useFile( localStorage.getItem("reader_fpath") );  
+		
+		//goTo( localStorage.getItem("reader_exitpath") );
+		useFile( localStorage.getItem("reader_fpath") ); 
 	}
 	console.log('Prev: '+getPreviousDir());
+	//console.log('Exitpath: '+localStorage.getItem("reader_exitpath"));
 	//console.log(files.paths);
 	//console.log('Woring-dir: '+$('#working_dir').val());
 	//files.home = window.location.href.substring(0,window.location.href.lastIndexOf('/'))+'/laravel-filemanager/files';
 	//console.log('Home: '+files.home);
-
+	console.log('Dir localstorage: '+localStorage.getItem("working_dir"));
 }                                                            
 
 function files_ajax_enter(){                                             consolelog_func("orange"); 
-	var path = files.paths[files.iter];                                  console.log('Path: '+path+' | '+files.iter);
+	//var path = files.paths[files.iter];
+	var path = files.get_fpath(files.iter);                               
+	console.log('Path: '+files.paths[files.iter]+' | '+files.iter);
+	console.log('Path: '+path+' | '+files.iter);
 	
-	if (files.entries[files.iter]=='mail') {
+	if (files.entries[files.iter]=='mail') {                             // show contacts
 		goTo( path );
 		document.getElementById('show_contacts').click();
-	}else if (files.in_contacts && files.iter==0){
+	}else if (files.in_contacts && files.iter==0){                       // exit contacts
 		//loadItems();
 		document.getElementById('show_home').click();
 	}
-	else if (files.entrytype[files.iter]=='file'){
+	else if (files.entrytype[files.iter]=='file'){                       // open file
 		if (files.in_contacts){                                                 //console.log('Contact: '+files.paths[files.iter]);
 			document.getElementById('contact_'+files.paths[files.iter]).click();
 		}else{
+			localStorage.setItem("reader_shortpath", files.dir+'/'+files.entries[files.iter]);
 			useFile( path );  
 		}
-	}else{
-		
+	}else{                                                               // open folder
+		//path = files.get_fpath(files.iter);   
 		if (files.iter==0){
 			var previous_dir = getPreviousDir();                         
 			if (previous_dir == '') return;
@@ -171,8 +187,11 @@ function files_ajax_create(type){
 }
 
 function files_ajax_save(text){
-	var fname = localStorage.getItem("reader_fpath");                    
-	fname = fname.substring(fname.lastIndexOf('/')+1);                   console.log('Fname: '+fname);
+	var fname = localStorage.getItem("reader_shortpath");     
+	fname = fname.substring(1);
+	fname = fname.substring(fname.indexOf('/'));                  
+	            
+	console.log('Fname: '+fname);
 	document.getElementById('update_filename').value = fname;            console.log('Text: '+text);
 	document.getElementById('update_filetext').value = text;
 	document.getElementById('update_submit').click();                    //console.log('New .txt');

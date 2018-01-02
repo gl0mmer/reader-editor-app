@@ -6,7 +6,9 @@ if (localStorage.getItem("isset")!="true"){
 	localStorage.setItem("show_welcome", "yes");
 	localStorage.setItem("in_reader", "no");
 	localStorage.setItem("reader_fpath", "");
+	localStorage.setItem("reader_shortpath", "");
 	localStorage.setItem("working_dir", "");
+	localStorage.setItem("reader_exitpath", "");
 	//localStorage.setItem("reader_fpath", "");
 }else{
 	localStorage.setItem("show_welcome", "no");

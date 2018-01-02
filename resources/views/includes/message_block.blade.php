@@ -14,6 +14,9 @@
 	<div class="row">
 		<div class="col-md-5 success">
 			{{ Session::get('msg') }}
+			<script> 
+				console.log("Messages: "+"{{ Session::get('msg') }}" ); 
+			</script>
 		</div>
 	</div>	
 @endif

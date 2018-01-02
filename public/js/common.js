@@ -800,16 +800,6 @@ function consolelog_func(color, noargs) {
 	//if (lvl>3) { msg+= " <-- " + caller.caller.name + "()"; }
 	
 	console.log('%c'+msg_shift+msg, 'color:'+color); 
-	/*
-	if (document.title=='files'){
-		console.log('%c'+msg_shift+msg, 'color:'+color); 
-		}
-	if (document.title=='reader'){
-		if (reader.ineditor==false){
-			console.log('%c'+msg_shift+msg, 'color:'+color); 
-		}
-	}
-	* */
 	
 }
 function consolelog(text, lvl, color){

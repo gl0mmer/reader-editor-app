@@ -3,28 +3,6 @@ var sort_type = 'alphabetic';
   show_list = 0;
 
 
-//loadItems() ;
-/*
-$(document).ready(function () {
-  bootbox.setDefaults({locale:lang['locale-bootbox']});
-  loadFolders();
-  performLfmRequest('errors')
-    .done(function (data) {
-      var response = JSON.parse(data);
-      for (var i = 0; i < response.length; i++) {
-        $('#alerts').append(
-          $('<div>').addClass('alert alert-warning')
-            .append($('<i>').addClass('fa fa-exclamation-circle'))
-            .append(' ' + response[i])
-        );
-      }
-    });
-
-    $(window).on('dragenter', function(){
-      $('#uploadModal').modal('show');
-    });
-});
-*/
 
 // ======================
 // ==  Navbar actions  ==
@@ -89,7 +67,7 @@ $(document).on('click', '.folder-item', function (e) {                   //conso
   goTo($(this).data('id'));
 });
 
-function goTo(new_dir) {
+function goTo(new_dir) {                                                 console.log('goTo: '+new_dir);
   $('#working_dir').val(new_dir);
   loadItems();
 }
@@ -201,30 +179,31 @@ function loadMessages(messages) {
 	reader_start();
 }
 
-function loadItems() {
-  $('#lfm-loader').show();
-  $.ajax( {type: 'GET', dataType: 'text', url: 'jsonitems', cache: false} )
+function loadItems(dir) {                                                
+  if (dir==undefined){dir = $('#working_dir').val()}; 
+  //var path = $('#working_dir').val();
+  var path = dir;
+  path = path.substring(1);
+  if (path.indexOf('/')>-1){
+	  path = path.substring(path.indexOf('/'));
+  }else{ path = '' };                                                    // Bug may occure here!!!
+  $.ajax( {type: 'GET', dataType: 'text', url: 'jsonitems', cache: false, sort_type: sort_type, data: {path: path}} )
   //performLfmRequest('jsonitems', {show_list: show_list, sort_type: sort_type}, 'html')
     .done(function (data) {
       var response = JSON.parse(data);
       $('#content').html(response.html);                                 //console.log('HTML: '+response.html);	
-      files.entries = response.entries;                                  //console.log(response.entries);
-      files.entrytype = response.entrytype;
-      files.paths = response.paths;                                      //console.log(response.paths);
-      files_update();
-      $('#nav-buttons > ul').removeClass('hidden');
-      $('#working_dir').val(response.working_dir);                       localStorage.setItem("working_dir", response.working_dir); console.log('loadItems Dir: '+response.working_dir);
+      files.entries = response.entries;                                  //console.log('entries: '+response.entries);
+      files.entrytype = response.entrytype;                              //console.log('Value2: ',response.html);
+      files.paths = response.paths;                                      console.log('Path: ',response.path, response.working_dir);
+      var home_path = response.path;
+      files.home = home_path.substring(0,home_path.lastIndexOf('/'));   
+      files.dir = response.working_dir;
+      $('#working_dir').val(response.working_dir);                       
+      localStorage.setItem("working_dir", response.working_dir);         console.log('loadItems Dir: '+response.working_dir);
       $('#current_dir').text(response.working_dir);
       console.log('Current working_dir : ' + $('#working_dir').val());
-      if (getPreviousDir() == '') {
-        $('#to-previous').addClass('hide');
-      } else {
-        $('#to-previous').removeClass('hide');
-      }
       setOpenFolders();
-    })
-    .always(function(){
-      $('#lfm-loader').hide();
+      files_update();
     });
 }
 
@@ -363,7 +342,7 @@ function useFile(file_url) {                                             console
 		
 		document.getElementById('hidden_text').innerHTML = text_i;
 		document.getElementById('created_elements').innerHTML = '';
-		localStorage.setItem("reader_fpath", url);                       //console.log("USE");
+		localStorage.setItem("reader_fpath", url);                       //console.log("USE");	 
 		reader_start();
 		
 	}else{

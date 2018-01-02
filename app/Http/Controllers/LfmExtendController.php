@@ -26,7 +26,8 @@ class LfmExtendController extends LfmController
 	//-- Override ItemsController@getItems -------------------------------
 	public function getItems()
     {
-        $path = parent::getCurrentPath();
+		$path0 = parent::getRootFolderPath('user');
+        $path = parent::getCurrentPath().$_GET['path']; 
         $sort_type = request('sort_type');
 
         $files = parent::sortFilesAndDirectories(parent::getFilesWithInfo($path), $sort_type);
@@ -37,20 +38,23 @@ class LfmExtendController extends LfmController
         $names_arr = array('..');
         foreach($directories as $f){ 
 			array_push($paths_arr, $f->path); 
+			//array_push($paths_arr, $path.'/'.$f->name); 
 			array_push($types_arr, 'folder');
 			array_push($names_arr, $f->name);
 		}
         foreach($files as $f){ 
 			array_push($paths_arr, $f->url); 
+			//array_push($paths_arr, $path.'/'.$f->url); 
 			array_push($types_arr, 'file');
 			array_push($names_arr, $f->name);
 		}
         
-        return [ 'html' =>'Some text',
+        return [ 'html' =>$path,
                 'entries'   => $names_arr,
                 'entrytype' => $types_arr,
                 'paths' => $paths_arr,
             'working_dir' => parent::getInternalPath($path),
+            'path' => $path0,
         ];
     }
     
@@ -88,10 +92,16 @@ class LfmExtendController extends LfmController
         $filetext = request()->file_text;
         $new_file_path = parent::getCurrentPath($filename);
 
-		if (!$this->proceedSingleUpload($new_file_path, $filetext)) {
-			return $this->errors;
+		$this->proceedSingleUpload($new_file_path, $filetext);
+		//if (!$this->proceedSingleUpload($new_file_path, $filetext)) {
+		//	return $this->errors;
+		//}
+		$msg = '';
+		foreach ($this->errors as $err){
+			$msg = $msg. $err;
 		}
-		return redirect()->back();
+		return redirect()->back()-> with(['msg'=>$msg]);
+		//return view('reader');
          
     }
     

@@ -62,7 +62,10 @@ var reader = {
 //-- start ---------------------------------------------------------------
 
 function reader_start(){                                                 consolelog_func('darkblue');         
-	localStorage.setItem("in_reader", "yes");	
+	localStorage.setItem("in_reader", "yes");	                         //console.log('Dir: '+files.dir);
+	var exitpath = localStorage.getItem("reader_fpath");                 console.log('Exitpath0: '+exitpath);
+	exitpath = exitpath.substring(0, exitpath.lastIndexOf('/'));
+	localStorage.setItem("reader_exitpath", exitpath);	                 
 	
 	var inner_e = "";
 	inner_e += "<div id='text_scroll_area' class='text_scroll' align='left' >";
@@ -100,9 +103,11 @@ function reader_exit(){
 		document.getElementById('show_contacts').click();
 	}else{
 		document.getElementById('created_elements').innerHTML = '';
-		localStorage.setItem("in_reader", "no");
+		localStorage.setItem("in_reader", "no");                         console.log('Exitpath: '+localStorage.getItem("reader_exitpath"));
+		//goTo( localStorage.getItem("reader_exitpath") );
 		files_start();
 		files_update();
+		//goTo( localStorage.getItem("reader_exitpath") );
 	}
 }
 
@@ -114,21 +119,21 @@ function reader_update(start) {                                          console
 		reader_save();
 	}
 	
-    var fname = common_make_fname(reader.fname);                         console.log('NAME: '+fname[0]+' | '+fname[1]);
+    var fname = common_make_fname(reader.fname);                         //console.log('NAME: '+fname[0]+' | '+fname[1]);
     document.getElementById('file_title').innerHTML = '<em><span style="color:black;opacity:0.3;direction:ltr;"> user/'+fname[0]+' </span>'+fname[1]+'</em>';
                                              
     if (files.in_messages){
 		reader_messages_tohtml();
 	}
         
-    var text = document.getElementById('hidden_text').innerHTML;         console.log('Draft 3: '+text);              
+    var text = document.getElementById('hidden_text').innerHTML;         //console.log('Draft 3: '+text);              
 	var parser = reader_parse_html(text);
 	var text_parsed = parser[0];                                         //console.log('false text_parsed: '+text_parsed);                                
 	reader.word_id=parser[1]; reader.sentence_id=parser[2]; reader.paragraph_id=parser[3];
 																	
 	document.getElementById('text_from_file').innerHTML = text_parsed;  
 	reader.text_origin = text;
-	reader.text_parsed = text_parsed;                                    console.log('Draft 4: '+text_parsed);
+	reader.text_parsed = text_parsed;                                    //console.log('Draft 4: '+text_parsed);
     
     //reader_text();                                                      
     reader_show_buttons();    
@@ -163,7 +168,7 @@ function reader_messages_tohtml(){
 	document.getElementById('hidden_text').innerHTML=text;       
 }    
 
-function reader_save(){                                              consolelog_func('darkblue'); 
+function reader_save(){                                                  consolelog_func('darkblue'); 
         
     var text = "", text_parsed = "";
     
