@@ -115,25 +115,14 @@ function files_update(){                                                 console
 			files_welcome();
 			localStorage.setItem("show_welcome",'no');
 		}
-	}else{
-		
-		//goTo( localStorage.getItem("reader_exitpath") );
+	}else{		
 		useFile( localStorage.getItem("reader_fpath") ); 
 	}
-	console.log('Prev: '+getPreviousDir());
-	//console.log('Exitpath: '+localStorage.getItem("reader_exitpath"));
-	//console.log(files.paths);
-	//console.log('Woring-dir: '+$('#working_dir').val());
-	//files.home = window.location.href.substring(0,window.location.href.lastIndexOf('/'))+'/laravel-filemanager/files';
-	//console.log('Home: '+files.home);
-	console.log('Dir localstorage: '+localStorage.getItem("working_dir"));
+	console.log('Parent dir: '+getPreviousDir());
 }                                                            
 
 function files_ajax_enter(){                                             consolelog_func("orange"); 
-	//var path = files.paths[files.iter];
 	var path = files.get_fpath(files.iter);                               
-	console.log('Path: '+files.paths[files.iter]+' | '+files.iter);
-	console.log('Path: '+path+' | '+files.iter);
 	
 	if (files.entries[files.iter]=='mail') {                             // show contacts
 		goTo( path );
@@ -233,7 +222,7 @@ function files_ajax_delete(){
 }      
 function files_ajax_upload(id){
 	document.getElementById('upload-button').click();
-	loadFolders();
+	loadFolders(true);
 }
 function files_ajax_download(){                                          consolelog_func();
 	if (files.entrytype[files.iter]=='file' && files.paths[files.iter]!=''){
@@ -529,7 +518,7 @@ function files_cleancookie(){                                            console
 	cookie_delete_all(); 
 	files.iter = 0;
 	files.iter_prev = 0;
-	loadFolders();
+	loadFolders(true);
 	//window.location.href = '/index.html'; 
 }
 

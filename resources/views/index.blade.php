@@ -15,8 +15,6 @@
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <style>{!! \File::get(base_path('vendor/unisharp/laravel-filemanager/public/css/lfm.css')) !!}</style>
-  {{-- Use the line below instead of the above if you need to cache the css. --}}
-  {{-- <link rel="stylesheet" href="{{ asset('/vendor/laravel-filemanager/css/lfm.css') }}"> --}}
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.css">
   
   
@@ -180,13 +178,11 @@
 			<input type='hidden' name='type' id='type' value='{{ request("type") }}'>
 			<input type='hidden' name='_token' value='{{csrf_token()}}'>
 		</form>
-	
+		
 	</div>
 	
 	
 	
-  <div id="lfm-loader"></div>
-
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
@@ -196,7 +192,9 @@
     var lfm_route = "{{ url(config('lfm.url_prefix', config('lfm.prefix'))) }}";
     var lang = {!! json_encode(trans('laravel-filemanager::lfm')) !!};
   </script>
-  <script>{!! \File::get(base_path('public/js/script.js')) !!}</script>
+  <script>{!! \File::get(base_path('vendor/unisharp/laravel-filemanager/public/js/script.js')) !!}</script>
+  <script>{!! \File::get(base_path('vendor/unisharp/laravel-filemanager/public/js/dropzone.min.js')) !!}</script>
+  <script>{!! \File::get(base_path('public/js/lfm_script_extend.js')) !!}</script>
  
   
 	@if ($create=='yes')
@@ -220,32 +218,27 @@
 			loadItems();
 		</script>
 	@endif
-  
-  
-  <script>
-	  /*
-    Dropzone.options.uploadForm = {
-      paramName: "upload[]", // The name that will be used to transfer the file
-      uploadMultiple: false,
-      parallelUploads: 5,
-      clickable: '#upload-button',
-      dictDefaultMessage: 'Or drop files here to upload',
-      init: function() {
-        var _this = this; // For the closure
-        this.on("addedfile", function(file) { refreshFoldersAndItems('OK'); });
-        this.on('success', function(file, response) {
-          
-          if(response != 'OK'){
-            this.defaultOptions.error(file, response.join('\n'));
-          }
-          
-      });
-      },
-      acceptedFiles: "{{ lcfirst(str_singular(request('type'))) == 'image' ? implode(',', config('lfm.valid_image_mimetypes')) : implode(',', config('lfm.valid_file_mimetypes')) }}",
-      maxFilesize: ({{ lcfirst(str_singular(request('type'))) == 'image' ? config('lfm.max_image_size') : config('lfm.max_file_size') }} / 1000)
-    
-    }
-    */
-  </script>
+	<script>
+	    Dropzone.options.uploadForm = {
+	      paramName: "upload[]", // The name that will be used to transfer the file
+	      uploadMultiple: false,
+	      parallelUploads: 5,
+	      clickable: '#upload-button',
+	      dictDefaultMessage: 'Or drop files here to upload',
+	      init: function() {
+	        var _this = this; // For the closure
+	        this.on("addedfile", function(file) { refreshFoldersAndItems('OK'); });
+	        this.on('success', function(file, response) {
+	          
+	          if(response != 'OK'){
+	            this.defaultOptions.error(file, response.join('\n'));
+	          }  
+	      });
+	      },
+	      acceptedFiles: "{{ lcfirst(str_singular(request('type'))) == 'image' ? implode(',', config('lfm.valid_image_mimetypes')) : implode(',', config('lfm.valid_file_mimetypes')) }}",
+	      maxFilesize: ({{ lcfirst(str_singular(request('type'))) == 'image' ? config('lfm.max_image_size') : config('lfm.max_file_size') }} / 1000)
+	    }
+	</script>
+
 </body>
 </html>

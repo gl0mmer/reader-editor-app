@@ -184,14 +184,13 @@ function editor_run(parent, text_raw, destination, iter){                console
 	    input.onkeypress = function(event) {
 			var key = event.keyCode;                                     // Get the Unicode value
 			if ( (key >= 32 && key <= 59 ) || key == 61 ||  (key >= 63 && key <= 125) || (key >= 1040 && key <= 1103) ) {
-				var y = String.fromCharCode(key);                            console.log('keypress '+key+' '+y);  
+				var y = String.fromCharCode(key);                        //console.log('keypress '+key+' '+y);  
 				editor_set_letter(y, true);
 			}
 		};
 			
 	    input.onkeydown = function(event) {
-		    var key = event.keyCode;
-			console.log('keydown: '+key);
+		    var key = event.keyCode;                                     //console.log('keydown: '+key);
 		    if( key == 8 || key == 46 ){                                 //console.log('delete');
 		        editor_delete();
 			}

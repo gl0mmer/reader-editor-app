@@ -63,7 +63,7 @@ var reader = {
 
 function reader_start(){                                                 consolelog_func('darkblue');         
 	localStorage.setItem("in_reader", "yes");	                         //console.log('Dir: '+files.dir);
-	var exitpath = localStorage.getItem("reader_fpath");                 console.log('Exitpath0: '+exitpath);
+	var exitpath = localStorage.getItem("reader_fpath");                 //console.log('Exitpath0: '+exitpath);
 	exitpath = exitpath.substring(0, exitpath.lastIndexOf('/'));
 	localStorage.setItem("reader_exitpath", exitpath);	                 
 	
@@ -82,7 +82,7 @@ function reader_start(){                                                 console
 	};
 	reader.cookie_suffix = "_"+reader.fname;
 	                 
-	console.log('isset: '+cookie_get('isset_'+reader.fname)+' '+reader.fname);
+	console.log('Cookie_isset: '+cookie_get('isset_'+reader.fname)+' = '+reader.fname);
 	if (cookie_get('isset_'+reader.fname)!='isset'){                    
 	    cookie_set("isset_"+reader.fname, "isset");
 	    common.cookie_save.call(reader);
