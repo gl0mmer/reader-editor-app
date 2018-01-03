@@ -24,7 +24,7 @@
 </head>
 
 <body>
-	<div> @include('includes.login') </div>
+	<div hidden> @include('includes.login') </div>
 		
 	<div id='base_elements'>
 		<div id='content_box' class='text_scroll_box' style='position:fixed;height:73%;top:0%;' align='top'> 
@@ -53,6 +53,11 @@
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/files.js') }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/editor.js') }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader.js') }}"></script>
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/common_display.js') }}"></script>
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/files_display.js') }}"></script>
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/editor_display.js') }}"></script>
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader_display.js') }}"></script>
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader_parse.js') }}"></script>
 
 	
 	

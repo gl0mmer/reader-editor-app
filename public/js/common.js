@@ -1,6 +1,6 @@
 
-//common.cookie_save();
-//common.cookie_load();
+//-- init ----------------------------------------------------------------
+
 common.browser = check_browser();
 common.style.vmin = Math.min(window.innerWidth, window.innerHeight)/100;
 common.style.init_font(0.9,1.1);
@@ -15,7 +15,7 @@ if (localStorage.getItem("in_reader")=='no'){
 }
 */
 
-//-----------------------------------------------------------------------------
+//-- init functions ------------------------------------------------------
 
 function handler(e){                                                     consolelog_func('orange'); 
 	var time = new Date().getTime();
@@ -46,15 +46,8 @@ function check_browser(){                                                console
     return browser;
 }
 
-function scroll_to(id, id_area, title){                                  consolelog_func(); 
-    if (title==0){ elem = document.getElementById(id);  }
-    else { elem= document.querySelectorAll('[id="'+id+'"]')[1]; 
-    }
-    rect_scroll = document.getElementById(id_area).getBoundingClientRect(); 
-    rect = elem.getBoundingClientRect();  
-    if (rect.top+0.5*(rect.bottom-rect.top)>rect_scroll.bottom || rect.left+0.5*(rect.right-rect.left)>rect_scroll.right || rect.bottom-0.5*(rect.bottom-rect.top)<rect_scroll.top || rect.right-0.5*(rect.right-rect.left)<rect_scroll.left )
-        {elem.scrollIntoView(true);} 
-}
+
+//-- utter functions -----------------------------------------------------
 
 function utter_paragraph(id, id_all, stop, onend){             consolelog_func(); 
     for (iii=0; iii<id_all.length; iii++){
@@ -147,576 +140,9 @@ function utter(txt, stop, onend, rate){                                  console
 		}
 	}
 }    
-    
-function create_element(id, cl, parent, style, inner){                   //consolelog_func(); 
-    if (parent===undefined){ parent = 'created_elements'; }
-    var element = document.createElement('div');
-    element.setAttribute('id', id);
-    element.setAttribute('class', cl);
-    if (style!=undefined) { element.setAttribute('style', style); }
-    if (inner!=undefined) { element.innerHTML=inner; }
-    document.getElementById(parent).appendChild(element);
-    return (element);
-}
-
-function replace_all(text, a,b){                                         //consolelog_func(); 
-    proceed=1;
-    while (proceed==1){
-        i = text.indexOf(a);
-        if (i==-1) { proceed=0; }
-        else { text_i = text.replace(a, b); text = text_i; }
-    }
-    return(text);
-}
-
-function merge_text(text){                                               consolelog_func(); 
-    proceed = 1;
-    while (proceed==1){
-        i = text.indexOf('<'+common.ctag);
-        if (i==-1){ proceed=0; }
-        else { 
-			i2 = text.indexOf('>',i+1);                               
-            text = text.substr(0,i)+text.substr(i2+1);                   
-        }
-    }                                                                    
-    text = replace_all(text, '</'+common.ctag+'>', '');
-    return (text);
-}
-
-function find_closing(text, tag, i0){                                    consolelog_func(); 
-    i=i0*1; i_start=i0; i_end=i0;
-    pr1 = true;
-    while (pr1){
-        i1 = text.indexOf('<'+tag,i+1);
-        i_start = text.indexOf('>',i+1) + 1;
-        i_end = text.indexOf('</'+tag+'>',i+1);
-        if (i1==-1 || (i1>i_end && i1!=-1)){ 
-            pr1=false; 
-            i_start = text.indexOf('>',i+1) + 1;
-            i_end = text.indexOf('</'+tag+'>',i+1);
-            }
-        else{ 
-            i = i1*1;
-        }
-    }
-    return([i_start, i_end]);
-}
-function parse_words(text){                                              consolelog_func(); 
-    arr = []; 
-    if (text!=''){
-        proceed = 1; i=0; i_start=0; word='';
-        while (proceed==1){
-            i = text.indexOf(' ',i_start+1);
-            if (i==-1){
-                word = text.substr(i_start); proceed=0; }
-            else{
-                word = text.substr(i_start, i-i_start); i_start = i; 
-            }
-            arr.push(word.replace(' ',''));
-        }
-    }
-    return(arr);
-}
 
 
-function find_spaceend(txt, i_start){                                    consolelog_func(color="green", noargs=true); 
-	if ( txt[i_start]!=' ' || i_start==txt.length ) { return(i_start); }
-	if ( i_start === undefined ) { i_start = 0; }
-	var proceed = 1; var i=i_start+1;
-	while (proceed==1){
-		if ( i>=txt.length-1 ) { proceed=0; }
-		else if ( txt[i]!=' ' ) { proceed=0; }
-		else { i+=1; } 
-	}                                                                    
-	return (i); 
-}
-function find_spacestart(txt, i_start){                                  consolelog_func(color="green", noargs=true); 	
-	if ( i_start === undefined ) { i_start = txt.length-1; }
-	var proceed = 1; var i=i_start;
-	while (proceed==1){
-		if ( i<=0 ) { proceed=0; }
-		else if ( txt[i-1]!=' ' ) { proceed=0; }
-		else { i-=1; } 
-	}                                                                    
-	return (i); 
-}
-
-function find_indexof(text_origin, arr, i_start, i_end){                 consolelog_func(color="green", noargs=true); 
-	if ( i_start === undefined ) { i_start = 0; }                       
-	if ( i_end === undefined ) { i_end = text_origin.length; }           
-	var txt = text_origin.substring(i_start, i_end);                     
-	var i=0, j=0, res=txt.length, symb='', success=0;
-	
-	for (i=0; i<arr.length; i++) {
-		j = txt.indexOf(arr[i]);
-		if ( j!=-1 && j<res ) { res=j; symb=arr[i]; success=1; }
-	}                                                                    
-	if ( success == 0 ) { res = -1; }
-	else {res = res+i_start; }
-	return([res, symb]);
-}
-
-function common_textto_read(text){                                       consolelog_func(); 
-	text = text.replace('<br>', ' new line ');
-	text = text.replace('<abbr>', '');
-	text = text.replace('</abbr>', '');
-	return(text);
-}
-
-function text_clean(text_origin){                                        //consolelog_func();  // only void tags allowed!  
-	var txt = text_origin.replace('\n','<br>');                          
-	var proceed = 1, i = 0, j1=0, j2=0; 
-	i = txt.indexOf('<');
-	if (i===-1) {proceed=0;}
-	while (proceed==1){                                                  
-		j1 = txt.indexOf('>', i);
-		j2 = txt.indexOf('<', i+1);
-		if (i===txt.length-1) { txt = txt.substring(0,i); proceed=0; }
-		else if (j2===-1) { proceed=0; }
-		else if (j1===-1 || j1>j2 ) { txt = txt.substring(0,i)+txt.substring(i+1); alert('lonely bracket!! '+i); 
-		}
-		i = j2;
-	}
-	replace_all(txt, '< ', '<'); 
-	replace_all(txt, '</ ', '</');
-	return (txt);
-}
-function reader_parse_html(text_origin){                                 //consolelog_func(); 
-	if (text_origin.replace(' ','')==='') { return reader_parse_txt(text_origin, 0); }
-	
-	var txt = text_clean(text_origin);  
-	
-	//var endtag = ['div','p','article','aside','button','canvas','caption','cite','code','datalist','del','details','dialog','dl','dt','figcaption','figure','footer'];
-	var tag_arr = ['div','p', 'h1', 'h2', 'h3'];                                            
-	
-	tag_open_close = [];
-	for (i=0; i<tag_arr.length; i+=1) { tag_open_close.push("<"+tag_arr[i]); }
-	for (i=0; i<tag_arr.length; i+=1) { tag_open_close.push("</"+tag_arr[i]); }        
-	
-	var index_arr = [[0,0]];
-	var proceed=1, j1=0, j2=0;                                                            
-	while (proceed==1){                                                  // devide text by tags. index_arr[i] = [ tag_start, tag_end ]		
-		j1=txt.length;
-		for (i=0; i<tag_open_close.length; i+=1){
-			ii = txt.indexOf(tag_open_close[i],j2);
-			if (ii===-1){ii=txt.length;}
-			if (ii<j1){j1=ii;}
-		}if (j1===txt.length){j1=-1;}                                    
-		
-		if (j1!=-1) {
-			j2 = txt.indexOf('>', j1); 
-			index_arr.push([j1,j2+1]);                                   
-		}else{ proceed=0; }
-	}
-	index_arr.push([txt.length,txt.length]);                             //console.log('index_arr: '+index_arr);
-	
-	var text_final = "", arr_w=[], arr_s=[], arr_p=[];
-	var i=0, n_p=0, txt_i="", txt_parsed="", tag1="", tag2="", upper_div=false, skip_div=false;
-	for (i=1; i<index_arr.length; i+=1){                                 //console.log('text block: '+i+', index_arr[i]='+index_arr[i]);
-		skip_div=false;                                                  // 
-		upper_div=false;                                                 // div without div inside
-		txt_i = txt.substring(index_arr[i-1][1], index_arr[i][0]);       
-		text_final += txt.substring(index_arr[i-1][0], index_arr[i-1][1]);  
-		
-		if (i>1 && i<index_arr.length-1) {
-			tag1 = txt.substring(index_arr[i-1][0], index_arr[i-1][1]);      
-			tag2 = txt.substring(index_arr[i][0], index_arr[i][1]);          
-			if (tag1.indexOf("</")===-1 && tag2.indexOf("</")!=-1 ) {
-				upper_div=true;            
-				if (tag1.indexOf("void_div")!=-1) { skip_div=true; }
-			}
-			else{ upper_div=false; }
-		}else{upper_div=false;}                                          
-		
-		//console.log('----------------------');
-		//console.log(' skip: '+skip_div+'|'+txt_i.toString().replace(' ','').substring(0,300)+'|');
-		//if (txt_i.length>300){ console.log(txt_i.substring(0,300)+"..."); }
-		//else { console.log(txt_i); }
-		
-		if ( (txt_i.toString().replace(' ','')!=='' || upper_div==true) && skip_div===false ) { 
-			txt_parsed = reader_parse_txt(txt_i, n_p);                   //console.log('Parsed: '+txt_parsed[0].substring(0,300)); 
-			text_final += txt_parsed[0];                                 
-			arr_w = arr_w.concat(txt_parsed[1]);
-			arr_s = arr_s.concat(txt_parsed[2]);
-			arr_p = arr_p.concat(txt_parsed[3]);                                     
-			n_p = txt_parsed[4]+1;
-		}
-	}                                                                    
-	return ([text_final, arr_w, arr_s, arr_p]);
-}
-
-function reader_parse_txt(text_origin, n_p){                             //consolelog_func(); 
-    var txt = text_origin;
-    var endsymbol = ['<br>', '...', '!!!', '???', '.', '!', '?', ',', ' ','<'] ;
-    //var endsymbol = [' '];
-    var emptytag = ['area','base','col','command','embed','hr','img','input','ceygen','link','meta','param','source','track','wbr','video','audio'];
-    var proceed = 1, i = 0, i_end=0, j = [], arr = [], tag_arr=[]; 
-    var tag_i = "";
-    
-    //-- split text by words ---------------------------------------------
-    if (txt[0]==' '){
-		var proceed2 = 1; 
-		while (proceed2==1){                                             // find first not-space symbol
-			if ( i>=txt.length-1 || txt[i]!=' ') { proceed2=0; }
-			else { i+=1; } 
-		}  
-		arr.push( txt.substring(0,i) );                                  //concole.log('Arr 0: '+arr);
-	}
-	
-	var arr_endpositions = find_indexof_all(txt, endsymbol );            //console.log('Ends: '+arr_endpositions);
-	if (arr_endpositions.length==0){ arr_endpositions=[txt.length-1]; }
-	var k=0;        
-	var i_end_test=0;
-	for (k=0; k<arr_endpositions.length; k+=1){
-		if ( i>=txt.length-1 ) { break; }                                
-		if (k<arr_endpositions.length-1) { i_end_test = arr_endpositions[k+1][0]; }
-		else { i_end_test = txt.length; }
-		
-		j = arr_endpositions[k];                                         //if (k<10){console.log(k+" ["+j+"]");}
-		if ( k==arr_endpositions.length-1 ) {                            // end of text
-			i_end = txt.length; 
-			proceed=0; 
-		} else if ( j[0]==i && j[1]=="<" ) {                             // 
-			i_end = txt.indexOf(">", i)+1;           
-			tag_i = txt.substring(i+1, txt.indexOf(" ",i));
-			if ( emptytag.indexOf(tag_i)!=-1 ) { tag_arr.push(arr.length); }    // remember index if word has non-empty tag, to preserve html structure
-		} else if ( j[0]==i ){                                           //
-			i_end = j[0]+j[1].length;
-			a=0;  
-		} else {                                                         
-			if (j[1]==' ') { i_end = j[0]+1; }
-			else { i_end = j[0]; }    
-			a=0;                                   
-        }   
-                 
-        var proceed2 = 1; 
-		while (proceed2==1){                                             // find first not-space symbol
-			if ( i_end>=txt.length-1 || txt[i_end]!=' ' ) { proceed2=0; }
-			else { i_end+=1; } 
-		}  
-		                                                         
-        if (i!=i_end){
-			arr.push( txt.substring(i,i_end) );     
-		}                         
-        i = i_end;
-    }                                                                    
-    if (arr.length===0){ arr=[" "]; }                                    //console.log('Arr: '+arr+' | '+txt);                               
-    
-    //-- compose text with rpoper tags -----------------------------------
-    var endsentence = ['... ', '!!! ', '??? ', '. ', '! ', '? ', '...', '!!!', '???', '.', '!', '?'];
-    var p0=n_p.toString();  
-    var text = '';
-    var i_w = 0, i_s = 0, i_p = n_p; 
-    var arr_w=['p'+p0+'s0w0'], arr_s=['p'+p0+'s0'], arr_p=['p'+p0];
-    
-    var id_p='', id_s='', id_w='';
-    var word='', word_start = '', word_end='';
-    var otag=common.otag, ctag=common.ctag, tag_p=common.ptag;
-    var character='';
-    
-    word_start = "<"+tag_p+" id='p"+p0+"'><"+otag+" id='p"+p0+"s0'><"+otag+" id='p"+p0+"s0w0'>";
-    
-    var i = arr.length-1,  i_end=-1;
-    while (i_end==-1 && i>=0 ) {
-		if ( tag_arr.indexOf(i)==-1 ) { i_end = i; }
-		else { i -=1; } 
-	}                                                                    
-    
-    var new_sentence = false;
-    for (i=0; i<arr.length; i+=1){
-        word=arr[i];             
-		new_sentence = false;
-		if (endsentence.indexOf(word.replace(' ',''))!=-1){
-			if (i===i_end) {character = 'A';}
-			else{ character = arr[i+1].charAt(0); }                      //console.log('1: '+character+' |'+arr[i]+'|'+arr[i+1]+'|');
-			if (character.toLowerCase() === character.toUpperCase() && /^\d+$/.test(character)===false){ character='a'; }  //console.log('2: '+character);
-			if (character == character.toUpperCase() ){ new_sentence = true; }
-			}
-		
-        if ( tag_arr.indexOf(i)!=-1 ) {                                  // if tag, no wrapping
-				text = text+word; 
-		} else if (i===i_end) {                                          // last word
-			word_end = '</'+ctag+'></'+ctag+'></'+tag_p+'>'; 
-			text = text+ word_start + word + word_end;
-			
-		} else if ( word.indexOf('<br>')!=-1 ){                          // new paragraph
-			i_p+=1;  i_s=0;  i_w=0;
-			id_p = 'p'+i_p; 
-			id_s = 'p'+i_p + 's'+i_s; 
-			id_w = 'p'+i_p + 's'+i_s + 'w'+i_w;
-			arr_p.push(id_p);  arr_s.push(id_s);  arr_w.push(id_w);
-			
-			word_end = '</'+ctag+'></'+ctag+'></'+tag_p+'>';
-			text = text+ word_start + word + word_end;
-			word_start =  '<'+tag_p+' id="'+id_p+'"><'+otag+' id="'+id_s+'"><'+otag+' id="'+id_w+'">';
-			
-		} else if ( new_sentence ){                                      // new sentence
-			i_s+=1; i_w=0;
-			id_s = 'p'+i_p + 's'+i_s; 
-			id_w = 'p'+i_p + 's'+i_s + 'w'+i_w;
-			arr_s.push(id_s);  arr_w.push(id_w);
-			
-			word_end = '</'+ctag+'></'+ctag+'>';
-			text = text+ word_start + word + word_end;
-			word_start =  '<'+otag+' id="'+id_s+'"><'+otag+' id="'+id_w+'">';
-			
-		} else {                                                         // new word
-			i_w+=1;
-			id_w = 'p'+i_p + 's'+i_s + 'w'+i_w;
-			arr_w.push(id_w);
-			
-			word_end = '</'+ctag+'>';
-			text = text+ word_start + word + word_end;
-			word_start =  '<'+otag+' id="'+id_w+'">';
-		}
-    }
-    return ([text, arr_w, arr_s, arr_p, i_p]);
-
-}
-
-function find_indexof_all(text_origin, arr, i_start, i_end){             //consolelog_func(color="green", noargs=true); 
-	if ( i_start === undefined ) { i_start = 0; }                        
-	if ( i_end === undefined ) { i_end = text_origin.length; }           
-	var txt = text_origin.substring(i_start, i_end);                     
-	var i=0, j=0, res=txt.length, symb='', success=0;
-	var res_arr = [];
-	var proceed = true; var k=0;                                         
-	
-	while (proceed){
-		success = 0; res = txt.length;
-		for (i=0; i<arr.length; i++) {
-			j = txt.indexOf(arr[i], k);
-			if ( j!=-1 && j<res ) { 
-				res=j; symb=arr[i]; success=1;      
-			}
-		}                                                                    
-		if ( success == 0 ) { 
-			res = -1; 
-			proceed = false;
-		}else { 
-			if ( symb == "<" ) { 
-				k = txt.indexOf(">", k+1)+1; 
-				
-				var proceed2 = 1; 
-				while (proceed2==1){
-					if ( k>=txt.length-1 || txt[k]!=' ') { proceed2=0; }
-					else { k+=1; } 
-				}         
-			}
-			else{ k = res + symb.length; }
-			res_arr.push([res,symb]);
-		}
-	}
-	for (i=0; i<res_arr.length; i+=1) { res_arr[i][0] += i_start; }
-	return(res_arr);
-}
-
-function text_from_file(text){                                           consolelog_func(); 
-    var page_text = read_file('books_test/test_book_3.txt'); 
-    var text_place = d.getElementById('text_from_file');
-    text_place.innerHTML=page_text;
-}
-
-function read_file(file){                                                consolelog_func(); 
-    var file_i = new XMLHttpRequest();
-    var allText = 'empty text';
-    file_i.onreadystatechange = function (){                             consolelog_func();    
-    if(file_i.readyState === 4)
-        {   if(file_i.status === 200 || file_i.status == 0)
-            {   allText = file_i.responseText;
-            }
-        }
-    }
-    file_i.open("GET", file, false);
-    file_i.send(null);
-    return allText;
-}
-
-function merge_options(obj1,obj2){                                       consolelog_func(); 
-    obj3 = {};
-    for (attrname in obj1) { obj3[attrname] = obj1[attrname]; }
-    for (attrname in obj2) { obj3[attrname] = obj2[attrname]; }
-    return obj3;
-}
-function concatenate_arr(arr1, arr2){                                    consolelog_func(); 
-	for (i=0; i<arr2.length; i++){ arr1.push(arr2[i]); } 
-	return(arr1);
-}
-
-
-function loadDocXML(url1, login_function) {                              consolelog_func(); 
-  xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {                                consolelog_func(); 
-    if (this.readyState == 4 && this.status == 200) {
-      login_function(this);
-    }
-  };
-  xhttp.open("GET", "data/login.xml", true);
-  xhttp.send();
-}
-
-function get_subdir(name){                                               consolelog_func(); 
-	var i1 = name.indexOf('/');
-    var i2 = name.indexOf('/',i1+1);
-    var dir = "";
-    if (i2==-1) {dir='';}
-    else{ dir=name.substr(i1+1,i2-i1-1); }                               //console.log(dir);     
-    
-    i1 = name.indexOf('/',name.indexOf('/')+1);
-    i2 = name.indexOf('/',i1+1);
-    if (dir==="guests"){
-		i1 = i2*1;
-		i2 = name.indexOf('/',i1+1);
-	}
-    if (i2==-1) {dir='';}
-    else{ dir=name.substr(i1+1,i2-i1-1); }                               //console.log(dir);     
-    return(dir);
-}
-function get_usrname(fname_i){                                           //consolelog_func(); 
-    var i1 = fname_i.indexOf('/');
-    var i2 = fname_i.indexOf('/',i1+1);
-    var dir = "";
-    if (i2==-1) {dir='';}
-    else{ dir=fname_i.substr(i1+1,i2-i1-1); }                            //console.log(fname_i+" | "+dir);     
-    return(dir);
-}
-
-
-//-- show functions ------------------------------------------------------------
-//------------------------------------------------------------------------------
-function common_show_lang(lvl, parent){                                  consolelog_func(); 
-    var inner_e = ''; var lang='';
-    inner_e+=     '<div id="en"               onclick="common_set_lang(this.id,'+true+');" '+common.style.buttonpos_menu(1,0)+'>en</div>';
-    inner_e+=     '<div id="ru"               onclick="common_set_lang(this.id,'+true+');" '+common.style.buttonpos_menu(2,0)+'>ru</div>';
-    inner_e+=     '<div id="en"               onclick="common_set_lang(this.id,'+false+');" '+common.style.buttonpos_menu(5,0)+'>en</div>';
-    inner_e+=     '<div id="ru"               onclick="common_set_lang(this.id,'+false+');" '+common.style.buttonpos_menu(6,0)+'>ru</div>';
-    inner_e+=     '<div id="auto"             onclick="common_set_lang(this.id,'+false+');" '+common.style.buttonpos_menu(7,0)+'>auto</div>';
-    inner_e+=     '<div id="common_langbase_zoom"  onclick="" '+common.style.buttonpos_menu(0,1)+'>'+common.langbase+'</div>';
-    inner_e+=     '<div id="common_lang_zoom"      onclick="" '+common.style.buttonpos_menu(4,1)+'>'+common.lang+'</div>';
-    if (editor!=undefined) {parent = "editor_created_elements";}
-    common_create_menu('common_lang',lvl, inner_e, parent);
-}
-function common_set_lang(lang, is_base){                                 consolelog_func(); 
-    if (is_base===true){ 
-		common.langbase = lang; 
-		document.getElementById('common_langbase_zoom').innerHTML = lang;
-	}else{ 
-		common.lang = lang; 
-		document.getElementById('common_lang_zoom').innerHTML = lang;
-	}          
-    document.getElementById('common_lang_both_zoom').innerHTML = common.langbase+'+ <br>'+common.lang;       
-}
-
-function common_show_fontsize(obj){                                      consolelog_func(); 
-	var alpha_def = 1, font_def = 3, scale=1;
-	if (obj.name==='files'){ alpha=common.style.f_fontalpha; font_def = common.style.f_fontsize; scale = common.f_fontsize_scale; }
-	if (obj.name==='common'){ alpha=common.style.r_fontalpha; font_def = common.style.r_fontsize; scale = common.r_fontsize_scale; }            
-	if (obj.name==='reader'){ alpha=common.style.r_fontalpha; font_def = common.style.r_fontsize; scale = common.r_fontsize_scale; } 
-    var inner_e = ''; 
-    if (obj.name==='files'){
-	    inner_e+=     '<div id="0.8"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(7,0)+'> x 0.8 </div>';
-	    inner_e+=     '<div id="1"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(6,0)+'> x 1 </div>';
-	    inner_e+=     '<div id="1.2"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(5,0)+'> x 1.2 </div>';
-	    inner_e+=     '<div id="1.4"    class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(4,0)+'> x 1.4 </div>';
-    }
-    if (obj.name==='reader'){
-		inner_e+=     '<div id="0.8"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(2,0)+'> x 0.8 </div>';
-		inner_e+=     '<div id="1"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(3,0)+'> x 1 </div>';
-		inner_e+=     '<div id="1.2"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(7,0)+'> x 1.2 </div>';
-		inner_e+=     '<div id="1.4"    class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(6,0)+'> x 1.4 </div>';
-		inner_e+=     '<div id="2.0"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(5,0)+'> x 2.0 </div>';
-		inner_e+=     '<div id="3.0"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(4,0)+'> x 3.0 </div>';
-	}
-    inner_e+=     '<div class="text_zoom_box" '+common.style.buttonpos_menu(0,2)+'><div id="common_fontsize_zoom" class="text_zoom menu_zoom" style="color:rgba(0,0,0,'+alpha+'); font-size:'+font_def*scale*common.style.vmin+'px;">text example</div></div>';
-    common_create_menu('common_fontsize',1, inner_e);
-}
-function common_set_fontsize(id, obj){                                   consolelog_func(); 
-	var s = common.style;
-	var classname = ''; var lineheight = 1.1; 
-	var alpha_def=s.fontalpha_def; 
-	var font_default = 3;
-	if (obj.name==='files'){ classname = 'files_name'; lineheight = s.f_lineheight; font_default = s.f_fontsize; }
-	if (obj.name==='common'){ classname = 'text_scroll'; lineheight = s.r_lineheight; font_default = s.r_fontsize; }            
-	if (obj.name==='reader'){ classname = 'text_scroll'; lineheight = s.r_lineheight; font_default = s.r_fontsize; }                         
-	var scale = parseFloat(id);      
-	var elem = document.getElementById('common_fontsize_zoom');
-    var alpha = alpha_def-(0.11-0.05*(scale-1)/2.0)*(scale-1);                                 
-    var fontsize = font_default*scale*s.vmin;                            //console.log('Fontsize: '+fontsize+' | '+alpha);
-    common.style.f_fontalpha = alpha;
-    if (elem) {
-		elem.style.fontSize = fontsize+'px'; 
-		elem.style.color = 'rgba(0,0,0,'+alpha+')';
-	}
-    $('.'+classname).css('font-size', fontsize+'px');
-    $('.'+classname).css('line-height', lineheight*fontsize+'px');
-    $('.'+classname).css('color', 'rgba(0,0,0,'+alpha+')');
-    if (obj.name==='files'){ common.f_fontsize_scale = scale;   common.style.f_fontalpha = alpha; }
-    if (obj.name==='reader'){                                            //console.log('READER');
-		common.r_fontsize_scale = scale;   common.style.r_fontalpha = alpha; 
-		var elem = document.getElementById('text_scroll_area');
-	    elem.style.fontSize = fontsize+'px';                             //console.log(elem.style.fontSize);
-		elem.style.color = 'rgba(0,0,0,'+common.style.r_fontalpha+');'; 
-		elem.style.lineHeight = lineheight*fontsize+'px'; 
-	}  
-    //common.style.resize();                    
-}
-
-function common_create_menu(id, lvl, buttons_html, parent, ineditor){    consolelog_func(); 
-	if (parent==undefined) { parent='created_elements'; }
-    if (lvl==0){                                                         
-        menu_blur(ineditor);
-        inner_e = '<div id="menu_back_lvl0"  onclick="menu_back(this.id,1,'+ineditor+');" class="back_area"></div>';
-        inner_e+= '<div id="menu_area"  class="menu_area">';
-    }else{                                                               
-        inner_e = '<div id="menu_back_lvl2"  onclick="menu_back(this.id,0,'+ineditor+');" class="back_area" style="opacity:0;"></div>';
-        inner_e+= '<div id="menu_area1"  class="menu_area" style="background-color:rgba(100,100,100,0.2);"></div>';
-        inner_e+= '<div id="menu_area2"  class="menu_area_lvl2">';
-        }                                                                
-    var elem = document.createElement('div');                            //console.log('elem: '+elem+', parent: '+parent);
-    elem.innerHTML = inner_e + buttons_html + '</div>';
-    document.getElementById(parent).appendChild(elem);                   //console.log(elem.innerHTML);
-    return (elem);
-}
-
-function menu_blur(ineditor){                                            consolelog_func(); 
-	
-	if (ineditor===undefined) {ineditor=false;}
-	if (common.browser!='Firefox'){
-		if (ineditor){ $('#editor_base_elements').foggy({ blurRadius:5, opacity:0.8, cssFilterSupport:true }); }
-		else{          $('#base_elements').foggy({ blurRadius:5, opacity:0.8, cssFilterSupport:true }); 
-		               //$('#base_elements').css('webkitFilter', 'blur (5px)');
-		}
-	}
-	
-}
-function menu_back(id, foggyoff, ineditor){                              consolelog_func(); 
-	if (ineditor===undefined) {ineditor=false;}
-	
-	if (common.browser!='Firefox'){
-		if (ineditor){ if (foggyoff==1){ $('#editor_base_elements').foggy(false);  } }
-		else{          if (foggyoff==1){ $('#base_elements').foggy(false);  } }
-	}
-	
-    elem = document.getElementById(id).parentNode;  //console.log('Parent id: '+elem.getAttribute('id')+' | '+elem.parentNode.getAttribute('id'));
-    elem.parentNode.removeChild(elem);
-}
-
-function common_show_clickdelay(){                                       consolelog_func(); 
-	var delay = common.time_delay/1000;
-    var inner_e = ''; 
-    inner_e+= '<div id="common_clickdelay_zoom"  onclick="" ' +common.style.buttonpos_menu(0,1)+'>'+delay+' sec</div>';
-    inner_e+= '<div id="0.0"      class="buttons"  onclick="common_set_clickdelay(0.01);" '+common.style.buttonpos_menu(4,0)+'> 0.0 </div>';
-    inner_e+= '<div id="0.1"      class="buttons"  onclick="common_set_clickdelay(0.1);" '+common.style.buttonpos_menu(5,0)+'> 0.1 sec </div>';
-    inner_e+= '<div id="0.5"      class="buttons"  onclick="common_set_clickdelay(0.5);" '+common.style.buttonpos_menu(6,0)+'> 0.5 sec </div>';
-    inner_e+= '<div id="0.7"      class="buttons"  onclick="common_set_clickdelay(0.7);" '+common.style.buttonpos_menu(7,0)+'> 0.7 sec </div>';
-    common_create_menu('common_clickdelay',1, inner_e);
-}
-function common_set_clickdelay(delay){                                   consolelog_func(); 
-	common.time_delay = delay*1000;                                     
-	document.getElementById('common_clickdelay_zoom').innerHTML = delay+' sec';
-}
-
-//-- cookie ---------------------------------------------------------------------
+//-- cookie functions ----------------------------------------------------
 
 function cookie_get(cname) {                                             //consolelog_func(); 
     var name = cname + "=";                                              
@@ -752,7 +178,109 @@ function cookie_delete_all() {                                           console
     }
 }
 
-//-- misc ----------------------------------------------------------------
+//-- menu functions ------------------------------------------------------
+
+function common_set_clickdelay(delay){                                   consolelog_func(); 
+	common.time_delay = delay*1000;                                     
+	document.getElementById('common_clickdelay_zoom').innerHTML = delay+' sec';
+}
+
+function common_set_lang(lang, is_base){                                 consolelog_func(); 
+    if (is_base===true){ 
+		common.langbase = lang; 
+		document.getElementById('common_langbase_zoom').innerHTML = lang;
+	}else{ 
+		common.lang = lang; 
+		document.getElementById('common_lang_zoom').innerHTML = lang;
+	}          
+    document.getElementById('common_lang_both_zoom').innerHTML = common.langbase+'+ <br>'+common.lang;       
+}
+
+function common_set_fontsize(id, obj){                                   consolelog_func(); 
+	var s = common.style;
+	var classname = ''; var lineheight = 1.1; 
+	var alpha_def=s.fontalpha_def; 
+	var font_default = 3;
+	if (obj.name==='files'){ classname = 'files_name'; lineheight = s.f_lineheight; font_default = s.f_fontsize; }
+	if (obj.name==='common'){ classname = 'text_scroll'; lineheight = s.r_lineheight; font_default = s.r_fontsize; }            
+	if (obj.name==='reader'){ classname = 'text_scroll'; lineheight = s.r_lineheight; font_default = s.r_fontsize; }                         
+	var scale = parseFloat(id);      
+	var elem = document.getElementById('common_fontsize_zoom');
+    var alpha = alpha_def-(0.11-0.05*(scale-1)/2.0)*(scale-1);                                 
+    var fontsize = font_default*scale*s.vmin;                            //console.log('Fontsize: '+fontsize+' | '+alpha);
+    common.style.f_fontalpha = alpha;
+    if (elem) {
+		elem.style.fontSize = fontsize+'px'; 
+		elem.style.color = 'rgba(0,0,0,'+alpha+')';
+	}
+    $('.'+classname).css('font-size', fontsize+'px');
+    $('.'+classname).css('line-height', lineheight*fontsize+'px');
+    $('.'+classname).css('color', 'rgba(0,0,0,'+alpha+')');
+    if (obj.name==='files'){ common.f_fontsize_scale = scale;   common.style.f_fontalpha = alpha; }
+    if (obj.name==='reader'){                                            //console.log('READER');
+		common.r_fontsize_scale = scale;   common.style.r_fontalpha = alpha; 
+		var elem = document.getElementById('text_scroll_area');
+	    elem.style.fontSize = fontsize+'px';                             //console.log(elem.style.fontSize);
+		elem.style.color = 'rgba(0,0,0,'+common.style.r_fontalpha+');'; 
+		elem.style.lineHeight = lineheight*fontsize+'px'; 
+	}  
+    //common.style.resize();                    
+}
+
+
+//-- path functions-------------------------------------------------------
+
+function get_subdir(name){                                               consolelog_func(); 
+	var i1 = name.indexOf('/');
+    var i2 = name.indexOf('/',i1+1);
+    var dir = "";
+    if (i2==-1) {dir='';}
+    else{ dir=name.substr(i1+1,i2-i1-1); }                               //console.log(dir);     
+    
+    i1 = name.indexOf('/',name.indexOf('/')+1);
+    i2 = name.indexOf('/',i1+1);
+    if (dir==="guests"){
+		i1 = i2*1;
+		i2 = name.indexOf('/',i1+1);
+	}
+    if (i2==-1) {dir='';}
+    else{ dir=name.substr(i1+1,i2-i1-1); }                               //console.log(dir);     
+    return(dir);
+}
+function get_usrname(fname_i){                                           //consolelog_func(); 
+    var i1 = fname_i.indexOf('/');
+    var i2 = fname_i.indexOf('/',i1+1);
+    var dir = "";
+    if (i2==-1) {dir='';}
+    else{ dir=fname_i.substr(i1+1,i2-i1-1); }                            //console.log(fname_i+" | "+dir);     
+    return(dir);
+}
+
+function common_get_dir(fname){
+	//var d = 'laravel-filemanager/files/';
+	//var dir = fname.substring(fname.indexOf(d)+d.length);
+	//dir = dir.substring(dir.indexOf('/')+1);
+	
+	var dir = localStorage.getItem("working_dir");                       //console.log('dir2: '+dir);
+	dir = dir.substring(dir.indexOf('/')+1);
+	return dir;
+}
+function common_make_fname(fpath){	  
+	var fname = localStorage.getItem("reader_fpath");                                   //consolelog_func();
+    
+    var name = fname.substring(fname.lastIndexOf('/')+1);
+    var d = 'laravel-filemanager/files/';
+	var dir = fname.substring(fname.indexOf(d)+d.length);                //console.log('dir2: '+dir);
+	dir = dir.substring(dir.indexOf('/')+1);                             //console.log('dir2: '+dir);
+	if (dir.indexOf('/')==-1){ 
+		dir=''; 
+	}else{ 
+		dir = dir.substring(0,dir.indexOf('/')+1);
+	}                                                                    //console.log('dir2: '+dir+' | '+name);
+    return([dir, name]);
+}
+
+//-- misc functions ------------------------------------------------------
 
 function consolelog_func(color, noargs) { 
 	if (color===undefined) { color='green'; }
@@ -811,59 +339,27 @@ function consolelog(text, lvl, color){
 }
 
 
-function common_show_notification(text, welcome, blur){                        consolelog_func();
-	if (blur==undefined){blur=0;}
-	if (welcome===undefined){ welcome = false; }
-	var parent='created_elements';
-	var id = "notification";
-	var b_top = 90-common.style.b_height;
-	common.repeat_text = replace_all(text,'<br>','');
-	menu_blur();
-	
-	
-	inner_e = '<div id="back_lvl" onclick="menu_back(this.id,'+blur+',false);" class="back_area"> </div>';
-	inner_e+= '<div class="menu_area" >';
-	inner_e+= '<div class="text_scroll_box" style="position:fixed;top:15vh;left:12vw;width:76vw;height:'+(b_top-23)+'vh;font-size:4.8vmin;line-height:7.5vh; color: rgba(0,0,0,0.55);">';
-	inner_e+= '<div class="text_scroll" align="left" style="top:0;"> <div class="reader_text" style="top:-5vh;height:20%;">'+text+' &nbsp </div> </div> </div> </div>' ;
-                                       
-    inner_e += '<div onclick="utter_sentence(0, 1, 0, 1);" ' +common.style.buttonpos_menu(19,0,4,5)+' > utter </div>';
-    if (welcome){
-		inner_e += '<div onclick="welcome_donot();" ' +common.style.buttonpos_menu(16,0,4,5)+" > Don't show again </div>";
-	}
-                  
-    element = document.createElement('div');
-    element.setAttribute('id', id);
-    element.innerHTML=inner_e;
-    document.getElementById(parent).appendChild(element);
-    return (element);	
-}
 function welcome_donot(){                                                consolelog_func();
 	common.welcome="donot";
 	cookie_set("welcome_", "donot");
 }
 
-function common_get_dir(fname){
-	//var d = 'laravel-filemanager/files/';
-	//var dir = fname.substring(fname.indexOf(d)+d.length);
-	//dir = dir.substring(dir.indexOf('/')+1);
-	
-	var dir = localStorage.getItem("working_dir");                       //console.log('dir2: '+dir);
-	dir = dir.substring(dir.indexOf('/')+1);
-	return dir;
+function merge_options(obj1,obj2){                                       consolelog_func(); 
+    obj3 = {};
+    for (attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+    for (attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+    return obj3;
 }
-function common_make_fname(fpath){	  
-	var fname = localStorage.getItem("reader_fpath");                                   //consolelog_func();
-    
-    var name = fname.substring(fname.lastIndexOf('/')+1);
-    var d = 'laravel-filemanager/files/';
-	var dir = fname.substring(fname.indexOf(d)+d.length);                //console.log('dir2: '+dir);
-	dir = dir.substring(dir.indexOf('/')+1);                             //console.log('dir2: '+dir);
-	if (dir.indexOf('/')==-1){ 
-		dir=''; 
-	}else{ 
-		dir = dir.substring(0,dir.indexOf('/')+1);
-	}                                                                    //console.log('dir2: '+dir+' | '+name);
-    return([dir, name]);
+function concatenate_arr(arr1, arr2){                                    consolelog_func(); 
+	for (i=0; i<arr2.length; i++){ arr1.push(arr2[i]); } 
+	return(arr1);
 }
 
+//-- not used ------------------------------------------------------------
 
+function common_textto_read(text){                                       consolelog_func(); 
+	text = text.replace('<br>', ' new line ');
+	text = text.replace('<abbr>', '');
+	text = text.replace('</abbr>', '');
+	return(text);
+}
