@@ -69,7 +69,6 @@ class UserController extends Controller
 	{	
 		$msg = 'Error';
 		$this->validate($request, [
-			'email' => 'required|email',
 			'first_name' => 'required|max:20|unique:users',
 			'password' => 'required|min:4'
 		]);
@@ -86,14 +85,13 @@ class UserController extends Controller
 		$user-> save();
 		
 		Auth::login($user);
-		//File::makeDirectory('mail', 0775);
 		
-		//return redirect()->back();
-		//return view('dashboard');
-		//return redirect()->route('dashboard')-> with(['msg'=>$msg]);;
-		
-		//return redirect()->route('home');
-		return view('index', ['in_contacts'=>false, 'in_messages'=>false, 'create'=>'yes' ] );
+		return view('index', [
+						'in_contacts'=>false, 
+						'in_messages'=>false, 
+						'create'=>'yes', 
+						'username'=>$username 
+		] );
 
 	}
 	

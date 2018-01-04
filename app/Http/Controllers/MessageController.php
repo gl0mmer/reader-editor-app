@@ -32,7 +32,7 @@ class MessageController extends Controller
 			}
 		}
 		
-		return redirect()->back();
+		return redirect()->back() -> with(['msg'=>$msg]);
 		
 	}
 	private function Draft($id_2){
@@ -102,9 +102,9 @@ class MessageController extends Controller
 	public function postAddConnection(Request $request)
 	{
 		$this->validate($request, [
-			'name' => 'required|min:4'
+			'addcontact_name' => 'required|min:4'
 		]);
-		$name = $request['name'];
+		$name = $request['addcontact_name'];
 		
 		$msg = 'Connection failed ';
 		if ( User::where('first_name', $name)->exists() ){
@@ -113,7 +113,7 @@ class MessageController extends Controller
 			$id_2 = User::where('first_name', $name)->value('id');
 			
 			if (Connection::where([ ['user_id_1',$id_1], ['user_id_2',$id_2] ]) -> orWhere([ ['user_id_1',$id_2], ['user_id_2',$id_1] ]) ->exists()  ){
-				$msg = 'Connection exists!';
+				$msg = 'Connection exists';
 			}else{
 				$item = new Connection();
 				$item->user_id_1 = Auth::user()->id;
@@ -124,8 +124,11 @@ class MessageController extends Controller
 				
 				$msg = 'Successfully added: '.$name;
 			}
+		
+		}else{
+			$msg = 'User does not exist';
 		}
-		return redirect()->back();
+		return redirect()->back()-> with(['msg'=>$msg]);
 	}
 	
 	
@@ -136,18 +139,18 @@ class MessageController extends Controller
 		$user_id = Auth::user()->id;
 		$msg = 'MSG Connections: ';
 		
-		$items = Connection::where('user_id_1', $user_id)->get();
-		if (count($items)>0){
-			foreach ($items as $item){
+		$items_1 = Connection::where('user_id_1', $user_id)->get();
+		$items_2 = Connection::where('user_id_2', $user_id)->get();
+		if (count($items_1)+count($items_2)>0){
+			foreach ($items_1 as $item){
 				$id = $item->user_id_2;
 				$name = User::where('id',$id)->value('first_name');
 				array_push($res, $id);
 				array_push($names, $name);
 				$msg = $msg.', '.$id;
 			}
-			$items = Connection::where('user_id_2', $user_id)->get();
-			foreach ($items as $item){
-				$i = $item->user_id_1;
+			foreach ($items_2 as $item){
+				$id = $item->user_id_1;
 				$name = User::where('id',$id)->value('first_name');
 				array_push($res, $id);
 				array_push($names, $name);
@@ -163,7 +166,7 @@ class MessageController extends Controller
 						'names'       => $names, 
 						'connections' => $res, 
 						'create'      => 'no', 
-						'username'    => $username 
+						'username'    => $username, 
 			]) -> with(['msg'=>$msg]);
 		
 	}

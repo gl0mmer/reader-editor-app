@@ -38,8 +38,8 @@ var reader = {
         return(id_arr);
     },
     get_id: function(){                                                  //consolelog_func('brown'); 
-        var latest_id;                                                   //console.log(this.sentence_id);
-        var id_arr = [];                                                 //console.log('selecttype: '+this.selecttype);
+        var latest_id;                                                   console.log('Sentence_id',this.sentence_id);
+        var id_arr = [];                                                 console.log('selecttype: '+this.selecttype);
         if (this.selecttype == 1){ id_arr=this.sentence_id; }    
         else if (this.selecttype == 2){ id_arr=this.paragraph_id; }    
         else if (this.selecttype == 0){ id_arr=this.word_id; }  
@@ -109,7 +109,7 @@ function reader_exit(){
 	}
 }
 
-function reader_update(start) {                                          consolelog_func('darkblue');                                               
+function reader_update(start) {                                          consolelog_func('darkblue');   console.log('ischanged_text: ',common.ischanged_text);                                            
 	
 	if (common.ischanged_text){
 		reader_ajax_save();
@@ -158,7 +158,7 @@ function reader_ajax_save(){                                                  co
 	reader.id_curr = reader.get_id();                                
 	text = common.editor_text;                                       
 	document.getElementById('tmp').innerHTML = text_parsed;         
-	var id = reader.id_curr;                                             //console.log('text_new: '+text+' ID: '+id);
+	var id = reader.id_curr;                                             console.log('text_new: '+text+' ID: '+id);
 	document.getElementById("text_from_file").innerHTML = "";
 	document.getElementById(id).innerHTML = text;                        //console.log('text_new_parsed: '+document.getElementById('tmp').innerHTML);
 	

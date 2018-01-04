@@ -5,16 +5,16 @@ var  show_list = 0;
 function loadContacts(ids, names){
 	localStorage.setItem("in_reader", "no");                             
 	files.in_contacts =true;
-	files.entries = names;                                               //console.log(response.entries);
+	files.entries = names;                                               //console.log('Entries: ',files.entries);    
 	files.entrytype = Array(ids.length+1).fill('file');                        
 	files.entrytype[0]='folder';                                         //console.log(files.entrytype);
 	files.entries.push('+');
 	files.paths = ids;      
-	files.paths.push(-1);                                                //console.log(files.paths);
-	files_update();
+	files.paths.push(-1);                                                //console.log(files.paths); console.log(files.entries);
+	files_update();     
 }
 function loadMessages(messages) {                                               
-	common.in_messages =true;                                             console.log('User and contact: '+user.name+' | '+user.contact_name);
+	common.in_messages =true;                                            console.log('User and contact: '+user.name+' | '+user.contact_name);
 	reader.messages_arr = messages;
 	var text_i = messages;
 	document.getElementById('hidden_text').innerHTML = text_i;

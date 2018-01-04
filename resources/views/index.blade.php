@@ -85,6 +85,7 @@
 	<div hidden style="position:fixed;top:50%;">
 		<a id="show_home" href="{{ route('home') }}">Show home</a> 
 		<a id="show_contacts" href="{{ route('contacts') }}">Show connections</a> 
+		
 		@if ($in_contacts)
 			<?php $i=0; ?>
 			Connection: {{ count($connections) }}<br>
@@ -93,12 +94,13 @@
 				<script>
 					contacts.push("{{ $connection }}");
 					contact_names.push("{{ $names[$i] }}");
+					//console.log("COntact "+"{{$i}}"+":","{{ $connection }}","{{ $names[$i] }}");
 				</script>
 				<?php $i+=1; ?>
 			@endforeach
 			<form action="{{ route('connection_add') }}" method="post">
-				<input class="form-control" type="text" name="name"  > 
-				<button type="submit" class="btn btn-primary"> Add connection </button>
+				<input id="addcontact_name" class="form-control" type="text" name="addcontact_name" value=""  > 
+				<button id="addcontact_submit" type="submit" class="btn btn-primary"> Add connection </button>
 				<input type="hidden" name="_token" value="{{ Session::token() }}">
 			</form>
 		@endif

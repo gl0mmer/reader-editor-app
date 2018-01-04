@@ -14,7 +14,7 @@
 				<input class="form-control" type="text" name="first_name" id="signup_username" value="{{ Request::old('first_name') }}"> 
 			</div>
 			<div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
-				<label for="password"> PAssword </label>
+				<label for="password"> Password </label>
 				<input class="form-control" type="password" name="password" id="signup_password" value="{{ Request::old('password') }}"> 
 			</div>
 			<button id="signup_submit" type="submit" class="btn btn-primary"> Submit </button>

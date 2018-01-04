@@ -226,9 +226,9 @@ function editor_exit(){                                                  console
     input.onkeypress = "";
     common.editor_text = editor.text_raw;
     common.ineditor = false;
-    common.ischanged_text = true;
     if (editor.parent=="reader"){ 
 		//console.log('EDITOR ischanged_text: '+common.ischanged_text+', text: '+common.editor_text+' ID: '+reader.id_curr);    
+		common.ischanged_text = true;
 		reader_update(); 
 	}else if (editor.parent=="files"){                                  
 		elem = document.getElementById(editor.destination);

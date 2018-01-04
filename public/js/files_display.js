@@ -50,13 +50,14 @@ function files_show_files(){                                             console
 		inner_e+= '<div id="fileid_'+i+'_pic"  class="files_symbol" >'+symbol+'</div>';
 		inner_e+= '<div id="fileid_'+i+'_name"  class="files_name" >'+files.entries[i]+'</div> </div>' ;
 		//inner_e+= '<div id="fileid_'+i+'_pic"  class="files_pic files_'+title+'" >'+'</div>';
+		//console.log(i);
 	}
 	document.getElementById('files_array').style.visibility = 'visible';
 	document.getElementById('files_array').innerHTML = inner_e;          //console.log(inner_e);
 	common_set_fontsize(common.f_fontsize_scale, files);
 	
-	if (files.subdir=='mail'){                                           //console.log(files.subdir);                        
-        var id = 'fileid_'+files.nentry;                                    
+	if (files.in_contacts==true){                                        //console.log('id',files_arr.length);                        
+        var id = 'fileid_'+(files_arr.length-1).toString();              //console.log('id',id, files_arr.length-1); 
         document.getElementById(id).onclick=function() { files_show_addcontact(); } 
         document.getElementById(id+'_pic').innerHTML = symbol_addcontact;
 	    document.getElementById(id+'_name').innerHTML = "add contact";    
@@ -77,7 +78,7 @@ function files_show_buttons(){                                           console
     var inner_e="";
     inner_e+= '<div onclick="files_show_menu();" '       +common.style.buttonpos(0,4)+'> menu </div>' ;
     inner_e+= '<div onclick="files_show_options();" '    +common.style.buttonpos(1,4)+'> opt </div>';
-    inner_e+= '<div onclick="files_ajax_enter();" '           +common.style.buttonpos(2,2)+'>'+symbol_enter+'</div></div>';
+    inner_e+= '<div onclick="files_ajax_enter();" '      +common.style.buttonpos(2,2)+'>'+symbol_enter+'</div></div>';
     inner_e+= '<div onclick="files_show_login();" '      +common.style.buttonpos(4,2)+'>'+'log in'+'</div>' ;
     inner_e+= '<div onclick="files_ajax_upload();" '     +common.style.buttonpos(5,2)+'>upload</div>' ;
     inner_e+= '<div onclick="files_scroll(-2);" '   +common.style.buttonpos(3,4)+'>'+symbol_prev+'</div>' ;
@@ -136,14 +137,14 @@ function files_show_login(){                                             console
     inner_e+= '<div onclick="" '    +common.style.buttonpos_menu(7,3,4,3)+'> mail data </div>';
     common_create_menu('files_lodin', 0, inner_e);
 }
-function files_show_addcontact(){                                        consolelog_func();
+function files_show_addcontact(){                                        consolelog_func(); console.log('Show_add_contact');
 	if (get_usrname(files.dir)=="guests"){
 		common_show_notification('You need to log in to add contact.');
 	}else{
 		var inner_e="";
-		inner_e += '<div '+common.style.buttonpos_menu(0,2)+'><div id="files_addmail_edit" onclick="files_edittext(this.id);" class="text_zoom menu_zoom"> new contact </div></div>';
-		inner_e += '<div onclick="files_click_ajax(this.id);" '+common.style.buttonpos_menu(4,0)+'> add contact </div>';
-		common_create_menu('files_addmail', 0, inner_e);
+		inner_e += '<div '+common.style.buttonpos_menu(0,2)+'><div id="files_addcontact_edit" onclick="files_edittext(this.id);" class="text_zoom menu_zoom"> new contact </div></div>';
+		inner_e += '<div onclick="files_ajax_addcontact();" '+common.style.buttonpos_menu(4,0)+'> add contact </div>';
+		common_create_menu('files_addcontact', 0, inner_e);
 	}
 }
 function files_show_upload(){                                            consolelog_func();

@@ -181,7 +181,7 @@ function files_ajax_enter(){                                             console
 }  
 
 function files_ajax_create(type){
-	var new_name = common.editor_text;                                    //console.log('New fname: '+new_name);
+	var new_name = common.editor_text;                                   //console.log('New fname: '+new_name);
 	var i = files.entries.indexOf(new_name);
 	
 	if (new_name==''){
@@ -191,16 +191,22 @@ function files_ajax_create(type){
 	}else{
 		if (type == 0){
 			performLfmRequest('newfolder', {name: new_name})
-			.done(refreshFoldersAndItems);                                   //console.log('New folder');
+			.done(refreshFoldersAndItems);                               //console.log('New folder');
 			alert = 'New folder is created.';
 		}else if (type == 1){
 			document.getElementById('create_filename').value = new_name;
-			document.getElementById('create_submit').click();                //console.log('New .txt');
+			document.getElementById('create_submit').click();            //console.log('New .txt');
 			alert = 'New text file is created.';
 		}
 	}
 	common_show_notification(alert);
 	common.editor_text = '';
+}
+
+function files_ajax_addcontact(){
+	var new_contact = document.getElementById('files_addcontact_edit').innerHTML;
+	document.getElementById('addcontact_name').value = new_contact;
+	document.getElementById('addcontact_submit').click(); 
 }
 
 function files_ajax_rename(){
@@ -303,8 +309,9 @@ function files_login_remember(){                                         console
 
 //-- misc ----------------------------------------------------------------
 function files_edittext(id){                                             consolelog_func('darkblue');
-	var text = common.editor_text;
-    editor_run('files', text , id);
+	//var text = common.editor_text;
+	var text = "";
+    editor_run('files', text, id);
 }
 
 function files_set_zoom(order){                                          consolelog_func();

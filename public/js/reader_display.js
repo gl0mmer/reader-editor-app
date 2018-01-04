@@ -97,7 +97,9 @@ function reader_highlite(){                                              console
 		elem.className='text';
     }
     div = document.getElementById(id);                                   //console.log('Highlite id: '+id_prev+' | ' +id);                            
-    div.className='text_highlite';                                 
+    if (div){
+		div.className='text_highlite';      
+	}                           
     reader.id_prev = id;
 }
 

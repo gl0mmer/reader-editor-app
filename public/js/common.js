@@ -228,7 +228,7 @@ function common_set_fontsize(id, obj){                                   console
 }
 
 
-//-- path functions-------------------------------------------------------
+//-- path functions ------------------------------------------------------
 
 function get_subdir(name){                                               consolelog_func(); 
 	var i1 = name.indexOf('/');
@@ -257,10 +257,6 @@ function get_usrname(fname_i){                                           //conso
 }
 
 function common_get_dir(fname){
-	//var d = 'laravel-filemanager/files/';
-	//var dir = fname.substring(fname.indexOf(d)+d.length);
-	//dir = dir.substring(dir.indexOf('/')+1);
-	
 	var dir = localStorage.getItem("working_dir");                       //console.log('dir2: '+dir);
 	dir = dir.substring(dir.indexOf('/')+1);
 	return dir;
