@@ -14,7 +14,7 @@ function loadContacts(ids, names){
 	files_update();
 }
 function loadMessages(messages) {                                               
-	files.in_messages =true;                                             console.log('User and contact: '+files.username+' | '+files.contactname);
+	common.in_messages =true;                                             console.log('User and contact: '+user.name+' | '+user.contact_name);
 	reader.messages_arr = messages;
 	var text_i = messages;
 	document.getElementById('hidden_text').innerHTML = text_i;
@@ -57,10 +57,9 @@ function loadItems(dir) {
   $.ajax( {type: 'GET', dataType: 'text', url: 'jsonitems', cache: false, sort_type: sort_type, data: {path: path}} )
     .done(function (data) {
       var response = JSON.parse(data);
-      $('#content').html(response.html);                                 //console.log('HTML: '+response.html);	
+      $('#content').html(response.html);                                 
       files.entries = response.entries;                                  //console.log('entries: '+response.entries);
       files.entrytype = response.entrytype;                              //console.log('Value2: ',response.html);
-      files.paths = response.paths;                                      //console.log('Path: ',response.path, response.working_dir);
       var home_path = response.path;
       files.home = home_path.substring(0,home_path.lastIndexOf('/'));   
       files.dir = response.working_dir;
@@ -68,7 +67,7 @@ function loadItems(dir) {
       localStorage.setItem("working_dir", response.working_dir);         //console.log('loadItems Dir: '+response.working_dir);
       $('#current_dir').text(response.working_dir);
       console.log('Current working_dir : ' + $('#working_dir').val());
-      setOpenFolders();
+      setOpenFolders();                                                  //console.log('Paths: ',files.paths);	
       files_update();
     });
 }
@@ -87,7 +86,7 @@ function useFile(file_url) {                                             //conso
 		
 		document.getElementById('hidden_text').innerHTML = text_i;
 		document.getElementById('created_elements').innerHTML = '';
-		localStorage.setItem("reader_fpath", url);                       //console.log("USE");	 
+		localStorage.setItem("reader_url", url);                       //console.log("USE");	 
 		reader_start();
 		
 	}else{

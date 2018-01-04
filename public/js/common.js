@@ -265,18 +265,10 @@ function common_get_dir(fname){
 	dir = dir.substring(dir.indexOf('/')+1);
 	return dir;
 }
-function common_make_fname(fpath){	  
-	var fname = localStorage.getItem("reader_fpath");                                   //consolelog_func();
-    
-    var name = fname.substring(fname.lastIndexOf('/')+1);
-    var d = 'laravel-filemanager/files/';
-	var dir = fname.substring(fname.indexOf(d)+d.length);                //console.log('dir2: '+dir);
-	dir = dir.substring(dir.indexOf('/')+1);                             //console.log('dir2: '+dir);
-	if (dir.indexOf('/')==-1){ 
-		dir=''; 
-	}else{ 
-		dir = dir.substring(0,dir.indexOf('/')+1);
-	}                                                                    //console.log('dir2: '+dir+' | '+name);
+function common_make_fname(fname){	  
+    var i = fname.lastIndexOf('/');
+    var name = fname.substring(i+1);
+    var dir = user.name +'/'+ fname.substring(0,i+1);                    //console.log('Path: '+files.dir);
     return([dir, name]);
 }
 

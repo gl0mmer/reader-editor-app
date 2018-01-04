@@ -4,17 +4,23 @@ if (localStorage.getItem("isset")!="true"){
 	localStorage.setItem("copy_path", "");
 	localStorage.setItem("copy_working_dir", "");
 	localStorage.setItem("show_welcome", "yes");
-	localStorage.setItem("in_reader", "no");
-	localStorage.setItem("reader_fpath", "");
-	localStorage.setItem("reader_shortpath", "");
 	localStorage.setItem("working_dir", "");
+	
+	localStorage.setItem("in_reader", "no");
+	localStorage.setItem("reader_fname", "");
+	localStorage.setItem("reader_url", "");
+	localStorage.setItem("reader_savepath", "");
 	localStorage.setItem("reader_exitpath", "");
-	//localStorage.setItem("reader_fpath", "");
 }else{
 	localStorage.setItem("show_welcome", "no");
 }
 //localStorage.setItem("in_reader", "no");
 
+var user = {
+	id: 0,
+	name: '',
+	contact_name: '',
+};
 
 var common = {
 	langbase: "en",
@@ -27,8 +33,11 @@ var common = {
 	time_delay: 10,
 	welcome: 'do',
 	bkg_image: true,
+	editor_text: '',
+	ineditor: false,
+	ischanged_text: false,
 	
-	cookie_number: 10,
+	cookie_number: 14,
 	browser: "",
 	cookie_suffix: "_",
 	name: "common",
@@ -37,13 +46,13 @@ var common = {
 	utter_stop: 0,
 	utter_onend: 0,
 	repeat_text: '',
+	in_messages: false,
 	
 	symbol_ltag: '<abbr>',
 	symbol_rtag: '</abbr>',
 	otag: "span",
 	ctag: "span",
 	ptag: "span",
-	editor_text: '',
 	
 	time_click: 0,
 	//url_php: "https://hedgehogappp.com/",

@@ -153,7 +153,7 @@ editor.style = {
 //-- run/save/exit -------------------------------------------------------
 
 //editor_run();
-if (typeof reader!=='undefined' && reader.ineditor===true) { reader_editor();}
+if (typeof reader!=='undefined' && common.ineditor===true) { reader_editor();}
 
 function editor_run(parent, text_raw, destination, iter){                consolelog_func("darkblue"); 
 	editor.style.nlines_lvl0 = common.editor_nlines_lvl0;
@@ -224,22 +224,22 @@ function editor_exit(){                                                  console
     var input = document.getElementsByTagName('body')[0];
     input.onkeydown = "";
     input.onkeypress = "";
+    common.editor_text = editor.text_raw;
+    common.ineditor = false;
+    common.ischanged_text = true;
     if (editor.parent=="reader"){ 
-		reader.ischanged_text = true;
-		reader.editor_text = editor.text_raw;
-		reader.ineditor = false;                                         //console.log('EDITOR ischanged_text: '+reader.ischanged_text+', text: '+reader.editor_text+' ID: '+reader.id_curr);    
+		//console.log('EDITOR ischanged_text: '+common.ischanged_text+', text: '+common.editor_text+' ID: '+reader.id_curr);    
 		reader_update(); 
 	}else if (editor.parent=="files"){                                  
 		elem = document.getElementById(editor.destination);
 		if (elem) { elem.innerHTML = editor.text_raw; }               
 		elem = document.getElementById("ffiles_edit_text" );
 		if (elem) { elem.value = editor.text_raw; }                      
-		files.editor_text = editor.text_raw;                                        
 	}  
 }function editor_save(){                                                 consolelog_func("darkblue"); 
     if (editor.parent=='reader'){
-		reader.editor_text = editor.text_raw;
-        reader.ischanged_text = true;
+		common.editor_text = editor.text_raw;
+		common.ischanged_text = true;
         reader_update(); 
     }
 }

@@ -5,15 +5,13 @@
 var reader = {
     latest_w: "p0s0w0", latest_s: "p0s0", latest_p: "p0",
     id_prev: "p0s0w0",  id_curr: "p0s0w0",
-    ischanged_text: false,
-    ineditor: false,
     iter: 0,
     selecttype: 2,
     zoomtype: 0,
     text_origin: "", editor_text: "", mailtext: "",
     editor_iter: 0,
     
-    cookie_number: 14,
+    cookie_number: 12,
     cookie_suffix: "_",
     name: 'reader',
     
@@ -27,6 +25,8 @@ var reader = {
     json_tmp: "",
     messages_arr: [],
     draft: '',
+    
+    in_messages: false,
     
     zoomtype_arr: ['no zoom', 'by word', 'by sentence'],
     
@@ -60,9 +60,10 @@ var reader = {
 
 //-- start/exit/update ---------------------------------------------------
 
-function reader_start(){                                                 consolelog_func('darkblue');         
-	localStorage.setItem("in_reader", "yes");	                         //console.log('Dir: '+files.dir);
-	var exitpath = localStorage.getItem("reader_fpath");                 //console.log('Exitpath0: '+exitpath);
+function reader_start(){                                                 consolelog_func('darkblue');    
+	reader.in_messages = common.in_messages;     
+	localStorage.setItem("in_reader", "yes");	                         
+	var exitpath = localStorage.getItem("reader_url");                 //console.log('Exitpath0: '+exitpath);
 	exitpath = exitpath.substring(0, exitpath.lastIndexOf('/'));
 	localStorage.setItem("reader_exitpath", exitpath);	                 
 	
@@ -74,7 +75,7 @@ function reader_start(){                                                 console
 	document.getElementById("content_box").innerHTML = inner_e;
 	window.onbeforeunload = reader_beforunload;
 	
-	reader.fname = files.entries[files.iter];
+	reader.fname = localStorage.getItem("reader_fname");
 	window.onresize = function(){ 
 		common.style.resize();
 		reader_show_buttons();
@@ -87,9 +88,7 @@ function reader_start(){                                                 console
 	    common.cookie_save.call(reader);
 	}else{ common.cookie_load.call(reader); }                            
 		
-	//localStorage.setItem("reader_fpath", files.paths[files.iter]);
 	reader_update();
-
 }
 
 function reader_exit(){
@@ -98,7 +97,7 @@ function reader_exit(){
 	var elem = document.getElementById('menu_back_lvl1');                //console.log('Elem: '+elem);
 	if (elem){ menu_back('menu_back_lvl1',1, 0); }
 
-	if (files.in_messages){
+	if (reader.in_messages){
 		document.getElementById('show_contacts').click();
 	}else{
 		document.getElementById('created_elements').innerHTML = '';
@@ -112,14 +111,14 @@ function reader_exit(){
 
 function reader_update(start) {                                          consolelog_func('darkblue');                                               
 	
-	if (reader.ischanged_text){
-		reader_save();
+	if (common.ischanged_text){
+		reader_ajax_save();
 	}
 	
-    var fname = common_make_fname(reader.fname);                         //console.log('NAME: '+fname[0]+' | '+fname[1]);
-    document.getElementById('file_title').innerHTML = '<em><span style="color:black;opacity:0.3;direction:ltr;"> user/'+fname[0]+' </span>'+fname[1]+'</em>';
+    var fname = common_make_fname(localStorage.getItem("reader_savepath"));     //console.log('NAME: '+fname[0]+' | '+fname[1]);
+    document.getElementById('file_title').innerHTML = '<em><span style="color:black;opacity:0.3;direction:ltr;">'+fname[0]+' </span>'+fname[1]+'</em>';
                                              
-    if (files.in_messages){
+    if (reader.in_messages){
 		reader_messages_tohtml();
 	}
         
@@ -132,13 +131,11 @@ function reader_update(start) {                                          console
 	reader.text_origin = text;
 	reader.text_parsed = text_parsed;                                    //console.log('Draft 4: '+text_parsed);
     
-    //reader_text();                                                      
     reader_show_buttons();    
     reader_set_selecttype(order=0);                                  
     reader_set_zoomtype(reader.zoomtype);                                       
     common_set_fontsize(common.r_fontsize_scale, reader);
-    //document.getElementById('text_scroll_area').style.fontSize = '3vmin';
-    if (files.in_messages){
+    if (reader.in_messages){
         reader.iter = reader.get_id_array().length-1;                  
         reader_highlite(); 
         scroll_to(reader.get_id(),'content_box', title=0);
@@ -148,18 +145,18 @@ function reader_update(start) {                                          console
 
 //-- ajax function -------------------------------------------------------
 
-function reader_save(){                                                  consolelog_func('darkblue'); 
+function reader_ajax_save(){                                                  consolelog_func('darkblue'); 
         
     var text = "", text_parsed = "";
     
-	if (files.in_messages){                                           
+	if (reader.in_messages){                                           
 		text_parsed = $('#text_from_file').find('#mail_editable').html();     
 	}else{
 		text_parsed = reader.text_parsed;
 	}                                                                    //console.log('true text_parsed: '+text_parsed);
 	
 	reader.id_curr = reader.get_id();                                
-	text = reader.editor_text;                                       
+	text = common.editor_text;                                       
 	document.getElementById('tmp').innerHTML = text_parsed;         
 	var id = reader.id_curr;                                             //console.log('text_new: '+text+' ID: '+id);
 	document.getElementById("text_from_file").innerHTML = "";
@@ -168,18 +165,21 @@ function reader_save(){                                                  console
 	var text_all_parsed = document.getElementById('tmp').innerHTML; 
 	var text_all_origin = merge_text(text_all_parsed);               
 
-	reader.ischanged_text = false;                                       //console.log('NEW TEXT: '+text_all_origin);
+	common.ischanged_text = false;                                       //console.log('NEW TEXT: '+text_all_origin);
 	
-	if (files.in_messages){ 
+	if (reader.in_messages){ 
 		document.getElementById('savedraft_text').value = text_all_origin;
 		document.getElementById('savedraft_submit').click();
 	}else{
-		files_ajax_save(text_all_origin);        
+		var fname = localStorage.getItem("reader_savepath");             console.log('Fname: '+fname);
+		document.getElementById('update_filename').value = fname;        console.log('Text: '+text);
+		document.getElementById('update_filetext').value = text_all_origin;
+		document.getElementById('update_submit').click();                    //console.log('New .txt');
+		alert = 'File was saved.';     
 	}
-    //files_ajax_save(text);        
 }
 
-function reader_send(){
+function reader_ajax_send(){
 	document.getElementById('createmessage_text').value = reader.draft;
 	document.getElementById('createmessage_submit').click();
 }
@@ -276,16 +276,16 @@ function reader_messages_tohtml(){
 	var text = "", class_i="", id_from="", i=0;
 	for (i=0; i<mail_arr.length; i+=1){                              
 		id_from = mail_arr[i][1];          
-		if (id_from==files.userid) {class_i = 'mail mail_out'; name_i = files.username }
-		else {class_i = 'mail mail_in'; name_i = files.contactname}       
+		if (id_from==user.id) {class_i = 'mail mail_out'; name_i = user.name }
+		else {class_i = 'mail mail_in'; name_i = user.contact_name}       
 		text+= '<div title="void_div" class="mail mail_space">  </div>';    
 		text+= '<div title="'+name_i+'" class="'+class_i+' mail_title" >from ' +name_i+', '+mail_arr[i][2]+'</div>';
 		text+= '<div title="'+name_i+'" class="'+class_i+'">'+mail_arr[i][3]+'</div>';               
 	}
 	var msg = reader.draft;                                              //console.log('Draft 2: '+reader.draft);
 	text+= '<div title="void_div" class="mail mail_space">  </div>'; 
-	text+= '<div title="'+files.username+'" class="mail mail_out mail_title" >from ' +files.username+', new </div>';
-	text+= '<div title="'+files.username+'" class="mail mail_out mail_temp" id="mail_editable">'+msg+'</div>';         
+	text+= '<div title="'+user.name+'" class="mail mail_out mail_title" >from ' +user.name+', new </div>';
+	text+= '<div title="'+user.name+'" class="mail mail_out mail_temp" id="mail_editable">'+msg+'</div>';         
 	text+= '<div title="void_div" style="position:relative;height:11vh;">  </div>'; 
    
 	document.getElementById('hidden_text').innerHTML=text;       
@@ -301,7 +301,7 @@ function reader_if_editable(){                                           console
 
 function reader_show_mail(){                                             consolelog_func(); 
     var inner_e = '';
-    inner_e += '<div id="freader_sendmail_submit" onclick="reader_send();" '+common.style.buttonpos_menu(7,0)+'> send mail </div>';
+    inner_e += '<div id="freader_sendmail_submit" onclick="reader_ajax_send();" '+common.style.buttonpos_menu(7,0)+'> send mail </div>';
     //inner_e += '<div id="reader_refresh"  onclick="reader_refresh();" '  +common.style.buttonpos_menu(6,0)+'> refresh </div>';
     common_create_menu('reader_mail', 0, inner_e);
 }
@@ -332,7 +332,7 @@ function reader_editor(){                                                console
     id = reader.get_id();
     text = document.getElementById(id).innerHTML;
     text_plane = merge_text(text); 
-    reader.ineditor = true;                                    
+    common.ineditor = true;                                    
     editor_run('reader', text_plane);
 }
 

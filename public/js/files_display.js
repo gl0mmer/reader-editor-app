@@ -64,17 +64,10 @@ function files_show_files(){                                             console
 }
 
 function files_fill_zoom(){                                              consolelog_func();
-	var dir = common_get_dir();
-	var name = files.get_fname();                   
-	if (get_usrname(dir)=="guests"){
-		i1 = dir.indexOf('/',dir.indexOf('/')+1);
-	    i2 = dir.indexOf('/',i1+1);                                     
-		if (i2==-1) { i2 = dir.length; }                                 //console.log(i1+' - '+i2);
-		dir = dir.substring(0,i1)+dir.substring(i2); 
-	}
-    //dir = '<em style="font-style:normal;color:#008000;opacity:0.6;">'+dir+'/ </em>';
-    dir = '<em style="font-style:normal;color:black;opacity:0.3;">'+dir+'/ </em>';
-    document.getElementById('zoom_text').innerHTML = dir+files.get_fname(); 
+    var fname = common_make_fname( files.get_savepath(files.iter) );     //console.log('zoom: '+files.zoom);
+    var dir = '<em style="font-style:normal;color:black;opacity:0.3;">'+fname[0]+' </em>';
+    
+    document.getElementById('zoom_text').innerHTML = dir+fname[1]; 
 }   
 
 //-- show buttons --------------------------------------------------------

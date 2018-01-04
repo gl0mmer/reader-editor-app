@@ -22,14 +22,11 @@ var files = {
 	json_tmp: "",
 	dir: "",
 	subdir: "",
-	editor_text: "",
 	zoom_arr: ['no zoom', 'zoom'],
 	home: '',
 	in_contacts: false,
-	in_messages: false,
 	contacts: [],
 	messages: [],
-	contactname: '',
 	userid: -1,
 	
 	get_fname: function(i){                                              //consolelog_func('brown');
@@ -55,13 +52,22 @@ var files = {
 		if (elem) { type=elem.getAttribute('title'); }
 		return type;
 	},
-	get_fpath: function(i){
+	get_enterpath: function(i){
 		var path = '';
 		if (this.entrytype[i]=='file'){
 			path = 'http://localhost/laravel-filemanager/files';
 		}
-		path += files.dir+'/'+files.entries[i];
+		path += this.dir+'/'+this.entries[i];
 		return path;
+	},
+	get_savepath: function(i){
+		if (i==0){ return ''; }
+		
+		var path = '';
+		var dir = this.dir.substring(1);                                 //console.log('Savepath: ',dir);
+		if (dir.indexOf('/')==-1){ dir = ''; }
+		else{ dir = dir.substring(dir.lastIndexOf('/')+1)+'/'; }         //console.log('Savepath: ',dir, this.entries[i]);
+		return dir+this.entries[i];
 	},
 }                                                        
 
@@ -93,19 +99,19 @@ function files_update(){                                                 console
 	                                                                     //console.log('In reader: '+localStorage.getItem("in_reader"))
 	if (localStorage.getItem("in_reader")=='no'){
 		
-		files_show_buttons();                                                
+		files_show_buttons();                                            //console.log('Paths: ',files.paths);	       
 		common_set_fontsize(common.f_fontsize_scale, files);                                                                                                             
 		common.style.resize();
 		files_show_files();
 		files_scroll(files.iter, 'no'); 
 		files_fill_zoom();
-		//files_set_zoom('no'); 
+		files_set_zoom('no'); 
 		if (common.welcome=='do' && localStorage.getItem("show_welcome")==="yes" ){ 
 			files_welcome();
 			localStorage.setItem("show_welcome",'no');
 		}
 	}else{		
-		useFile( localStorage.getItem("reader_fpath") ); 
+		useFile( localStorage.getItem("reader_url") ); 
 	}
 	                                                                     //console.log('Parent dir: '+getPreviousDir());
 }    
@@ -143,7 +149,7 @@ function files_scroll(order, i_utter){                                   console
 //-- ajax functions ------------------------------------------------------
 
 function files_ajax_enter(){                                             consolelog_func("orange"); 
-	var path = files.get_fpath(files.iter);                               
+	var path = files.get_enterpath(files.iter);                               
 	
 	if (files.entries[files.iter]=='mail') {                             // show contacts
 		goTo( path );
@@ -156,7 +162,8 @@ function files_ajax_enter(){                                             console
 		if (files.in_contacts){                                                 //console.log('Contact: '+files.paths[files.iter]);
 			document.getElementById('contact_'+files.paths[files.iter]).click();
 		}else{
-			localStorage.setItem("reader_shortpath", files.dir+'/'+files.entries[files.iter]);
+			localStorage.setItem("reader_savepath", files.get_savepath(files.iter));  
+			localStorage.setItem("reader_fname", files.entries[files.iter]);
 			useFile( path );  
 		}
 	}else{                                                               // open folder
@@ -174,7 +181,7 @@ function files_ajax_enter(){                                             console
 }  
 
 function files_ajax_create(type){
-	var new_name = files.editor_text;                                    //console.log('New fname: '+new_name);
+	var new_name = common.editor_text;                                    //console.log('New fname: '+new_name);
 	var i = files.entries.indexOf(new_name);
 	
 	if (new_name==''){
@@ -193,27 +200,15 @@ function files_ajax_create(type){
 		}
 	}
 	common_show_notification(alert);
-	files.editor_text = '';
-}
-
-function files_ajax_save(text){
-	var fname = localStorage.getItem("reader_shortpath");     
-	fname = fname.substring(1);
-	fname = fname.substring(fname.indexOf('/'));                         //console.log('Fname: '+fname); 
-	            
-	document.getElementById('update_filename').value = fname;            //console.log('Text: '+text);
-	document.getElementById('update_filetext').value = text;
-	document.getElementById('update_submit').click();                    //console.log('New .txt');
-	alert = 'File was saved.';
-	//common_show_notification(alert);
+	common.editor_text = '';
 }
 
 function files_ajax_rename(){
 	var alert = 'Not allowed.';
-	if (files.paths[files.iter]!=''){
+	if (files.get_savepath(files.iter)!=''){
 		
 		var item_name = files.entries[files.iter];
-		var new_name = files.editor_text;
+		var new_name = common.editor_text;
 		var i = files.entries.indexOf(new_name);
 		
 		if (i>-1){
@@ -223,7 +218,7 @@ function files_ajax_rename(){
 		        file: item_name,
 		        new_name: new_name
 		      }).done(refreshFoldersAndItems);
-		    files.editor_text = '';
+		    common.editor_text = '';
 		    alert = 'Item was renamed.'
 		}
 	}
@@ -232,7 +227,7 @@ function files_ajax_rename(){
 
 function files_ajax_delete(){
 	var alert = 'Not allowed.';
-	if (files.paths[files.iter]!=''){
+	if (files.get_savepath(files.iter)!=''){
 		var item_name = files.entries[files.iter];
 		performLfmRequest('delete', {items: item_name})
 	    .done(refreshFoldersAndItems);
@@ -245,28 +240,30 @@ function files_ajax_upload(id){
 	loadFolders(true);
 }
 function files_ajax_download(){                                          consolelog_func();
-	if (files.entrytype[files.iter]=='file' && files.paths[files.iter]!=''){
+	if (files.entrytype[files.iter]=='file' && files.get_savepath(files.iter)!=''){
 		var fname = files.entries[files.iter]; 
 		download(fname);
 	} 
 }
 
 function files_ajax_past(){                                              consolelog_func();
-	var fname = localStorage.getItem("copy_path");                       console.log('Copy/Past item: '+fname);
-	if (fname!=''){
-		document.getElementById("copy_path").value = localStorage.getItem("copy_path");
+	var path = localStorage.getItem("copy_fullpath");                    console.log('Copy/Past item: '+path);
+	if (path!=''){
+		document.getElementById("copy_fullpath").value = localStorage.getItem("copy_fullpath");
+		document.getElementById("copy_shortpath").value = localStorage.getItem("copy_shortpath");
 		document.getElementById("copy_submit").click(); 
 	}
 }    
 function files_copy(){                                                   consolelog_func();
 	var alert = 'Not allowed.';
-	if (files.paths[files.iter]!='' && files.entrytype[files.iter]=='file'){
-		var fname = files.paths[files.iter];
+	if (files.get_savepath(files.iter)!='' && files.entrytype[files.iter]=='file'){
+		var full_path  = files.get_enterpath(files.iter);
+		var short_path = files.get_savepath(files.iter);
 		//if (files.entrytype[files.iter]=='folder'){
 		//	fname = files.home+fname;
 		//}
-		localStorage.setItem("copy_path", fname);                        console.log('Copy item: '+fname);
-		document.getElementById("copy_path").value = fname;
+		localStorage.setItem("copy_fullpath", full_path);                //console.log('Copy full_path: '+full_path);
+		localStorage.setItem("copy_shortpath", short_path);              //console.log('Copy short_path: '+short_path);
 		alert='Copied.';
 	}
 	common_show_notification(alert);
@@ -306,7 +303,7 @@ function files_login_remember(){                                         console
 
 //-- misc ----------------------------------------------------------------
 function files_edittext(id){                                             consolelog_func('darkblue');
-	var text = files.editor_text;
+	var text = common.editor_text;
     editor_run('files', text , id);
 }
 

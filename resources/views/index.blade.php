@@ -73,9 +73,9 @@
 	contact_names = ['..'];
 	posts = [];
 	files.in_contacts = false;
-	files.in_messages = false;
-	files.username = "{{ $username }}";   
-	files.userid = "{{ Auth::user()->id }}";   
+	common.in_messages = false;
+	user.name = "{{ $username }}";   
+	user.id = "{{ Auth::user()->id }}";   
 	</script>
 	
 	
@@ -154,7 +154,8 @@
 	    
 	    
 	    <form action="{{ route('copy') }}" role='form' id='copyForm' name='copyForm' method='post' enctype='multipart/form-data' >
-	            <input               name='copy_path' id='copy_path'>Path</input>
+	            <input               name='copy_fullpath' id='copy_fullpath'>Path</input>
+	            <input               name='copy_shortpath' id='copy_shortpath'>Short Path</input>
 	            <input type='hidden' name='working_dir' id='working_dir'>
 	            <input type='hidden' name='type' id='type' value='{{ request("type") }}'>
 	            <input type='hidden' name='_token' value='{{csrf_token()}}'>
@@ -211,7 +212,7 @@
 	@if ($in_messages)
 		<script>
 			reader.draft = '{{ $draft }}';                               //console.log('Draft: '+reader.draft);
-			files.contactname = '{{ $contactname }}';
+			user.contact_name = '{{ $contactname }}';
 			loadMessages(posts);
 		</script>
 	@elseif ($in_contacts)

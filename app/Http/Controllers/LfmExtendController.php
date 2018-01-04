@@ -107,9 +107,8 @@ class LfmExtendController extends LfmController
     
     public function copy()
     {
-        //$filename = request()->file_name;
-        $old_path = request()->copy_path;
-        $filename = substr($old_path, strrpos($old_path, '/')+1);
+        $old_path = request()->copy_fullpath;
+        $filename = request()->copy_shortpath;
         $new_path = parent::getCurrentPath($filename);
 
 		if (File::isDirectory($old_path)){
