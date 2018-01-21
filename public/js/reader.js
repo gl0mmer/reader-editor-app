@@ -38,8 +38,8 @@ var reader = {
         return(id_arr);
     },
     get_id: function(){                                                  //consolelog_func('brown'); 
-        var latest_id;                                                   console.log('Sentence_id',this.sentence_id);
-        var id_arr = [];                                                 console.log('selecttype: '+this.selecttype);
+        var latest_id;                                                   //console.log('Sentence_id',this.sentence_id);
+        var id_arr = [];                                                 //console.log('selecttype: '+this.selecttype);
         if (this.selecttype == 1){ id_arr=this.sentence_id; }    
         else if (this.selecttype == 2){ id_arr=this.paragraph_id; }    
         else if (this.selecttype == 0){ id_arr=this.word_id; }  

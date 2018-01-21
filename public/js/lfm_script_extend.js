@@ -63,6 +63,7 @@ function loadItems(dir) {
       var home_path = response.path;
       files.home = home_path.substring(0,home_path.lastIndexOf('/'));   
       files.dir = response.working_dir;
+      files.url = response.homedir.substring(0,response.homedir.lastIndexOf('/'));                 console.log('Homedir: ', files.url);
       $('#working_dir').val(response.working_dir);                       
       localStorage.setItem("working_dir", response.working_dir);         //console.log('loadItems Dir: '+response.working_dir);
       $('#current_dir').text(response.working_dir);

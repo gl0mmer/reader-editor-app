@@ -148,8 +148,7 @@
 	    <form action="{{ route('create') }}" role='form' id='createForm' name='createForm' method='post' enctype='multipart/form-data' >
 	            <input               name='file_name' id='create_filename'>Fname</input>
 	            <input               name='file_text' id='create_filetext'>Text</input>
-	            <input type='hidden' name='working_dir' id='working_dir'>
-	            <input type='hidden' name='type' id='type' value='{{ request("type") }}'>
+	            <input type='hidden' name='type' value='{{ request("type") }}'>
 	            <input type='hidden' name='_token' value='{{csrf_token()}}'>
 	            <button id='create_submit' type="submit" class="btn btn-primary">Create</button>
 	    </form>
@@ -158,8 +157,7 @@
 	    <form action="{{ route('copy') }}" role='form' id='copyForm' name='copyForm' method='post' enctype='multipart/form-data' >
 	            <input               name='copy_fullpath' id='copy_fullpath'>Path</input>
 	            <input               name='copy_shortpath' id='copy_shortpath'>Short Path</input>
-	            <input type='hidden' name='working_dir' id='working_dir'>
-	            <input type='hidden' name='type' id='type' value='{{ request("type") }}'>
+	            <input type='hidden' name='type' value='{{ request("type") }}'>
 	            <input type='hidden' name='_token' value='{{csrf_token()}}'>
 	            <button id='copy_submit' type="submit" class="btn btn-primary">Copy</button>
 	    </form>
@@ -167,8 +165,7 @@
 	    <form action="{{ route('update') }}" role='form' id='updateForm' name='updateForm' method='post' enctype='multipart/form-data' >
 	            <input               name='file_name' id='update_filename'>Fname</input>
 	            <input               name='file_text' id='update_filetext'>Text</input>
-	            <input type='hidden' name='working_dir' id='working_dir'>
-	            <input type='hidden' name='type' id='type' value='{{ request("type") }}'>
+	            <input type='hidden' name='type' value='{{ request("type") }}'>
 	            <input type='hidden' name='_token' value='{{csrf_token()}}'>
 	            <button id="update_submit" type="submit" class="btn btn-primary">Update</button>
 	    </form>
@@ -183,7 +180,7 @@
 			  </div>
 			</div>
 			<input type='hidden' name='working_dir' id='working_dir'>
-			<input type='hidden' name='type' id='type' value='{{ request("type") }}'>
+			<input type='hidden' name='type' value='{{ request("type") }}'>
 			<input type='hidden' name='_token' value='{{csrf_token()}}'>
 		</form>
 		

@@ -24,13 +24,16 @@ class UserController extends Controller
 	public function getHomePage()
 	{
 		$username = User::where('id', Auth::user()->id) -> value('first_name');
-		//return view('login');
+		//return view('test');
+		//return view('index_demo');
+		
 		return view('index', [
 						'in_contacts'=>false, 
 						'in_messages'=>false, 
 						'create'=>'no', 
 						'username'=>$username 
 		] );
+		 
 		
 	}
 	

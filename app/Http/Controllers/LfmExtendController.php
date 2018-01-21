@@ -26,6 +26,8 @@ class LfmExtendController extends LfmController
 	//-- Override ItemsController@getItems -------------------------------
 	public function getItems()
     {
+		//$homedir = parent::getCurrentPath('');
+		$homedir = parent::getFileUrl($image_name = null, $is_thumb = null);
 		$path0 = parent::getRootFolderPath('user');
         $path = parent::getCurrentPath().$_GET['path']; 
         $sort_type = request('sort_type');
@@ -55,6 +57,7 @@ class LfmExtendController extends LfmController
                 'paths' => $paths_arr,
             'working_dir' => parent::getInternalPath($path),
             'path' => $path0,
+            'homedir' => $homedir,
         ];
     }
     
@@ -110,6 +113,7 @@ class LfmExtendController extends LfmController
         $old_path = request()->copy_fullpath;
         $filename = request()->copy_shortpath;
         $new_path = parent::getCurrentPath($filename);
+        //$test = parent::getCurrentPath('');
 
 		if (File::isDirectory($old_path)){
 			$ending = '';

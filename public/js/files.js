@@ -28,6 +28,8 @@ var files = {
 	contacts: [],
 	messages: [],
 	userid: -1,
+	//url: 'http://localhost/laravel-filemanager/files',
+	url: '',
 	
 	get_fname: function(i){                                              //consolelog_func('brown');
 		if (i===undefined) {i=this.iter;} 
@@ -55,9 +57,10 @@ var files = {
 	get_enterpath: function(i){
 		var path = '';
 		if (this.entrytype[i]=='file'){
-			path = 'http://localhost/laravel-filemanager/files';
+			//path = 'http://localhost/laravel-filemanager/files';
+			path = this.url;
 		}
-		path += this.dir+'/'+this.entries[i];
+		path += this.dir+'/'+this.entries[i];                            console.log('this.dir: ',this.dir);
 		return path;
 	},
 	get_savepath: function(i){
@@ -159,12 +162,12 @@ function files_ajax_enter(){                                             console
 		document.getElementById('show_home').click();
 	}
 	else if (files.entrytype[files.iter]=='file'){                       // open file
-		if (files.in_contacts){                                                 //console.log('Contact: '+files.paths[files.iter]);
+		if (files.in_contacts){                                          //console.log('Contact: '+files.paths[files.iter]);
 			document.getElementById('contact_'+files.paths[files.iter]).click();
 		}else{
 			localStorage.setItem("reader_savepath", files.get_savepath(files.iter));  
 			localStorage.setItem("reader_fname", files.entries[files.iter]);
-			useFile( path );  
+			useFile( path );                                             console.log('Path: '+path);
 		}
 	}else{                                                               // open folder
 		//path = files.get_fpath(files.iter);   
