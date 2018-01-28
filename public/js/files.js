@@ -100,8 +100,10 @@ function files_start(){                                                  console
 
 function files_update(){                                                 consolelog_func('darkblue');                                                                              
 	                                                                     //console.log('In reader: '+localStorage.getItem("in_reader"))
-	if (localStorage.getItem("in_reader")=='no'){
+	if (localStorage.getItem("in_reader")=='yes'){
+		useFile( localStorage.getItem("reader_url") ); 
 		
+	}else{		
 		files_show_buttons();                                            //console.log('Paths: ',files.paths);	       
 		common_set_fontsize(common.f_fontsize_scale, files);                                                                                                             
 		common.style.resize();
@@ -112,9 +114,7 @@ function files_update(){                                                 console
 		if (common.welcome=='do' && localStorage.getItem("show_welcome")==="yes" ){ 
 			files_welcome();
 			localStorage.setItem("show_welcome",'no');
-		}
-	}else{		
-		useFile( localStorage.getItem("reader_url") ); 
+		} 
 	}
 	                                                                     //console.log('Parent dir: '+getPreviousDir());
 }    

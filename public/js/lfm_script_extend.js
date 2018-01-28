@@ -79,7 +79,7 @@ function loadItems(dir) {
 
 function useFile(file_url) {                                             //console.log('useFile()');
 
-	var url = file_url;                                                  //console.log('url: '+url);
+	var url = file_url;                                                  console.log('url: '+url);
   
     var type = url.substring(url.lastIndexOf('.'));                      //console.log('type: '+type);
     if (type.replace(' ','')=='.txt'){
