@@ -33,7 +33,6 @@ class UserController extends Controller
 						'create'=>'no', 
 						'username'=>$username 
 		] );
-		 
 		
 	}
 	

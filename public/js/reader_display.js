@@ -47,10 +47,10 @@ function reader_scroll(order,stop,onend){                                console
     //scroll_to(id,'text_zoom_box',title=1); alert('scroll 2');
     reader_fill_zoom();  
     
-    var mail_notedit = false;
-    if(files.in_messages && $('#'+id).parents('#mail_editable').length === 0) { mail_notedit=true; } 
-    //console.log('scroll iter: '+iter+'  '+mail_notedit);
-    if (iter==-1 || mail_notedit===true){ edit_function = ''; edit_class='buttons disabled'; 
+    var mail_noedit = false;
+    if(reader.in_messages && $('#'+id).parents('#mail_editable').length === 0) { mail_noedit=true; } 
+    console.log('scroll iter: '+iter+'  '+mail_noedit+' '+reader.in_messages);
+    if (iter==-1 || mail_noedit===true){ edit_function = ''; edit_class='buttons disabled'; 
         document.getElementById('reader_edit').className='buttons symbol disabled';
         document.getElementById('reader_edit').setAttribute( "onclick", '' );
     } else {
