@@ -146,12 +146,12 @@ function files_scroll(order, i_utter){                                   console
     if (iter==0){fname_ii='..';}
     else{fname_ii = files.get_fname(); }
     fname_ii = fname_ii.replace('_',' ');                               
-    if (i_utter===undefined){ utter(fname_ii, 1, onend=0); }
+    if (i_utter===undefined){ utter(fname_ii, 1, onend=0); }             
 }                                                        
 
 //-- ajax functions ------------------------------------------------------
 
-function files_ajax_enter(){                                             consolelog_func("orange"); 
+function files_ajax_enter(){                                             consolelog_func("orange");  
 	var path = files.get_enterpath(files.iter);                               
 	
 	if (files.entries[files.iter]=='mail') {                             // show contacts
@@ -166,8 +166,8 @@ function files_ajax_enter(){                                             console
 			document.getElementById('contact_'+files.paths[files.iter]).click();
 		}else{
 			localStorage.setItem("reader_savepath", files.get_savepath(files.iter));  
-			localStorage.setItem("reader_fname", files.entries[files.iter]);
-			useFile( path );                                             console.log('Path: '+path);
+			localStorage.setItem("reader_fname", files.get_savepath(files.iter));
+			useFile( path );                                             console.log('EnterPath: '+path+' SavePath: '+files.get_savepath(files.iter));
 		}
 	}else{                                                               // open folder
 		//path = files.get_fpath(files.iter);   

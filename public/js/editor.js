@@ -8,6 +8,7 @@ var editor = {
 	destination: "",
 	iter: 0,
 	text_raw: "",
+	text_origin: "",
 	
 	sound_navigator: 1,
 	sound_buttons: 0,
@@ -74,8 +75,8 @@ editor.style = {
 	b_left: 3, b_right: 97, b_top: 38, b_bottom: 95,
 	b_leftwidth: 1, b_rightwidth: 1, b_botheight: 1,
 	font_size : '900%',
-	text_zoom :  '900%',
-	box_class :  'text_zoom',
+	text_zoom : '900%',
+	box_class : 'text_zoom',
 	zoomspace : 5,
 	nlines_lvl0: 3,
 	nlines_lvl1: 2,
@@ -164,6 +165,7 @@ function editor_run(parent, text_raw, destination, iter){                console
 	editor.parent = parent;
 	editor.destination = destination.toString();
 	editor.text_raw = text_raw.toString();
+	editor.text_origin = editor.text_raw;
 	editor.iter = iter;
 
     create_element('editor_bkg','editor_bkg', 'created_elements');
@@ -228,7 +230,9 @@ function editor_exit(){                                                  console
     common.ineditor = false;
     if (editor.parent=="reader"){ 
 		//console.log('EDITOR ischanged_text: '+common.ischanged_text+', text: '+common.editor_text+' ID: '+reader.id_curr);    
-		common.ischanged_text = true;
+		if (editor.text_origin!=editor.text_raw){
+			common.ischanged_text = true;
+		}
 		reader_update(); 
 	}else if (editor.parent=="files"){                                  
 		elem = document.getElementById(editor.destination);

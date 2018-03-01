@@ -103,10 +103,11 @@ function common_show_clickdelay(){                                       console
 	var delay = common.time_delay/1000;
     var inner_e = ''; 
     inner_e+= '<div id="common_clickdelay_zoom"  onclick="" ' +common.style.buttonpos_menu(0,1)+'>'+delay+' sec</div>';
-    inner_e+= '<div id="0.0"      class="buttons"  onclick="common_set_clickdelay(0.01);" '+common.style.buttonpos_menu(4,0)+'> 0.0 </div>';
-    inner_e+= '<div id="0.1"      class="buttons"  onclick="common_set_clickdelay(0.1);" '+common.style.buttonpos_menu(5,0)+'> 0.1 sec </div>';
-    inner_e+= '<div id="0.5"      class="buttons"  onclick="common_set_clickdelay(0.5);" '+common.style.buttonpos_menu(6,0)+'> 0.5 sec </div>';
-    inner_e+= '<div id="0.7"      class="buttons"  onclick="common_set_clickdelay(0.7);" '+common.style.buttonpos_menu(7,0)+'> 0.7 sec </div>';
+    inner_e+= '<div id="0.0"      class="buttons"  onclick="common_set_clickdelay(0.01);"'+common.style.buttonpos_menu(3,0)+'> 0.0 sec </div>';
+    inner_e+= '<div id="0.1"      class="buttons"  onclick="common_set_clickdelay(0.1);" '+common.style.buttonpos_menu(4,0)+'> 0.1 sec </div>';
+    inner_e+= '<div id="0.4"      class="buttons"  onclick="common_set_clickdelay(0.4);" '+common.style.buttonpos_menu(5,0)+'> 0.4 sec </div>';
+    inner_e+= '<div id="0.7"      class="buttons"  onclick="common_set_clickdelay(0.7);" '+common.style.buttonpos_menu(6,0)+'> 0.7 sec </div>';
+    inner_e+= '<div id="1.0"      class="buttons"  onclick="common_set_clickdelay(1.0);" '+common.style.buttonpos_menu(7,0)+'> 1.0 sec </div>';
     common_create_menu('common_clickdelay',1, inner_e);
 }
 

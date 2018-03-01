@@ -25,6 +25,7 @@ var reader = {
     json_tmp: "",
     messages_arr: [],
     draft: '',
+    save_inprocess: false,
     
     in_messages: false,
     
@@ -73,14 +74,14 @@ function reader_start(){                                                 console
 	inner_e += "<div id='text_from_file' class='reader_text' style='top:1vh;'> </div>";
 	inner_e += "</div>";
 	document.getElementById("content_box").innerHTML = inner_e;
-	window.onbeforeunload = reader_beforunload;
+	window.onbeforeunload = reader_beforunload;                          
 	
-	reader.fname = localStorage.getItem("reader_fname");
+	reader.fname = localStorage.getItem("reader_fname");                 // !!
 	window.onresize = function(){ 
 		common.style.resize();
 		reader_show_buttons();
 	};
-	reader.cookie_suffix = "_"+reader.fname;
+	reader.cookie_suffix = "_"+reader.fname;                             console.log('cookie_suffix: '+reader.cookie_suffix);
 	                 
 	console.log('Cookie_isset: '+cookie_get('isset_'+reader.fname)+' = '+reader.fname);
 	if (cookie_get('isset_'+reader.fname)!='isset'){                    
@@ -97,16 +98,17 @@ function reader_exit(){
 	var elem = document.getElementById('menu_back_lvl1');                //console.log('Elem: '+elem);
 	if (elem){ menu_back('menu_back_lvl1',1, 0); }
 
+	common.cookie_save.call(reader);
+	common.cookie_save();  
+	localStorage.setItem("in_reader", "no"); 
+	document.getElementById('created_elements').innerHTML = '';
 	if (reader.in_messages){
 		document.getElementById('show_contacts').click();
 	}else{
-		document.getElementById('created_elements').innerHTML = '';
-		localStorage.setItem("in_reader", "no");                         //console.log('Exitpath: '+localStorage.getItem("reader_exitpath"));
-		//goTo( localStorage.getItem("reader_exitpath") );
 		files_start();
 		files_update();
-		//goTo( localStorage.getItem("reader_exitpath") );
 	}
+	
 }
 
 function reader_update(start) {                                          consolelog_func('darkblue');   console.log('ischanged_text: ',common.ischanged_text);                                            
@@ -114,13 +116,15 @@ function reader_update(start) {                                          console
 	if (common.ischanged_text){
 		reader_ajax_save();
 	}
-	
-    var fname = common_make_fname(localStorage.getItem("reader_savepath"));     //console.log('NAME: '+fname[0]+' | '+fname[1]);
-    document.getElementById('file_title').innerHTML = '<em><span style="color:black;opacity:0.3;direction:ltr;">'+fname[0]+' </span>'+fname[1]+'</em>';
                                              
     if (reader.in_messages){
+		var fname = [user.name+'/', reader.fname.replace('/','/ ')];
 		reader_messages_tohtml();
+	}else{
+		var fname = common_make_fname(localStorage.getItem("reader_savepath"));     //console.log('NAME: '+fname[0]+' | '+fname[1]);
 	}
+	document.getElementById('file_title').innerHTML = '<em><span style="color:black;opacity:0.3;direction:ltr;">'+fname[0]+' </span>'+fname[1]+'</em>';
+        
         
     var text = document.getElementById('hidden_text').innerHTML;         //console.log('Draft 3: '+text);              
 	var parser = reader_parse_html(text);
@@ -134,12 +138,13 @@ function reader_update(start) {                                          console
     reader_show_buttons();    
     reader_set_selecttype(order=0);                                  
     reader_set_zoomtype(reader.zoomtype);                                       
-    common_set_fontsize(common.r_fontsize_scale, reader);
+    common_set_fontsize(common.r_fontsize_scale, reader);                console.log('ReaderIter: '+reader.iter+' '+reader.iter_prev);
     if (reader.in_messages){
         reader.iter = reader.get_id_array().length-1;                  
         reader_highlite(); 
         scroll_to(reader.get_id(),'content_box', title=0);
-	}
+	}                                                                    //console.log('Save_inprocess: '+reader.save_inprocess);
+	//if (reader.save_inprocess){ reader.save_inprocess = false; }
     
 }
 
@@ -148,6 +153,7 @@ function reader_update(start) {                                          console
 function reader_ajax_save(){                                                  consolelog_func('darkblue'); 
         
     var text = "", text_parsed = "";
+    reader.save_inprocess = true;
     
 	if (reader.in_messages){                                           
 		text_parsed = $('#text_from_file').find('#mail_editable').html();     
@@ -177,6 +183,7 @@ function reader_ajax_save(){                                                  co
 		document.getElementById('update_submit').click();                    //console.log('New .txt');
 		alert = 'File was saved.';     
 	}
+	
 }
 
 function reader_ajax_send(){
@@ -349,6 +356,9 @@ function reader_editor(){                                                console
 }
 
 function reader_beforunload() {                                          consolelog_func(); 
-	common.cookie_save.call(reader); 
-	common.cookie_save(); 
+	//common.cookie_save.call(reader); 
+	//common.cookie_save(); 
+	if (reader.save_inprocess==false){
+		reader_exit();
+	}
 }

@@ -19,6 +19,7 @@ function loadMessages(messages) {
 	var text_i = messages;
 	document.getElementById('hidden_text').innerHTML = text_i;
 	document.getElementById('created_elements').innerHTML = '';
+	localStorage.setItem("reader_fname", 'mail/'+user.contact_name); 
 	localStorage.setItem("reader_fpath", '');                            
 	reader_start();
 }
