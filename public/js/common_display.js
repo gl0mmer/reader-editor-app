@@ -53,8 +53,8 @@ function scroll_to(id, id_area, title){                                  console
     if (title==0){ elem = document.getElementById(id);  }
     else { elem= document.querySelectorAll('[id="'+id+'"]')[1]; 
     }
-    rect_scroll = document.getElementById(id_area).getBoundingClientRect(); 
-    rect = elem.getBoundingClientRect();  
+    rect_scroll = document.getElementById(id_area).getBoundingClientRect(); // area
+    rect = elem.getBoundingClientRect();                                 // element position
     if (rect.top+0.5*(rect.bottom-rect.top)>rect_scroll.bottom || rect.left+0.5*(rect.right-rect.left)>rect_scroll.right || rect.bottom-0.5*(rect.bottom-rect.top)<rect_scroll.top || rect.right-0.5*(rect.right-rect.left)<rect_scroll.left )
         {elem.scrollIntoView(true);} 
 }

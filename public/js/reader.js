@@ -274,18 +274,30 @@ function reader_navigate(order){                                         console
 function reader_messages_tohtml(){
 	var mail_arr = reader.messages_arr;                            
 	var text = "", class_i="", id_from="", i=0;
-	for (i=0; i<mail_arr.length; i+=1){                              
-		id_from = mail_arr[i][1];          
-		if (id_from==user.id) {class_i = 'mail mail_out'; name_i = user.name }
-		else {class_i = 'mail mail_in'; name_i = user.contact_name}       
-		text+= '<div title="void_div" class="mail mail_space">  </div>';    
-		text+= '<div title="'+name_i+'" class="'+class_i+' mail_title" >from ' +name_i+', '+mail_arr[i][2]+'</div>';
-		text+= '<div title="'+name_i+'" class="'+class_i+'">'+mail_arr[i][3]+'</div>';               
+	var day_prev = "";
+	for (i=0; i<mail_arr.length; i+=1){      
+		var date = mail_arr[i][2];                                       
+		var time = date.substring(date.lastIndexOf(' ')+1, date.lastIndexOf(':')); 
+		var day = date.substring(date.lastIndexOf('-')+1, date.indexOf(' ')); 
+		var month = date.substring(date.indexOf('-')+1, date.lastIndexOf('-')); 
+		month = month_names[parseInt(month)-1];    
+		
+		var title = time;
+		if (day!=day_prev){
+			title = month+' '+day+',  '+time;
+		}
+		day_prev = day;
+		
+		id_from = mail_arr[i][1];    
+		if (id_from==user.id) {class_i = 'out'; name_i = user.name }
+		else {class_i = 'in'; name_i = user.contact_name}       
+		text+= '<div title="'+name_i+'" class="message mail_'+class_i+' mail_title" >'+title+'</div>';
+		text+= '<div title="'+name_i+'" class="message mail_'+class_i+'">'+mail_arr[i][3]+'</div>';                
 	}
-	var msg = reader.draft;                                              //console.log('Draft 2: '+reader.draft);
-	text+= '<div title="void_div" class="mail mail_space">  </div>'; 
-	text+= '<div title="'+user.name+'" class="mail mail_out mail_title" >from ' +user.name+', new </div>';
-	text+= '<div title="'+user.name+'" class="mail mail_out mail_temp" id="mail_editable">'+msg+'</div>';         
+	
+	var msg = reader.draft;                                              
+	text+= '<div title="'+user.name+'" class="message mail_out mail_title" > Draft </div>';
+	text+= '<div title="'+user.name+'" class="message mail_out mail_temp" id="mail_editable">'+msg+'</div>';  
 	text+= '<div title="void_div" style="position:relative;height:11vh;">  </div>'; 
    
 	document.getElementById('hidden_text').innerHTML=text;       
@@ -302,12 +314,12 @@ function reader_if_editable(){                                           console
 function reader_show_mail(){                                             consolelog_func(); 
     var inner_e = '';
     inner_e += '<div id="freader_sendmail_submit" onclick="reader_ajax_send();" '+common.style.buttonpos_menu(7,0)+'> send mail </div>';
-    //inner_e += '<div id="reader_refresh"  onclick="reader_refresh();" '  +common.style.buttonpos_menu(6,0)+'> refresh </div>';
+    inner_e += '<div id="reader_refresh"  onclick="reader_refresh();" '  +common.style.buttonpos_menu(4,0)+'> refresh </div>';
     common_create_menu('reader_mail', 0, inner_e);
 }
 
 function reader_refresh() {                                              consolelog_func('orange'); //alert('refresh');
-	//window.location.href = '/reader.html';
+	location.reload();
 }
 
 

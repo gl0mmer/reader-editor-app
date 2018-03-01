@@ -46,14 +46,15 @@ function editor_show_start(){                                            console
     inner_e0+= '<div id="editor_numbers"    onclick="editor_show_symbols(0,0);" '+editor.style.get_button(3,1) +'> 123 </div>';
     inner_e0+= '<div id="editor_letters_en" onclick="editor_show_symbols(4,0);" '+editor.style.get_button(9,1) +'> abc </div>';
     inner_e0+= '<div id="editor_letters_ru" onclick="editor_show_symbols(5,0);" '+editor.style.get_button(10,1)+'> абв </div>';
-    inner_e0+= '<div id="editor_letters_ru" onclick="editor_show_symbols(2,0);" '+editor.style.get_button(11,1)+'>'+symbol_nextpage3+'</div>';
+    //inner_e0+= '<div id="editor_letters_ru" onclick="editor_show_symbols(2,0);" '+editor.style.get_button(11,1)+'>'+symbol_nextpage3+'</div>';
+    inner_e0+= '<div id="editor_letters_ru" onclick="" '                         +editor.style.get_button(4,3)+'>'+symbol_nextpage3+'</div>';
     inner_e0+= '<div id="editor_navigate"   onclick="editor_show_navigate(0);" ' +editor.style.get_button(5)   +'>'+symbol_prev_next+'</div>';
     inner_e0+= '<div id="editor_exit"       onclick="editor_exit();" '           +editor.style.get_button(6)  +'> exit </div>';
     inner_e0+= '<div id="editor_menu"       onclick="editor_show_menu();" '      +editor.style.get_button(2)   +'> menu </div>';
     inner_e0+= '<div id="editor_save"       onclick="editor_save();" '           +editor.style.get_button(8)   +'> save </div>';
     //inner_e0+= '<div id="editor_copy"       onclick="" ' +editor.style.get_button(7,3) +'> copy </div>';
     inner_e0+= '<div id="editor_past"       onclick="" ' +editor.style.get_button(1,3) +'> copy past </div>';
-    inner_e0+= '<div id="editor_go"         onclick="" ' +editor.style.get_button(0,3) +'> go </div>';
+    //inner_e0+= '<div id="editor_go"         onclick="" ' +editor.style.get_button(0,3) +'> go </div>';
     inner_e0+= "</div>"
     inner_e1 = "<div id='editor_buttons_area_1'></div>";
     inner_e2 = "<div id='editor_buttons_area_2'></div>";

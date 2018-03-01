@@ -148,7 +148,7 @@ function reader_show_menu(){                                             console
     inner_e+= '<div id="common_lang"            onclick="common_show_lang(1);" '+common.style.buttonpos_menu(2,0)+'>lang</div>';
     inner_e+= '<div id="reader_go"              onclick="" '+common.style.buttonpos_menu(3,3)+'>go</div>' ;
     //inner_e+= '<div id="reader_menu_go-files"   onclick="goto_files();" '+common.style.buttonpos_menu(7,0)+'">go home</div>';
-    inner_e+= '<div id="reader_menu_go-files"   onclick="reader_exit();" '+common.style.buttonpos_menu(7,0)+'">go home</div>';
+    inner_e+= '<div id="reader_menu_go-files"   onclick="reader_exit();" '+common.style.buttonpos_menu(7,0)+'">exit</div>';
     inner_e+= '<div id="reader_menu_zoomtype_text" '+common.style.buttonpos_menu(5,1,4,2,0,-1)+'>'+reader.zoomtype_arr[n_zoom]+'</div>' ;
     inner_e+= '<div id="reader_menu_zoomtype"   onclick="reader_show_zoomtype();" '+common.style.buttonpos_menu(6,0)+'>zoom</div>' ;
     common_create_menu('reader_menu', 0, inner_e);

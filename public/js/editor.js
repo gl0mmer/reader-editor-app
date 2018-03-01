@@ -169,9 +169,8 @@ function editor_run(parent, text_raw, destination, iter){                console
     create_element('editor_bkg','editor_bkg', 'created_elements');
     create_element('editor_area','editor_bkg', 'editor_base_elements');
     
-	var elem=create_element('editor_text_box','text_scroll_box', 'editor_area'); 
-	elem.style = 'top:2%; width:96%; left:2%;';
-	elem.innerHTML = '<div class="text_scroll" ><div id="editor_text_area"  class="reader_text" style="line-height:115%;color:rgba(0,0,0,0.55);align:left;width:99%;height:100%;">zoom word</div></div>'; 
+	var elem=create_element('editor_text_box','editor_scroll_box', 'editor_area'); 
+	elem.innerHTML = '<div class="text_scroll" ><div id="editor_text_area"  class="editor_text" >zoom word</div></div>'; 
 	elem = create_element('editor_buttons_area', 'editor_buttons_area', 'editor_area'); 
 	
 	//var input = document.getElementById('body');
@@ -211,6 +210,7 @@ function editor_run(parent, text_raw, destination, iter){                console
 	editor.style.set_style(editor_type);
 	
 	document.getElementById('editor_text_area').innerHTML=editor.text_raw;  
+    editor.iter = editor.text_raw.length-1;
 	editor_set_cursor();                                                     
 	editor_show_start();                                                   
 	if (parent==='files') { editor_show_symbols(3,0); }
@@ -452,16 +452,23 @@ function editor_set_cursor(){                                            console
     }
     var iter = editor.iter;                                           
     var text = editor.text_raw;                                     
-    rspace = text.indexOf(' ',iter);                                  
-    lspace = text.substr(0,iter).lastIndexOf(' ');                       
-    if (rspace>0 && lspace>0 && lspace<rspace){                     
-        text_c = text.substr(0, lspace+1)+'<span style="white-space:nowrap;">'+text.substr(lspace+1,iter-lspace-1)+cursor+text.substr(iter,rspace-iter)+'</span>'+text.substr(rspace);
-    }else{ 
-        text_c = text.substr(0, iter)+cursor+text.substr(iter); 
-    }                                                                  
-    document.getElementById('editor_text_area').innerHTML=text_c;
+    var rspace = text.indexOf(' ',iter);                                  
+    var lspace = text.substr(0,iter).lastIndexOf(' ');                       
     
-    scroll_to('cursor','editor_text_box', title=0);                  
+    text_c = text.substr(0, iter)+cursor+text.substr(iter); 
+    document.getElementById('editor_text_area').innerHTML=text_c;
+        
+    //-- make cursor visible when line ends with witespaces --------------
+    var elem  = document.getElementById('cursor');
+    var area = document.getElementById('editor_text_box').getBoundingClientRect();
+    var e = elem.getBoundingClientRect();  
+    if ( e.right+cursorshift>area.right ){
+		text_c = text_c.substr(0, iter)+'<br>'+text_c.substr(iter); 
+		document.getElementById('editor_text_area').innerHTML=text_c;
+	}                
+    //--------------------------------------------------------------------
+    
+    scroll_to('cursor','editor_text_box', title=0);   
     editor.spell_type=0;
     }
 

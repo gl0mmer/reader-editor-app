@@ -50,7 +50,7 @@ Messenger
 ## Known bugs
 Major
 - Speech synthesis works properly in Chrome browser only
-- Speech synthesis doesn't work in Android 5 and older
+- Speech synthesis doesn't work on Android 5 and older
 
 Minor
 - Plenty of them
