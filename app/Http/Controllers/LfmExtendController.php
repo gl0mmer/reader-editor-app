@@ -65,13 +65,14 @@ class LfmExtendController extends LfmController
     
     public function create()
     {
+		$msg = 'Create: ';
         $filename = request()->file_name;
         $filetext = request()->file_text;
-        //$filename = 'test_create';
-		$filename = $this->getNewName($filename);
+        $filename = $filename.'.txt';
         $new_file_path = parent::getCurrentPath($filename);
 
         // single file
+        $msg = $msg.$filename.' | '.$new_file_path;
 	
 		if(!File::exists($new_file_path)) {
 			// path does not exist
@@ -79,10 +80,9 @@ class LfmExtendController extends LfmController
 			if (!$this->proceedSingleUpload($new_file_path, $filetext)) {
 				return $this->errors;
 			}
-			return redirect()->back();
+			return redirect()->back() ->with(['msg'=>$msg]);
 		}else{
-			
-			return redirect()->back();
+			return redirect()->back() ->with(['msg'=>$msg]);
 		}
         
 		//return redirect()->back();
@@ -111,7 +111,9 @@ class LfmExtendController extends LfmController
     public function copy()
     {
         $old_path = request()->copy_fullpath;
+        $dir = request()->past_dir;
         $filename = request()->copy_shortpath;
+        $filename = $dir.substr($filename, strrpos($filename,'/'));
         $new_path = parent::getCurrentPath($filename);
         //$test = parent::getCurrentPath('');
 
@@ -129,7 +131,8 @@ class LfmExtendController extends LfmController
 			$k+=1;
 		}
 		$new_path = $path_final;
-		$msg = $new_path.' | '.$old_path.' | '.substr($old_path, 0, $i);
+		//$msg = $new_path.' | '.$old_path.' | '.substr($new_path, 0, $i);
+		$msg = $new_path.' | '.$old_path.' | '.$filename.' | '.$dir;
 		
 		
 		if(!File::exists($new_path)) {

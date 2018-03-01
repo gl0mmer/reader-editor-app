@@ -155,8 +155,9 @@
 	    
 	    
 	    <form action="{{ route('copy') }}" role='form' id='copyForm' name='copyForm' method='post' enctype='multipart/form-data' >
-	            <input               name='copy_fullpath' id='copy_fullpath'>Path</input>
+	            <input               name='copy_fullpath'  id='copy_fullpath'>Path</input>
 	            <input               name='copy_shortpath' id='copy_shortpath'>Short Path</input>
+	            <input               name='past_dir'       id='past_dir'>Past Dir</input>
 	            <input type='hidden' name='type' value='{{ request("type") }}'>
 	            <input type='hidden' name='_token' value='{{csrf_token()}}'>
 	            <button id='copy_submit' type="submit" class="btn btn-primary">Copy</button>

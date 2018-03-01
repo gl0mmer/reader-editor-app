@@ -212,7 +212,9 @@ function editor_run(parent, text_raw, destination, iter){                console
 	editor.style.set_style(editor_type);
 	
 	document.getElementById('editor_text_area').innerHTML=editor.text_raw;  
-    editor.iter = editor.text_raw.length-1;
+    if (editor.text_raw.length>1){
+		editor.iter = editor.text_raw.length-1;
+	}
 	editor_set_cursor();                                                     
 	editor_show_start();                                                   
 	if (parent==='files') { editor_show_symbols(3,0); }

@@ -21,7 +21,6 @@ var files = {
 	entrytype: [],
 	json_tmp: "",
 	dir: "",
-	subdir: "",
 	zoom_arr: ['no zoom', 'zoom'],
 	home: '',
 	in_contacts: false,
@@ -72,6 +71,12 @@ var files = {
 		else{ dir = dir.substring(dir.lastIndexOf('/')+1)+'/'; }         //console.log('Savepath: ',dir, this.entries[i]);
 		return dir+this.entries[i];
 	},
+	get_subdir: function(){
+		var dir = this.dir.substring(1);                                 //console.log('Savepath: ',dir);
+		if (dir.indexOf('/')==-1){ dir = ''; }
+		else{ dir = dir.substring(dir.lastIndexOf('/')+1)+'/'; }         //console.log('Savepath: ',dir, this.entries[i]);
+		return dir;
+	},
 }                                                        
 
 //-- start/update/scroll -----------------------------------------------------------
@@ -110,7 +115,7 @@ function files_update(){                                                 console
 		files_show_files();
 		files_scroll(files.iter, 'no'); 
 		files_fill_zoom();
-		files_set_zoom('no'); 
+		files_set_zoom('no');                                            console.log('files.dir: '+files.dir+',  subdir: '+files.get_subdir());
 		if (common.welcome=='do' && localStorage.getItem("show_welcome")==="yes" ){ 
 			files_welcome();
 			localStorage.setItem("show_welcome",'no');
@@ -184,7 +189,7 @@ function files_ajax_enter(){                                             console
 }  
 
 function files_ajax_create(type){
-	var new_name = common.editor_text;                                   //console.log('New fname: '+new_name);
+	var new_name = files.get_subdir()+common.editor_text;                console.log('New fname: '+new_name);
 	var i = files.entries.indexOf(new_name);
 	
 	if (new_name==''){
@@ -260,6 +265,7 @@ function files_ajax_past(){                                              console
 	if (path!=''){
 		document.getElementById("copy_fullpath").value = localStorage.getItem("copy_fullpath");
 		document.getElementById("copy_shortpath").value = localStorage.getItem("copy_shortpath");
+		document.getElementById("past_dir").value = files.get_subdir();
 		document.getElementById("copy_submit").click(); 
 	}
 }    

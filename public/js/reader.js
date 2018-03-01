@@ -17,7 +17,6 @@ var reader = {
     
     fname: "",
     readonly: false,
-    subdir: "",
     text_parsed: "",
     word_id: [], sentence_id: [], paragraph_id: [],
     mailnum: 0,
@@ -81,7 +80,7 @@ function reader_start(){                                                 console
 		common.style.resize();
 		reader_show_buttons();
 	};
-	reader.cookie_suffix = "_"+reader.fname;                             console.log('cookie_suffix: '+reader.cookie_suffix);
+	reader.cookie_suffix = "_"+reader.fname;                             //console.log('cookie_suffix: '+reader.cookie_suffix);
 	                 
 	console.log('Cookie_isset: '+cookie_get('isset_'+reader.fname)+' = '+reader.fname);
 	if (cookie_get('isset_'+reader.fname)!='isset'){                    
