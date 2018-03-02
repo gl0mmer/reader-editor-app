@@ -41,15 +41,15 @@ function reader_scroll(order,stop,onend){                                console
             reader.latest_p = id;
             }
     }
+   
     reader_utter(stop_i=stop, onend); 
     reader_highlite(); 
     scroll_to(id,'content_box', title=0);                   
-    //scroll_to(id,'text_zoom_box',title=1); alert('scroll 2');
     reader_fill_zoom();  
     
     var mail_noedit = false;
     if(reader.in_messages && $('#'+id).parents('#mail_editable').length === 0) { mail_noedit=true; } 
-    console.log('scroll iter: '+iter+'  '+mail_noedit+' '+reader.in_messages);
+                                                                         console.log('scroll iter: '+iter+'  '+mail_noedit+' '+reader.in_messages);
     if (iter==-1 || mail_noedit===true){ edit_function = ''; edit_class='buttons disabled'; 
         document.getElementById('reader_edit').className='buttons symbol disabled';
         document.getElementById('reader_edit').setAttribute( "onclick", '' );
@@ -59,7 +59,7 @@ function reader_scroll(order,stop,onend){                                console
     }
 }    
 function reader_utter(stop_i, onend) {                                   consolelog_func(); 
-    id = reader.get_id();
+    id = reader.get_id();                                                //console.log('reader onend: '+onend);
     iter = reader.iter;
     n_select_type = reader.selecttype;
     if (n_select_type==0 || iter==-1 ){ utter(document.getElementById(id).innerText, stop=stop_i, onend); }
@@ -96,7 +96,7 @@ function reader_highlite(){                                              console
     if (elem){
 		elem.className='text';
     }
-    div = document.getElementById(id);                                   //console.log('Highlite id: '+id_prev+' | ' +id);                            
+    div = document.getElementById(id);                                   //console.log('Highlite id: '+id_prev+' | ' +id+' | '+reader.iter);                            
     if (div){
 		div.className='text_highlite';      
 	}                           
@@ -116,17 +116,17 @@ function reader_show_buttons(){                                          console
     inner_e = '<div id="reader_menu" onclick="reader_show_menu();" '+common.style.buttonpos(0,4)+'>menu</div>' ;
     inner_e+= '<div id="reader_edit" class="'+edit_class+'" '+edit_function+' '+common.style.buttonpos(1,2)+'>edit</div>' ;
     inner_e+= '<div id="reader_selecttype" onclick="reader_set_selecttype(1,1);" '+common.style.buttonpos(5,4)+'>'+types[reader.selecttype]+'</div>' ;
-    inner_e+= '<div id="prev" onclick="reader_scroll(0,1,0);" '+common.style.buttonpos(3,4)+'>'+symbol_prev+'</div>' ;
-    inner_e+= '<div id="next" onclick="reader_scroll(1,1,0);" '+common.style.buttonpos(7,4)+'>'+symbol_next+'</div>' ;
+    inner_e+= '<div id="prev" onclick="reader_play_single(0);" '+common.style.buttonpos(3,4)+'>'+symbol_prev+'</div>' ;
+    inner_e+= '<div id="next" onclick="reader_play_single(1);" '+common.style.buttonpos(7,4)+'>'+symbol_next+'</div>' ;
     
     //inner_e+= '<div id="reader_speed"     class="buttons" onclick=""  style="'+reader_button_position(4)+'">'+symbol_speed+'</div>' ;
     inner_e+= '<div id="playpause"   onclick="reader_play_pause();" '         +common.style.buttonpos(6,4)+'>'+symbol_play+'</div>' ;
     inner_e+= '<div id="reader_navigate"   onclick="reader_show_navigate()" ' +common.style.buttonpos(2,4)+'>'+symbol_up_down+'</div>' ;
     
-    if (files.messages){
+    if (reader.in_messages){
 		inner_e+= '<div id="reader_mail" onclick="reader_show_mail();" '   +common.style.buttonpos(4,2)+'>'+symbol_mail+'</div>' ;
 	}else{
-		inner_e+= '<div id="readall"     onclick="reader_scroll(-1,1,1);"' +common.style.buttonpos(4,4)+'>read all</div>' ;
+		inner_e+= '<div id="readall"     onclick="reader_play_all()"' +common.style.buttonpos(4,4)+'>read all</div>' ;
 	}
     elem.innerHTML=inner_e;
 }

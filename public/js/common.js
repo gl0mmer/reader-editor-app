@@ -7,13 +7,6 @@ common.style.init_font(0.9,1.1);
 
 document.addEventListener("click",handler,true);
 
-/*
-if (localStorage.getItem("in_reader")=='no'){
-	files_start();
-}else{
-	reader_start();
-}
-*/
 
 //-- init functions ------------------------------------------------------
 
@@ -128,19 +121,30 @@ function utter(txt, stop, onend, rate){                                  console
     
     window.speechSynthesis.speak(msg);  
       
-    if (document.title=='reader'){
-    common.play_counter=1;
-	    msg.onstart=function(event){document.getElementById('playpause').innerHTML=symbols_play_pause[1]};
+    var elem = document.getElementById('playpause');
+    if (elem){                                                           //console.log('Utter in reader '+editor.if_spell+' | '+common.utter_text);
+		if (common.utter_playall==0){ onend = 0; }                       //console.log('common.onend: '+common.utter_playall);
+		common.play_counter=1;                                           //console.log('onend: '+onend);
+	    msg.onstart=function(event){ common_playpause_icon(1); };
 	    if (onend==0){ 
-			msg.onend=function(event){document.getElementById('playpause').innerHTML=symbols_play_pause[0]}; 
+			msg.onend=function(event){ common_playpause_icon(0); }; 
 		}else{ 
-			if (editor.if_spell===1){ msg.onend=function(event){editor_spell_i()}; }
-			else if (common.text_utter!='') { msg.onend=function(event){utter_sentence(common.utter_text, '', '')}; }
-			else{ msg.onend=function(event){reader_scroll(1,0,1)}; }
+			if (common.utter_text!='') { msg.onend=function(event){utter_sentence(common.utter_text, '', '')}; }
+			else{                                                        //console.log('go');
+				msg.onend=function(event){reader_scroll(1,0,1)}; 
+			}
 		}
 	}
 }    
-
+function common_playpause_icon(i){
+	var elem = document.getElementById('playpause');
+    if (elem){          
+		// [ ||> ,  || ]   
+		elem.innerHTML=symbols_play_pause[i]; //console.log(i);
+	}else{
+		console.log('No elem "playpause"!');
+	}
+}
 
 //-- cookie functions ----------------------------------------------------
 

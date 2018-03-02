@@ -47,6 +47,7 @@ var common = {
 	utter_text: '',
 	utter_stop: 0,
 	utter_onend: 0,
+	utter_playall: 0,
 	repeat_text: '',
 	in_messages: false,
 	

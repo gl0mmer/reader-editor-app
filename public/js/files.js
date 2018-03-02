@@ -59,7 +59,7 @@ var files = {
 			//path = 'http://localhost/laravel-filemanager/files';
 			path = this.url;
 		}
-		path += this.dir+'/'+this.entries[i];                            console.log('this.dir: ',this.dir);
+		path += this.dir+'/'+this.entries[i];                            //console.log('this.dir: ',this.dir);
 		return path;
 	},
 	get_savepath: function(i){
@@ -115,7 +115,7 @@ function files_update(){                                                 console
 		files_show_files();
 		files_scroll(files.iter, 'no'); 
 		files_fill_zoom();
-		files_set_zoom('no');                                            console.log('files.dir: '+files.dir+',  subdir: '+files.get_subdir());
+		files_set_zoom('no');                                            //console.log('files.dir: '+files.dir+',  subdir: '+files.get_subdir());
 		if (common.welcome=='do' && localStorage.getItem("show_welcome")==="yes" ){ 
 			files_welcome();
 			localStorage.setItem("show_welcome",'no');
@@ -172,7 +172,7 @@ function files_ajax_enter(){                                             console
 		}else{
 			localStorage.setItem("reader_savepath", files.get_savepath(files.iter));  
 			localStorage.setItem("reader_fname", files.get_savepath(files.iter));
-			useFile( path );                                             console.log('EnterPath: '+path+' SavePath: '+files.get_savepath(files.iter));
+			useFile( path );                                             console.log('EnterPath: '+path); console.log('SavePath: '+files.get_savepath(files.iter));
 		}
 	}else{                                                               // open folder
 		//path = files.get_fpath(files.iter);   
@@ -189,7 +189,7 @@ function files_ajax_enter(){                                             console
 }  
 
 function files_ajax_create(type){
-	var new_name = files.get_subdir()+common.editor_text;                console.log('New fname: '+new_name);
+	var new_name = files.get_subdir()+common.editor_text;                //console.log('New fname: '+new_name);
 	var i = files.entries.indexOf(new_name);
 	
 	if (new_name==''){
@@ -261,7 +261,7 @@ function files_ajax_download(){                                          console
 }
 
 function files_ajax_past(){                                              consolelog_func();
-	var path = localStorage.getItem("copy_fullpath");                    console.log('Copy/Past item: '+path);
+	var path = localStorage.getItem("copy_fullpath");                    //console.log('Copy/Past item: '+path);
 	if (path!=''){
 		document.getElementById("copy_fullpath").value = localStorage.getItem("copy_fullpath");
 		document.getElementById("copy_shortpath").value = localStorage.getItem("copy_shortpath");

@@ -101,6 +101,10 @@ function reader_exit(){
 	common.cookie_save();  
 	localStorage.setItem("in_reader", "no"); 
 	document.getElementById('created_elements').innerHTML = '';
+	
+	if (window.speechSynthesis.speaking ){                        
+			window.speechSynthesis.pause();       
+	}
 	if (reader.in_messages){
 		document.getElementById('show_contacts').click();
 	}else{
@@ -240,17 +244,29 @@ function reader_set_zoomtype(n_zoomtype){                                console
 function reader_play_pause(){                                            consolelog_func(); 
     if (common.play_counter==0){                                       
         window.speechSynthesis.resume(); 
-        document.getElementById('playpause').innerHTML=symbols_play_pause[1];
+        common_playpause_icon(1);
         common.play_counter=1; 
         }
     else if (window.speechSynthesis.speaking ){                        
 		if (common.browser!='Firefox'){
 			window.speechSynthesis.pause();       
 		} else{ window.speechSynthesis.cancel();  }
-        document.getElementById('playpause').innerHTML=symbols_play_pause[0];
+        common_playpause_icon(0);
         common.play_counter=0; 
     }
     else{reader_utter(1, 0); common.play_counter=1;}
+}
+function reader_play_all(){                                              //console.log('common.onend: '+common.utter_playall);
+	if (common.utter_playall==1){ reader_play_pause(); }
+	else{ 
+		common.utter_playall=1;
+		reader_scroll(1,1,1); 
+	}	
+}
+function reader_play_single(order){
+	window.speechSynthesis.cancel(); 
+	common.utter_playall=0;
+	reader_scroll(order,1,0); 
 }
     
 function reader_navigate(order){                                         consolelog_func(); 

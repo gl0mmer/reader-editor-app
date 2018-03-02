@@ -300,10 +300,14 @@ function reader_parse_txt(text_origin, n_p){                             //conso
         word=arr[i];             
 		new_sentence = false;
 		if (endsentence.indexOf(word.replace(' ',''))!=-1){
+			/*  
+			//-- check uppercase in the beginning of a new sentence ------
 			if (i===i_end) {character = 'A';}
 			else{ character = arr[i+1].charAt(0); }                      //console.log('1: '+character+' |'+arr[i]+'|'+arr[i+1]+'|');
 			if (character.toLowerCase() === character.toUpperCase() && /^\d+$/.test(character)===false){ character='a'; }  //console.log('2: '+character);
 			if (character == character.toUpperCase() ){ new_sentence = true; }
+			*/
+			new_sentence = true;
 			}
 		
         if ( tag_arr.indexOf(i)!=-1 ) {                                  // if tag, no wrapping

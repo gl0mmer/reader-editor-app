@@ -297,7 +297,8 @@ function editor_delete(){                                                console
     editor_set_cursor(); 
     if (editor.pin_letters===0) { editor_backto_letters(); }
     editor_capital(0,0,1);
-    utter(letter, 1, 0);
+    var text_read = common_textto_read(letter);
+    utter(text_read, 1, 0);
 }
 
 //-- menu functions ------------------------------------------------------------
@@ -329,25 +330,21 @@ function editor_spell(){                                                 console
         if (i1==-1){i1=0;}
         if (i2==-1){i2=text.length;}
         text_utter = text.substr(i1, i2-i1);
-        i1 = text_utter.indexOf('<');
-        if (i1>=0) { text_utter = text_utter.substr(0,i1); }
+        text_utter = common_textto_read(text_utter);
+        if (text_utter.indexOf('new line')>=0){ editor.spell_type=0; }
         
         if (editor.spell_type===0){
 			utter(text_utter, 1, 0); 
 		}else{ 
-			utter(text_utter, 1, 0); 
 			editor.spell_arr=[];
 			editor.if_spell = 1;
-			for (i=0; i<text_utter.length; i+=1){ editor.spell_arr.push(text_utter[i]); }  
-			utter('', 1, 1);
+			text_u = '';
+			for (i=0; i<text_utter.length; i+=1){ text_u+=text_utter[i]+'. '; }   //console.log('text_u: '+text_u);
+			utter(text_u, 1, 1);
 		}
 		editor.spell_type = (editor.spell_type+1)%2;
     }
 }
-function editor_spell_i(txt){                                            consolelog_func(); 
-		utter('', 1, 1);
-	}
-
 
 //-- navigation functions ------------------------------------------------
 

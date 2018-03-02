@@ -10,7 +10,7 @@ function files_resize(){                                                 console
 
 
 function files_show_files(){                                             consolelog_func();
-	var files_arr = files.entries;                                       console.log(files.entries);
+	var files_arr = files.entries;                                       //console.log(files.entries);
 	
 	var wratio = window.innerWidth/window.innerHeight;                   //console.log('wratio: '+wratio+' '+window.innerWidth+' '+window.innerHeight);              
 	var left_pc = -1; 
