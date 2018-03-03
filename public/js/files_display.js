@@ -144,7 +144,8 @@ function files_show_options(){                                           console
     files.editor_text = text;
     var inner_e = ""; 
     inner_e += '<div '+common.style.buttonpos_menu(0,2)+'><div id="files_options_edit" onclick="files_edittext(this.id);" class="text_zoom menu_zoom">'+text+'</div></div>';
-    inner_e += '<div onclick="files_ajax_delete();" '  +common.style.buttonpos_menu(4,0)+'> delete </div>';
+    //inner_e += '<div onclick="files_ajax_delete();" '  +common.style.buttonpos_menu(4,0)+'> delete </div>';
+    inner_e += '<div onclick="files_ajax_totrash();" '  +common.style.buttonpos_menu(4,0)+'> delete </div>';
     inner_e += '<div onclick="files_ajax_rename();" '  +common.style.buttonpos_menu(7,0)+'> edit name </div>';
     //inner_e += '<div onclick="" '                      +common.style.buttonpos_menu(5,0)+'> html to txt </div>';
     inner_e += '<div onclick="files_ajax_download();"' +common.style.buttonpos_menu(3,0)+'> down- load </div>';

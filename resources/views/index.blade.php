@@ -142,6 +142,11 @@
 			<button id="createinit_submit" type="submit" class="btn btn-primary"> Create init items </button>
 			<input type="hidden" name="_token" value="{{ Session::token() }}">
 		</form>
+		<form action="{{ route('delete_dir') }}" method="post">
+			<input  name='deletedir_text' id='deletedir_text' value='empty'> 
+			<button id="deletedir_submit" type="submit" class="btn btn-primary"> Delete dir </button>
+			<input type="hidden" name="_token" value="{{ Session::token() }}">
+		</form>
 			
 		<form action="{{ route('reader') }}" method="get"style="position:absolute;top:0;width:50%;left:0;">
 			<input  type='hidden'  name='file_text' id='goreader_filetext' value='some text'> 
@@ -159,7 +164,7 @@
 	    </form>
 	    
 	    
-	    <form action="{{ route('copy') }}" role='form' id='copyForm' name='copyForm' method='post' enctype='multipart/form-data' >
+	    <form action="{{ route('copyitem') }}" role='form' id='copyForm' name='copyForm' method='post' enctype='multipart/form-data' >
 	            <input               name='copy_fullpath'  id='copy_fullpath'>Path</input>
 	            <input               name='copy_shortpath' id='copy_shortpath'>Short Path</input>
 	            <input               name='past_dir'       id='past_dir'>Past Dir</input>

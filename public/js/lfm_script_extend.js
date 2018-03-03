@@ -60,7 +60,7 @@ function loadItems(dir) {
       var response = JSON.parse(data);
       $('#content').html(response.html);                                 
       files.entries = response.entries;                                  //console.log('entries: '+response.entries);
-      files.entrytype = response.entrytype;                              console.log('response.create_items: ',response.create_items);
+      files.entrytype = response.entrytype;                              
       var home_path = response.path;
       files.home = home_path.substring(0,home_path.lastIndexOf('/'));   
       files.dir = response.working_dir;

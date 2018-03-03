@@ -111,6 +111,10 @@ Route::any('/create_init', [
 	'uses' => 'LfmExtendController@checkMissingFiles',
 	'as' => 'create_init',
 ]);
+Route::any('/delete_dir', [
+	'uses' => 'LfmExtendController@deleteDir',
+	'as' => 'delete_dir',
+]);
 
 Route::any('/create', [
 	'uses' => 'LfmExtendController@create',
@@ -120,9 +124,9 @@ Route::any('/update', [
 	'uses' => 'LfmExtendController@update',
 	'as' => 'update',
 ]);
-Route::any('/copy', [
-	'uses' => 'LfmExtendController@copy',
-	'as' => 'copy',
+Route::any('/copyitem', [
+	'uses' => 'LfmExtendController@copyItem',
+	'as' => 'copyitem',
 ]);
 Route::get('/reader', function () {
     return view('reader');

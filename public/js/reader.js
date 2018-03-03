@@ -154,7 +154,7 @@ function reader_update(start) {                                          console
 //-- ajax function -------------------------------------------------------
 
 function reader_ajax_save(){                                                  consolelog_func('darkblue'); 
-    if ( common_ajax_permit() ){
+    if ( common_ajax_permit() && files.items_protected.indexOf(reader.fname)==-1 ){
 	
 	    var text = "", text_parsed = "";
 	    reader.save_inprocess = true;

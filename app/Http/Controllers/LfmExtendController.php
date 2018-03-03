@@ -49,9 +49,7 @@ class LfmExtendController extends LfmController
 			array_push($names_arr, $f->name);
 		}
         
-        $msg = '';
-        //$msg = $this->checkMissingFiles();
-        
+        $msg = '';        
         return [ 'html' =>$path,
                 'entries'   => $names_arr,
                 'entrytype' => $types_arr,
@@ -59,7 +57,6 @@ class LfmExtendController extends LfmController
             'working_dir' => parent::getInternalPath($path),
             'path' => $path0,
             'homedir' => $homedir,
-            'create_items' => $msg,
         ];
     }
     
@@ -68,26 +65,22 @@ class LfmExtendController extends LfmController
     
     public function checkMissingFiles()
 	{
-		//$path = parent::getCurrentPath().$_GET['path']; 
 		$path = parent::getCurrentPath("");
         $new_path = $path.'/readme.txt';
         $msg = '';
         
-        if(!File::exists($new_path)) {
-	        $old_path = substr($path, 0,strrpos($path,'/'));
-	        $old_path = $old_path.'/shares/readme.txt';
-	        $msg = $msg.$old_path;
-	        
-	        if (!File::copy($old_path, $new_path)) {
-				$msg = $msg.' Error ';
-			}
+        $old_path = substr($path, 0,strrpos($path,'/'));
+        $old_path = $old_path.'/shares/readme.txt';
+        $msg = $msg.$old_path;
+        if (!File::copy($old_path, $new_path)) {
+			$msg = $msg.' Error ';
 		}
-		$path = parent::getCurrentPath('trash');
-		if (!File::exists($path)) {
-			parent::createFolderByPath($path);
-			$msg = $msg.' | '.$path.' Created ';
-		}
+		
 		$path = parent::getCurrentPath('mail');
+		parent::createFolderByPath($path);
+		$msg = $msg.' | '.$path.' Created ';
+		
+		$path = parent::getCurrentPath('trash');
 		if (!File::exists($path)) {
 			parent::createFolderByPath($path);
 			$msg = $msg.' | '.$path.' Created ';
@@ -101,6 +94,7 @@ class LfmExtendController extends LfmController
     {
 		$msg = 'Create: ';
         $filename = request()->file_name;
+        //$filename = request('file_name');
         $filetext = request()->file_text;
         $filename = $filename.'.txt';
         $new_file_path = parent::getCurrentPath($filename);
@@ -138,22 +132,33 @@ class LfmExtendController extends LfmController
 			$msg = $msg. $err;
 		}
 		return redirect()->back()-> with(['msg'=>$msg]);
-		//return view('reader');
-         
+
     }
     
-    public function copy()
+    public function copyItem()
     {
+		$msg = 'copy';
         $old_path = request()->copy_fullpath;
+        //$old_path = request('copy_fullpath');
+        //$old_path = $request['copy_fullpath'];
         $dir = request()->past_dir;
+        //$dir = request('past_dir');
+        //$dir = $request['past_dir'];
         $filename = request()->copy_shortpath;
+        //$filename = request('copy_shortpath');
+        //$filename = $request['copy_shortpath'];
         $filename = $dir.substr($filename, strrpos($filename,'/'));
         $new_path = parent::getCurrentPath($filename);
-        //$test = parent::getCurrentPath('');
-
-		if (File::isDirectory($old_path)){
+        
+        $path = parent::getCurrentPath("");
+		
+		$path = $path.'/'.request()->copy_shortpath;
+		//$msg = $msg.' OLD: '.$path.' - '.$new_path. ' || ';
+		//return $msg;
+		if (is_dir($path)){
 			$ending = '';
 			$i = strlen($new_path);
+			$old_path = $path;
 		}else{
 			$i = strrpos($new_path,'.');
 			$ending = substr($new_path, $i);
@@ -165,28 +170,40 @@ class LfmExtendController extends LfmController
 			$k+=1;
 		}
 		$new_path = $path_final;
-		//$msg = $new_path.' | '.$old_path.' | '.substr($new_path, 0, $i);
-		$msg = $new_path.' | '.$old_path.' | '.$filename.' | '.$dir;
-		
-		
+		//$msg = $msg.' DIR: '.$dir.' | '.$new_path.' | '.$old_path.' | '.$filename.' | ';
+		//return $msg;
 		if(!File::exists($new_path)) {
-			
-			if (File::isDirectory($old_path)){
+			if (is_dir($old_path)){
+				//return $msg.' Folder';
 				if (!File::copyDirectory($old_path, $new_path)) {
-					$msg = $msg.' Error ';
-					return $this->errors;
+					$msg = $msg.' Copy Folder Error ';
 				}
 			}else{
+				//return $msg.' Copy File';
 				if (!File::copy($old_path, $new_path)) {
-					$msg = $msg.' Error ';
-					return $this->errors;
+					$msg = $msg.' Copy File Error ';
 				}
 			}
 		}
-        
-		return redirect()->back() ->with(['msg'=>$msg]);
-         
+        //return $msg;
+		return redirect()->back() ->with(['msg'=>$msg]);     
     }
+    
+    public function deleteDir()
+    {
+		$msg = 'delete';
+        $filename = request()->deletedir_text;
+        $new_path = parent::getCurrentPath($filename);
+        
+        if (is_dir($new_path)){
+			$msg = $msg.' IsDir '.$this-> rrmdir($new_path);
+        }else{
+			$msg = $msg.' IsFile ';
+			unlink($new_path); 
+		}
+        $msg = $msg.$new_path;
+        return redirect()->back() ->with(['msg'=>$msg]);
+	}
 
     private function proceedSingleUpload($new_file_path, $content)
     {
@@ -213,6 +230,24 @@ class LfmExtendController extends LfmController
 		$new_filename = preg_replace('/[^A-Za-z0-9\-\']/', '_', $filename);
 		return $new_filename.'.txt';
     }
-
+	
+    private function rrmdir($dir) 
+    {
+		$msg = 'rrmdir: '.$dir;
+		
+	     $objects = scandir($dir); 
+	     foreach ($objects as $object) { 
+	       if ($object != "." && $object != "..") {
+			   $msg = $msg.' - '.$object; 
+			   if (is_dir($dir."/".$object))
+					$this->rrmdir($dir."/".$object);
+			   else
+	                unlink($dir."/".$object); 
+	       } 
+	     }
+	     rmdir($dir); 
+	   
+		return $msg;
+	}
 
 }
