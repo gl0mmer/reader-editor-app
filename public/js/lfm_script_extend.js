@@ -60,7 +60,7 @@ function loadItems(dir) {
       var response = JSON.parse(data);
       $('#content').html(response.html);                                 
       files.entries = response.entries;                                  //console.log('entries: '+response.entries);
-      files.entrytype = response.entrytype;                              //console.log('Value2: ',response.html);
+      files.entrytype = response.entrytype;                              console.log('response.create_items: ',response.create_items);
       var home_path = response.path;
       files.home = home_path.substring(0,home_path.lastIndexOf('/'));   
       files.dir = response.working_dir;
@@ -68,7 +68,7 @@ function loadItems(dir) {
       $('#working_dir').val(response.working_dir);                       
       localStorage.setItem("working_dir", response.working_dir);         //console.log('loadItems Dir: '+response.working_dir);
       $('#current_dir').text(response.working_dir);                      console.log('Current working_dir : ' + $('#working_dir').val());
-      setOpenFolders();                                                  //console.log('Paths: ',files.paths);	
+      setOpenFolders();                                                  	
       files_update();
     });
 }

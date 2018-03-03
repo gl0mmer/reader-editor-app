@@ -154,44 +154,47 @@ function reader_update(start) {                                          console
 //-- ajax function -------------------------------------------------------
 
 function reader_ajax_save(){                                                  consolelog_func('darkblue'); 
-        
-    var text = "", text_parsed = "";
-    reader.save_inprocess = true;
-    
-	if (reader.in_messages){                                           
-		text_parsed = $('#text_from_file').find('#mail_editable').html();     
-	}else{
-		text_parsed = reader.text_parsed;
-	}                                                                    //console.log('true text_parsed: '+text_parsed);
+    if ( common_ajax_permit() ){
 	
-	reader.id_curr = reader.get_id();                                
-	text = common.editor_text;                                       
-	document.getElementById('tmp').innerHTML = text_parsed;         
-	var id = reader.id_curr;                                             console.log('text_new: '+text+' ID: '+id);
-	document.getElementById("text_from_file").innerHTML = "";
-	document.getElementById(id).innerHTML = text;                        //console.log('text_new_parsed: '+document.getElementById('tmp').innerHTML);
+	    var text = "", text_parsed = "";
+	    reader.save_inprocess = true;
+	    
+		if (reader.in_messages){                                           
+			text_parsed = $('#text_from_file').find('#mail_editable').html();     
+		}else{
+			text_parsed = reader.text_parsed;
+		}                                                                    //console.log('true text_parsed: '+text_parsed);
+		
+		reader.id_curr = reader.get_id();                                
+		text = common.editor_text;                                       
+		document.getElementById('tmp').innerHTML = text_parsed;         
+		var id = reader.id_curr;                                             console.log('text_new: '+text+' ID: '+id);
+		document.getElementById("text_from_file").innerHTML = "";
+		document.getElementById(id).innerHTML = text;                        //console.log('text_new_parsed: '+document.getElementById('tmp').innerHTML);
+		
+		var text_all_parsed = document.getElementById('tmp').innerHTML; 
+		var text_all_origin = merge_text(text_all_parsed);               
 	
-	var text_all_parsed = document.getElementById('tmp').innerHTML; 
-	var text_all_origin = merge_text(text_all_parsed);               
-
-	common.ischanged_text = false;                                       //console.log('NEW TEXT: '+text_all_origin);
-	
-	if (reader.in_messages){ 
-		document.getElementById('savedraft_text').value = text_all_origin;
-		document.getElementById('savedraft_submit').click();
-	}else{
-		var fname = localStorage.getItem("reader_savepath");             console.log('Fname: '+fname);
-		document.getElementById('update_filename').value = fname;        console.log('Text: '+text);
-		document.getElementById('update_filetext').value = text_all_origin;
-		document.getElementById('update_submit').click();                    //console.log('New .txt');
-		alert = 'File was saved.';     
+		common.ischanged_text = false;                                       //console.log('NEW TEXT: '+text_all_origin);
+		
+		if (reader.in_messages){ 
+			document.getElementById('savedraft_text').value = text_all_origin;
+			document.getElementById('savedraft_submit').click();
+		}else{
+			var fname = localStorage.getItem("reader_savepath");             console.log('Fname: '+fname);
+			document.getElementById('update_filename').value = fname;        console.log('Text: '+text);
+			document.getElementById('update_filetext').value = text_all_origin;
+			document.getElementById('update_submit').click();                    //console.log('New .txt');
+			alert = 'File was saved.';     
+		}
 	}
-	
 }
 
 function reader_ajax_send(){
-	document.getElementById('createmessage_text').value = reader.draft;
-	document.getElementById('createmessage_submit').click();
+	if ( common_ajax_permit() ){
+		document.getElementById('createmessage_text').value = reader.draft;
+		document.getElementById('createmessage_submit').click();
+	}
 }
  
 
@@ -336,12 +339,8 @@ function reader_if_editable(){                                           console
 function reader_show_mail(){                                             consolelog_func(); 
     var inner_e = '';
     inner_e += '<div id="freader_sendmail_submit" onclick="reader_ajax_send();" '+common.style.buttonpos_menu(7,0)+'> send mail </div>';
-    inner_e += '<div id="reader_refresh"  onclick="reader_refresh();" '  +common.style.buttonpos_menu(4,0)+'> refresh </div>';
+    inner_e += '<div id="reader_refresh"  onclick="location.reload();" '  +common.style.buttonpos_menu(4,0)+'> refresh </div>';
     common_create_menu('reader_mail', 0, inner_e);
-}
-
-function reader_refresh() {                                              consolelog_func('orange'); //alert('refresh');
-	location.reload();
 }
 
 

@@ -21,7 +21,7 @@ var files = {
 	entrytype: [],
 	json_tmp: "",
 	dir: "",
-	zoom_arr: ['no zoom', 'zoom'],
+	zoom_arr: ['no zoom', 'add zoom'],
 	home: '',
 	in_contacts: false,
 	contacts: [],
@@ -29,6 +29,8 @@ var files = {
 	userid: -1,
 	//url: 'http://localhost/laravel-filemanager/files',
 	url: '',
+	alert_guest: 'You need registration to proceed',
+	items_protected: ['mail', 'trash', 'readme.txt'],
 	
 	get_fname: function(i){                                              //consolelog_func('brown');
 		if (i===undefined) {i=this.iter;} 
@@ -99,8 +101,7 @@ function files_start(){                                                  console
 	window.onbeforeunload = files_beforunload;
 	window.onresize = function(){ 
 		files_resize();
-	};
-	
+	};	
 }
 
 function files_update(){                                                 consolelog_func('darkblue');                                                                              
@@ -160,6 +161,7 @@ function files_ajax_enter(){                                             console
 	var path = files.get_enterpath(files.iter);                               
 	
 	if (files.entries[files.iter]=='mail') {                             // show contacts
+		//console.log('Enter Mail ');
 		goTo( path );
 		document.getElementById('show_contacts').click();
 	}else if (files.in_contacts && files.iter==0){                       // exit contacts
@@ -192,7 +194,9 @@ function files_ajax_create(type){
 	var new_name = files.get_subdir()+common.editor_text;                //console.log('New fname: '+new_name);
 	var i = files.entries.indexOf(new_name);
 	
-	if (new_name==''){
+	if ( !common_ajax_permit() ){
+		alert = files.alert_guest;
+	}else if (new_name==''){
 		alert = 'Name is empty.';
 	}else if(i>-1 && (files.entrytype[i]=='folder' && type==0  || files.entrytype[i]=='file' && type==1 )){
 		alert = 'File exists.';
@@ -212,14 +216,21 @@ function files_ajax_create(type){
 }
 
 function files_ajax_addcontact(){
-	var new_contact = document.getElementById('files_addcontact_edit').innerHTML;
-	document.getElementById('addcontact_name').value = new_contact;
-	document.getElementById('addcontact_submit').click(); 
+	if ( !common_ajax_permit() ){
+		alert = files.alert_guest;
+	}else{
+		var new_contact = document.getElementById('files_addcontact_edit').innerHTML;
+		document.getElementById('addcontact_name').value = new_contact;
+		document.getElementById('addcontact_submit').click(); 
+	}
 }
 
 function files_ajax_rename(){
 	var alert = 'Not allowed.';
-	if (files.get_savepath(files.iter)!=''){
+	var item_name = files.entries[files.iter]; 
+	if ( !common_ajax_permit() ){
+		alert = files.alert_guest;
+	}else if ( files.get_savepath(files.iter)!='' && files.items_protected.indexOf(item_name)==-1){
 		
 		var item_name = files.entries[files.iter];
 		var new_name = common.editor_text;
@@ -241,8 +252,10 @@ function files_ajax_rename(){
 
 function files_ajax_delete(){
 	var alert = 'Not allowed.';
-	if (files.get_savepath(files.iter)!=''){
-		var item_name = files.entries[files.iter];
+	var item_name = files.entries[files.iter];                           //console.log('delete item: '+item_name);
+	if ( !common_ajax_permit() ){
+		alert = files.alert_guest;
+	}else if ( files.get_savepath(files.iter)!='' && files.items_protected.indexOf(item_name)==-1){
 		performLfmRequest('delete', {items: item_name})
 	    .done(refreshFoldersAndItems);
 	    alert = 'Item was deleted.'
@@ -250,8 +263,12 @@ function files_ajax_delete(){
 	common_show_notification(alert);
 }      
 function files_ajax_upload(id){
-	document.getElementById('upload-button').click();
-	loadFolders(true);
+	if ( !common_ajax_permit() ){
+		alert = files.alert_guest;
+	}else{
+		document.getElementById('upload-button').click();
+		loadFolders(true);
+	}
 }
 function files_ajax_download(){                                          consolelog_func();
 	if (files.entrytype[files.iter]=='file' && files.get_savepath(files.iter)!=''){
@@ -261,22 +278,23 @@ function files_ajax_download(){                                          console
 }
 
 function files_ajax_past(){                                              consolelog_func();
+	var alert = 'Not allowed.';
 	var path = localStorage.getItem("copy_fullpath");                    //console.log('Copy/Past item: '+path);
-	if (path!=''){
+	if ( !common_ajax_permit() ){
+		alert = files.alert_guest;
+	}else if ( path!='' ){
 		document.getElementById("copy_fullpath").value = localStorage.getItem("copy_fullpath");
 		document.getElementById("copy_shortpath").value = localStorage.getItem("copy_shortpath");
 		document.getElementById("past_dir").value = files.get_subdir();
 		document.getElementById("copy_submit").click(); 
 	}
+	common_show_notification(alert);
 }    
 function files_copy(){                                                   consolelog_func();
 	var alert = 'Not allowed.';
-	if (files.get_savepath(files.iter)!='' && files.entrytype[files.iter]=='file'){
+	if (files.get_savepath(files.iter)!='' && files.entrytype[files.iter]=='file' ){
 		var full_path  = files.get_enterpath(files.iter);
 		var short_path = files.get_savepath(files.iter);
-		//if (files.entrytype[files.iter]=='folder'){
-		//	fname = files.home+fname;
-		//}
 		localStorage.setItem("copy_fullpath", full_path);                //console.log('Copy full_path: '+full_path);
 		localStorage.setItem("copy_shortpath", short_path);              //console.log('Copy short_path: '+short_path);
 		alert='Copied.';
@@ -284,6 +302,15 @@ function files_copy(){                                                   console
 	common_show_notification(alert);
 }
 
+function files_ajax_createinit(){
+	document.getElementById('createinit_submit').click();     
+}
+
+function common_ajax_permit(){
+	var permit = true;                                                   console.log('user name: '+user.name);
+	if (user.name=='guest'){permit=false;}
+	return permit;
+}
 
 //-- account functions ---------------------------------------------------
 function files_signin(){                                                 consolelog_func();
@@ -321,26 +348,6 @@ function files_edittext(id){                                             console
 	//var text = common.editor_text;
 	var text = "";
     editor_run('files', text, id);
-}
-
-function files_set_zoom(order){                                          consolelog_func();
-	if (order===undefined){ files.zoom = (files.zoom+1)%2; }             
-    var bodyStyles = window.getComputedStyle(document.body);
-    var elem = document.getElementById("zoom_box");               
-    if (files.zoom===1){ 
-        elem.style.visibility='hidden';
-        document.getElementById('content_box').style.height = '105%';  
-    }else{
-        elem.style.visibility='visible';
-        document.getElementById('content_box').style.height = common.style.textheight_zoom+'%'; 
-    }                                                                    
-    var name = files.zoom_arr[files.zoom];                               
-    elem = document.getElementById('files_zoom'); 
-    document.getElementById('zoom_box').style.height = (100 - common.style.textheight_zoom -2.3)+'%';
-    document.getElementById('zoom_box').style.top = (common.style.textheight_zoom +3)+'%';
-    if (elem) { 
-		elem.innerHTML = files.zoom_arr[files.zoom]; 
-		}
 }
 
 function files_beforunload() {                                           consolelog_func();

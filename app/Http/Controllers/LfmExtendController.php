@@ -40,16 +40,17 @@ class LfmExtendController extends LfmController
         $names_arr = array('..');
         foreach($directories as $f){ 
 			array_push($paths_arr, $f->path); 
-			//array_push($paths_arr, $path.'/'.$f->name); 
 			array_push($types_arr, 'folder');
 			array_push($names_arr, $f->name);
 		}
         foreach($files as $f){ 
 			array_push($paths_arr, $f->url); 
-			//array_push($paths_arr, $path.'/'.$f->url); 
 			array_push($types_arr, 'file');
 			array_push($names_arr, $f->name);
 		}
+        
+        $msg = '';
+        //$msg = $this->checkMissingFiles();
         
         return [ 'html' =>$path,
                 'entries'   => $names_arr,
@@ -58,10 +59,43 @@ class LfmExtendController extends LfmController
             'working_dir' => parent::getInternalPath($path),
             'path' => $path0,
             'homedir' => $homedir,
+            'create_items' => $msg,
         ];
     }
     
     //-- Extend ----------------------------------------------------------
+    
+    
+    public function checkMissingFiles()
+	{
+		//$path = parent::getCurrentPath().$_GET['path']; 
+		$path = parent::getCurrentPath("");
+        $new_path = $path.'/readme.txt';
+        $msg = '';
+        
+        if(!File::exists($new_path)) {
+	        $old_path = substr($path, 0,strrpos($path,'/'));
+	        $old_path = $old_path.'/shares/readme.txt';
+	        $msg = $msg.$old_path;
+	        
+	        if (!File::copy($old_path, $new_path)) {
+				$msg = $msg.' Error ';
+			}
+		}
+		$path = parent::getCurrentPath('trash');
+		if (!File::exists($path)) {
+			parent::createFolderByPath($path);
+			$msg = $msg.' | '.$path.' Created ';
+		}
+		$path = parent::getCurrentPath('mail');
+		if (!File::exists($path)) {
+			parent::createFolderByPath($path);
+			$msg = $msg.' | '.$path.' Created ';
+		}
+        //return $msg;  
+        return redirect()->back() ->with(['msg'=>$msg]);
+	} 
+    
     
     public function create()
     {

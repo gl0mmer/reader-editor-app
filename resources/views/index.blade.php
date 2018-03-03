@@ -137,6 +137,11 @@
 	<div hidden style="position:fixed;top:80%;">
 		
 		<div id="add-folder" class="btn btn-primary"> Add folder </div> 
+		
+		<form action="{{ route('create_init') }}" method="post">
+			<button id="createinit_submit" type="submit" class="btn btn-primary"> Create init items </button>
+			<input type="hidden" name="_token" value="{{ Session::token() }}">
+		</form>
 			
 		<form action="{{ route('reader') }}" method="get"style="position:absolute;top:0;width:50%;left:0;">
 			<input  type='hidden'  name='file_text' id='goreader_filetext' value='some text'> 
@@ -205,8 +210,11 @@
   
 	@if ($create=='yes')
 	<script>
-		performLfmRequest('newfolder', {name: 'mail'})
+		performLfmRequest('newfolder', {name: 'trash'})
 		.done(refreshFoldersAndItems); 
+		performLfmRequest('newfolder', {name: 'mail'})
+		.done(refreshFoldersAndItems);
+		$.ajax( {type: 'GET', dataType: 'text', url: 'create_init', cache: false} );
 	</script>
 	@endif
 	@if ($in_messages)

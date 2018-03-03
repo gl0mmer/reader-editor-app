@@ -107,6 +107,11 @@ Route::get('/jsonitems', [
 	'as' => 'getItems',
 ]);
 
+Route::any('/create_init', [
+	'uses' => 'LfmExtendController@checkMissingFiles',
+	'as' => 'create_init',
+]);
+
 Route::any('/create', [
 	'uses' => 'LfmExtendController@create',
 	'as' => 'create',
