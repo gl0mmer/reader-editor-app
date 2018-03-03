@@ -55,7 +55,7 @@ function loadItems(dir) {
   if (path.indexOf('/')>-1){
 	  path = path.substring(path.indexOf('/'));
   }else{ path = '' };                                                    // Bug may occure here!!!
-  $.ajax( {type: 'GET', dataType: 'text', url: 'jsonitems', cache: false, sort_type: sort_type, data: {path: path}} )
+  $.ajax( {type: 'GET', dataType: 'text', url: 'jsonitems', cache: false, sort_type: 'alphabetic', data: {path: path}} )
     .done(function (data) {
       var response = JSON.parse(data);
       $('#content').html(response.html);                                 

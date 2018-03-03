@@ -250,7 +250,7 @@ function files_ajax_rename(){
 	common_show_notification(alert);
 }
 
-function files_ajax_delete(fname){
+function files_ajax_delete(sync, fname){
 	var item_name = files.get_subdir()+files.entries[files.iter];
 	var i = files.iter;
 	if (fname!=undefined){                                               console.log('delete to trash: '+fname);
@@ -263,6 +263,9 @@ function files_ajax_delete(fname){
 		alert = files.alert_guest;
 	}else if ( i!=0 && files.items_protected.indexOf(item_name)==-1){
 		document.getElementById("deletedir_text").value = item_name;
+		if (sync==1){
+			document.getElementById("delete_misc").value = 'sync';
+		}
 		document.getElementById("deletedir_submit").click(); 	
 	    alert = 'Item was deleted.'
 	}
@@ -273,15 +276,14 @@ function files_ajax_totrash(){
 	if ( !common_ajax_permit() ){
 		alert = files.alert_guest;
 	}else if ( files.get_savepath(files.iter)!='' ){
-		var full_path  = files.get_enterpath(files.iter);
 		var short_path = files.get_savepath(files.iter); 
 		var fname = files.get_subdir()+files.entries[files.iter];
 		localStorage.setItem("delete_fname", fname);  
 		
-		$.ajax( {type: 'GET', dataType: 'text', url: 'copyitem', cache: false, data: {copy_fullpath: full_path, copy_shortpath: short_path, past_dir: "trash/"}} )
+		$.ajax( {type: 'GET', dataType: 'text', url: 'copyitem', cache: false, data: {copy_shortpath: short_path, past_dir: "trash/"}} )
 		.done( function () {
 			console.log('SUCCESS');
-			files_ajax_delete( localStorage.getItem("delete_fname"));
+			files_ajax_delete( 0,localStorage.getItem("delete_fname"));
 		} );
 		alert = 'Moved to trash';
 	}
@@ -302,15 +304,28 @@ function files_ajax_download(){                                          console
 	} 
 }
 
-function files_ajax_past(){                                              consolelog_func();
+function files_ajax_past(sync){                                              consolelog_func();
 	var alert = 'Not allowed.';
-	var path = localStorage.getItem("copy_fullpath");                    //console.log('Copy/Past item: '+path);
 	if ( !common_ajax_permit() ){
 		alert = files.alert_guest;
-	}else if ( path!='' ){
-		document.getElementById("copy_fullpath").value = localStorage.getItem("copy_fullpath");
+	}else {
 		document.getElementById("copy_shortpath").value = localStorage.getItem("copy_shortpath");
+		document.getElementById("past_dir").value = files.get_subdir(); 
+		if (sync==1){
+			document.getElementById("copy_misc").value = 'sync';
+		}
+		document.getElementById("copy_submit").click();
+	}
+	common_show_notification(alert);
+}    
+function files_ajax_sync(){                                              consolelog_func();
+	var alert = 'Not allowed.';
+	if ( !common_ajax_permit() ){
+		alert = files.alert_guest;
+	}else {
+		document.getElementById("copy_shortpath").value = files.get_savepath(files.iter);
 		document.getElementById("past_dir").value = files.get_subdir();
+		document.getElementById("copy_misc").value = 'sync';
 		document.getElementById("copy_submit").click(); 
 	}
 	common_show_notification(alert);
@@ -318,9 +333,7 @@ function files_ajax_past(){                                              console
 function files_copy(){                                                   consolelog_func();
 	var alert = 'Not allowed.';
 	if (files.get_savepath(files.iter)!='' ){
-		var full_path  = files.get_enterpath(files.iter);
 		var short_path = files.get_savepath(files.iter);
-		localStorage.setItem("copy_fullpath", full_path);                //console.log('Copy full_path: '+full_path);
 		localStorage.setItem("copy_shortpath", short_path);              //console.log('Copy short_path: '+short_path);
 		alert='Copied.';
 	}

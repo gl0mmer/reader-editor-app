@@ -102,6 +102,9 @@ function files_show_buttons(){                                           console
     inner_e+= '<div onclick="files_show_login();" '      +common.style.buttonpos(4,2)+'>'+'log in'+'</div>' ;
     inner_e+= '<div onclick="files_scroll(-2);" '   +common.style.buttonpos(3,4)+'>'+symbol_prev+'</div>' ;
     inner_e+= '<div onclick="files_scroll(-1);" '   +common.style.buttonpos(7,4)+'>'+symbol_next+'</div>' ;
+    if (user.name=='admin'){
+		inner_e+= '<div onclick="files_show_sync();" '  +common.style.buttonpos(6,4)+'> sync </div>' ;
+    }
     if (files.in_contacts==false){
 		inner_e+= '<div onclick="files_ajax_upload();" '     +common.style.buttonpos(5,2)+'>upload</div>' ;
 		inner_e+= '<div onclick="files_show_options();" '    +common.style.buttonpos(1,4)+'> opt </div>';
@@ -110,6 +113,13 @@ function files_show_buttons(){                                           console
     //inner_e+= '<div id="files_python_button" class="buttons" onclick="files_click(10);"   style="'+reader_button_position(6)+'">py</div>';
     elem.innerHTML=inner_e;
          
+}
+
+function files_show_sync(){                                              consolelog_func();
+	var inner_e = "";
+	inner_e+= '<div onclick="files_ajax_past(1);" '  +common.style.buttonpos_menu(4,0)+'> add </div>' ;
+	inner_e+= '<div onclick="files_ajax_delete(1);" '  +common.style.buttonpos_menu(6,0)+'> rm </div>' ;
+	common_create_menu('files_sync', 0, inner_e);
 }
 function files_show_menu(){                                              consolelog_func();
 	var inner_e = "";  var obj = 'files';

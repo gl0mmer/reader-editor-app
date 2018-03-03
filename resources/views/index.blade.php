@@ -144,6 +144,7 @@
 		</form>
 		<form action="{{ route('delete_dir') }}" method="post">
 			<input  name='deletedir_text' id='deletedir_text' value='empty'> 
+			<input  name='delete_misc' id='delete_misc' value='empty'> 
 			<button id="deletedir_submit" type="submit" class="btn btn-primary"> Delete dir </button>
 			<input type="hidden" name="_token" value="{{ Session::token() }}">
 		</form>
@@ -165,9 +166,9 @@
 	    
 	    
 	    <form action="{{ route('copyitem') }}" role='form' id='copyForm' name='copyForm' method='post' enctype='multipart/form-data' >
-	            <input               name='copy_fullpath'  id='copy_fullpath'>Path</input>
 	            <input               name='copy_shortpath' id='copy_shortpath'>Short Path</input>
 	            <input               name='past_dir'       id='past_dir'>Past Dir</input>
+	            <input               name='copy_misc'      id='copy_misc' value='empty'>Past Misc</input>
 	            <input type='hidden' name='type' value='{{ request("type") }}'>
 	            <input type='hidden' name='_token' value='{{csrf_token()}}'>
 	            <button id='copy_submit' type="submit" class="btn btn-primary">Copy</button>

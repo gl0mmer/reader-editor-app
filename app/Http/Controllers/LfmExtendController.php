@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -26,11 +29,10 @@ class LfmExtendController extends LfmController
 	//-- Override ItemsController@getItems -------------------------------
 	public function getItems()
     {
-		//$homedir = parent::getCurrentPath('');
 		$homedir = parent::getFileUrl($image_name = null, $is_thumb = null);
 		$path0 = parent::getRootFolderPath('user');
         $path = parent::getCurrentPath().$_GET['path']; 
-        $sort_type = request('sort_type');
+        $sort_type = 'alphabetic';
 
         $files = parent::sortFilesAndDirectories(parent::getFilesWithInfo($path), $sort_type);
         $directories = parent::sortFilesAndDirectories(parent::getDirectories($path), $sort_type);
@@ -138,22 +140,30 @@ class LfmExtendController extends LfmController
     public function copyItem()
     {
 		$msg = 'copy';
-        $old_path = request()->copy_fullpath;
-        //$old_path = request('copy_fullpath');
-        //$old_path = $request['copy_fullpath'];
         $dir = request()->past_dir;
         //$dir = request('past_dir');
         //$dir = $request['past_dir'];
         $filename = request()->copy_shortpath;
         //$filename = request('copy_shortpath');
         //$filename = $request['copy_shortpath'];
-        $filename = $dir.substr($filename, strrpos($filename,'/'));
-        $new_path = parent::getCurrentPath($filename);
+        
+        $path = parent::getCurrentPath("");
+        $old_path = $path.'/'.$filename;
+        
+        $msg = $msg.' MISC '.request()->copy_shortpath.'  ';
+        if ( request()->copy_misc=='sync' ){
+			$guest_id = User::where('first_name','guest')->first()->id;
+			$msg = $msg.' ID '.$guest_id.'  ';
+			$new_path = substr($path,0,strrpos($path,'/')).'/'.$guest_id.'/'.$filename;
+		}else{
+			$filename = $dir.substr($filename, strrpos($filename,'/'));
+			$new_path = $path.'/'.$filename;
+		}
         
         $path = parent::getCurrentPath("");
 		
 		$path = $path.'/'.request()->copy_shortpath;
-		//$msg = $msg.' OLD: '.$path.' - '.$new_path. ' || ';
+		$msg = $msg.' OLD: '.$path.' - '.$new_path. ' || ';
 		//return $msg;
 		if (is_dir($path)){
 			$ending = '';
@@ -192,8 +202,18 @@ class LfmExtendController extends LfmController
     public function deleteDir()
     {
 		$msg = 'delete';
-        $filename = request()->deletedir_text;
-        $new_path = parent::getCurrentPath($filename);
+		
+		$filename = request()->deletedir_text;
+		$path = parent::getCurrentPath("");
+        //$old_path = $path.'/'.$filename;
+        
+        if ( request()->delete_misc=='sync' ){
+			$guest_id = User::where('first_name','guest')->first()->id;
+			$msg = $msg.' ID '.$guest_id.' || ';
+			$new_path = substr($path,0,strrpos($path,'/')).'/'.$guest_id.'/'.$filename;
+		}else{
+			$new_path = parent::getCurrentPath($filename);
+		}
         
         if (is_dir($new_path)){
 			$msg = $msg.' IsDir '.$this-> rrmdir($new_path);
@@ -201,7 +221,7 @@ class LfmExtendController extends LfmController
 			$msg = $msg.' IsFile ';
 			unlink($new_path); 
 		}
-        $msg = $msg.$new_path;
+        //$msg = $msg.$new_path;
         return redirect()->back() ->with(['msg'=>$msg]);
 	}
 
@@ -233,12 +253,13 @@ class LfmExtendController extends LfmController
 	
     private function rrmdir($dir) 
     {
-		$msg = 'rrmdir: '.$dir;
+		$msg = '';
+		//$msg = 'rrmdir: '.$dir;
 		
 	     $objects = scandir($dir); 
 	     foreach ($objects as $object) { 
 	       if ($object != "." && $object != "..") {
-			   $msg = $msg.' - '.$object; 
+			   //$msg = $msg.' - '.$object; 
 			   if (is_dir($dir."/".$object))
 					$this->rrmdir($dir."/".$object);
 			   else
