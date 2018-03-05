@@ -191,7 +191,7 @@ function files_ajax_enter(){                                             console
 }  
 
 function files_ajax_create(type){
-	var new_name = files.get_subdir()+common.editor_text;                //console.log('New fname: '+new_name);
+	var new_name = files.get_subdir()+common.editor_text;                console.log('New fname: '+new_name);
 	var i = files.entries.indexOf(new_name);
 	
 	if ( !common_ajax_permit() ){
@@ -202,6 +202,7 @@ function files_ajax_create(type){
 		alert = 'File exists.';
 	}else{
 		if (type == 0){
+			new_name = common.editor_text;
 			performLfmRequest('newfolder', {name: new_name})
 			.done(refreshFoldersAndItems);                               //console.log('New folder');
 			alert = 'New folder is created.';
@@ -347,7 +348,8 @@ function files_ajax_createinit(){
 function common_ajax_permit(){
 	var permit = true;                                                   
 	if (user.name=='guest'){                                             console.log('Permittion denied: '+user.name);
-		permit=false;
+		permit = false;
+		permit = true;
 	}
 	return permit;
 }

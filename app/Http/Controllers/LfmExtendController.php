@@ -29,33 +29,42 @@ class LfmExtendController extends LfmController
 	//-- Override ItemsController@getItems -------------------------------
 	public function getItems()
     {
+		$msg = 'getItems() ';    
 		$homedir = parent::getFileUrl($image_name = null, $is_thumb = null);
 		$path0 = parent::getRootFolderPath('user');
         $path = parent::getCurrentPath().$_GET['path']; 
         $sort_type = 'alphabetic';
-
-        $files = parent::sortFilesAndDirectories(parent::getFilesWithInfo($path), $sort_type);
-        $directories = parent::sortFilesAndDirectories(parent::getDirectories($path), $sort_type);
+		
+		$directories = parent::sortFilesAndDirectories(parent::getDirectories($path), $sort_type);
+        //$files = parent::sortFilesAndDirectories(parent::getFilesWithInfo($path), $sort_type);   // !!!!!
+        $files = File::files($path);                                     // !!!!!
+        //$msg = $msg.count($files).' - '.$files[0].' - '.(string)$files[0].' - '.$path0.' -- '.strlen($path0);
         
-        $paths_arr = array('');
+        $fnames_arr = array();
+        foreach($files as $f){ 
+			$fname = (string)$f;
+			$fname = substr($fname, strrpos($fname,'/')+1);
+			array_push($fnames_arr, $fname);
+		}
+		sort($fnames_arr);
+        
+        //$paths_arr = array('..');
         $types_arr = array('folder');
         $names_arr = array('..');
         foreach($directories as $f){ 
-			array_push($paths_arr, $f->path); 
 			array_push($types_arr, 'folder');
 			array_push($names_arr, $f->name);
 		}
-        foreach($files as $f){ 
-			array_push($paths_arr, $f->url); 
+        foreach($fnames_arr as $f){ 
 			array_push($types_arr, 'file');
-			array_push($names_arr, $f->name);
+			array_push($names_arr, $f);
 		}
         
-        $msg = '';        
-        return [ 'html' =>$path,
+           
+        return [ 'html' =>$msg,
                 'entries'   => $names_arr,
                 'entrytype' => $types_arr,
-                'paths' => $paths_arr,
+                //'paths' => $paths_arr,
             'working_dir' => parent::getInternalPath($path),
             'path' => $path0,
             'homedir' => $homedir,
@@ -103,6 +112,7 @@ class LfmExtendController extends LfmController
 
         // single file
         $msg = $msg.$filename.' | '.$new_file_path;
+		//return $msg;
 	
 		if(!File::exists($new_file_path)) {
 			// path does not exist
@@ -242,8 +252,7 @@ class LfmExtendController extends LfmController
 
         return true;
     }
-
-
+    
 
     private function getNewName($filename)
     {

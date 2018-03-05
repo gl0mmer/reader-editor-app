@@ -132,12 +132,15 @@ function find_indexof_all(text_origin, arr, i_start, i_end){             //conso
 		}
 	}
 	for (i=0; i<res_arr.length; i+=1) { res_arr[i][0] += i_start; }
-	return(res_arr);
+	return(res_arr);                                                     // returns [ [ index, symbol] .. ] 
 }
 
 
 function text_clean(text_origin){                                        //consolelog_func();  // only void tags allowed!  
-	var txt = text_origin.replace('\n','<br>');                          
+	var txt = text_origin.replace('\n','<br>');                         //console.log(txt);               
+	txt = txt.replace('&nbsp;',' ');                                                  
+	txt = txt.replace(/\\n/g,'<br> ');                                                  
+	txt = txt.replace(/\n/g,'<br>');                                    // ! this one works                      
 	var proceed = 1, i = 0, j1=0, j2=0; 
 	i = txt.indexOf('<');
 	if (i===-1) {proceed=0;}
@@ -152,6 +155,43 @@ function text_clean(text_origin){                                        //conso
 	}
 	replace_all(txt, '< ', '<'); 
 	replace_all(txt, '</ ', '</');
+		
+	if (txt.indexOf('src="', i)!=-1){
+		txt = reader_parse_images(txt);
+	}                                                       
+	return (txt);
+}
+
+function reader_parse_images(txt){
+	var fname = localStorage.getItem("reader_savepath"); 
+	//var image_dir = fname.substring(0,fname.lastIndexOf('.'))+'_files/'; 
+	
+	if (fname.indexOf('/')!=-1 ){
+		var name = fname.substring(fname.lastIndexOf('/')+1);
+		//if (name.indexOf('chapter')==0){
+		var image_dir = fname.substring(0,fname.lastIndexOf('/'))+'/files/';  
+	}       
+	image_dir = 'files/files/'+user.id+'/'+image_dir;                    //console.log('fname: '+image_dir, fname);
+ 	var proceed = true; var word=''; i=0;
+ 	var i1=0, i2=0, i3=0;
+	while(proceed){
+		if (txt.indexOf('src="', i)==-1){
+			proceed=false;
+		}else{
+			i1 = txt.indexOf('src="', i)+5;
+			i2 = txt.indexOf('"', i1);
+			i3 = i1;
+			word = txt.substring(i1,i2);                                 //console.log('word: '+word);
+			if (word.indexOf('/')!=-1){
+				i3 = i1+word.lastIndexOf('/')+1;
+			}
+			txt = txt.substring(0,i1)+image_dir+txt.substring(i3);
+			i = i2;
+			if (i2>txt.length-2){
+				proceed = false;
+			}
+		}
+	}                                                                    //console.log(txt);   
 	return (txt);
 }
 function reader_parse_html(text_origin){                                 //consolelog_func(); 
@@ -223,13 +263,16 @@ function reader_parse_txt(text_origin, n_p){                             //conso
     var endsymbol = ['<br>', '...', '!!!', '???', '.', '!', '?', ',', ' ','<'] ;
     //var endsymbol = [' '];
     var emptytag = ['area','base','col','command','embed','hr','img','input','ceygen','link','meta','param','source','track','wbr','video','audio'];
-    var proceed = 1, i = 0, i_end=0, j = [], arr = [], tag_arr=[]; 
+    var proceed = 1; 
+    var j = [];                                                          // tmp for arr_endpositions[k], 
+    var i = 0, i_end=0;                                                  //  position in text
+    var arr = [], tag_arr=[];                                            //
     var tag_i = "";
     
     //-- split text by words ---------------------------------------------
     if (txt[0]==' '){
 		var proceed2 = 1; 
-		while (proceed2==1){                                             // find first not-space symbol
+		while (proceed2==1){                                             // find first not-space symbol -> i
 			if ( i>=txt.length-1 || txt[i]!=' ') { proceed2=0; }
 			else { i+=1; } 
 		}  
@@ -239,36 +282,38 @@ function reader_parse_txt(text_origin, n_p){                             //conso
 	var arr_endpositions = find_indexof_all(txt, endsymbol );            //console.log('Ends: '+arr_endpositions);
 	if (arr_endpositions.length==0){ arr_endpositions=[txt.length-1]; }
 	var k=0;        
-	var i_end_test=0;
+	var i_end_test=0;                                                    // position of the next endsymbol
 	for (k=0; k<arr_endpositions.length; k+=1){
-		if ( i>=txt.length-1 ) { break; }                                
+		if ( i>=txt.length-1 ) { break; }                                // end of text                   
 		if (k<arr_endpositions.length-1) { i_end_test = arr_endpositions[k+1][0]; }
-		else { i_end_test = txt.length; }
-		
+		else { i_end_test = txt.length; }                                // set position of the next endsymbol
+
 		j = arr_endpositions[k];                                         //if (k<10){console.log(k+" ["+j+"]");}
+				                                                         //console.log(j, i_end);
 		if ( k==arr_endpositions.length-1 ) {                            // end of text
 			i_end = txt.length; 
 			proceed=0; 
-		} else if ( j[0]==i && j[1]=="<" ) {                             // 
+		} else if ( j[0]==i && j[1]=="<" ) {                              //console.log('!!',j, i_end);
 			i_end = txt.indexOf(">", i)+1;           
 			tag_i = txt.substring(i+1, txt.indexOf(" ",i));
 			if ( emptytag.indexOf(tag_i)!=-1 ) { tag_arr.push(arr.length); }    // remember index if word has non-empty tag, to preserve html structure
 		} else if ( j[0]==i ){                                           //
 			i_end = j[0]+j[1].length;
 			a=0;  
-		} else {                                                         
-			if (j[1]==' ') { i_end = j[0]+1; }
-			else { i_end = j[0]; }    
+		} else {                                                         // ! main
+			if (j[1]=="<br>"){ i_end = j[0]+j[1].length; }
+			else if (j[1]==' ') { i_end = j[0]+1; } 
+			else { i_end = j[0]; }                                       //console.log('!!',j,txt[j[0]], i, txt[i], i_end, txt[i_end], txt.substring(i,i_end)); 
 			a=0;                                   
         }   
                  
         var proceed2 = 1; 
-		while (proceed2==1){                                             // find first not-space symbol
+		while (proceed2==1){                                             // find first not-space symbol (move spaces to previous word)
 			if ( i_end>=txt.length-1 || txt[i_end]!=' ' ) { proceed2=0; }
 			else { i_end+=1; } 
 		}  
 		                                                         
-        if (i!=i_end){
+        if (i!=i_end){                                  
 			arr.push( txt.substring(i,i_end) );     
 		}                         
         i = i_end;
@@ -321,7 +366,7 @@ function reader_parse_txt(text_origin, n_p){                             //conso
 			id_p = 'p'+i_p; 
 			id_s = 'p'+i_p + 's'+i_s; 
 			id_w = 'p'+i_p + 's'+i_s + 'w'+i_w;
-			arr_p.push(id_p);  arr_s.push(id_s);  arr_w.push(id_w);
+			arr_p.push(id_p);  arr_s.push(id_s);  arr_w.push(id_w);      //console.log(word);
 			
 			word_end = '</'+ctag+'></'+ctag+'></'+tag_p+'>';
 			text = text+ word_start + word + word_end;

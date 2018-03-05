@@ -109,7 +109,7 @@ function files_show_buttons(){                                           console
 		inner_e+= '<div onclick="files_ajax_upload();" '     +common.style.buttonpos(5,2)+'>upload</div>' ;
 		inner_e+= '<div onclick="files_show_options();" '    +common.style.buttonpos(1,4)+'> opt </div>';
 	}
-    //inner_e+= '<div id="files_test"    onclick="clean_tmp();" '             +common.style.buttonpos(6,4)+'>clean_tmp</div>' ;
+	//inner_e+= '<div id="files_test"    onclick="clean_tmp();" '             +common.style.buttonpos(6,4)+'>clean_tmp</div>' ;
     //inner_e+= '<div id="files_python_button" class="buttons" onclick="files_click(10);"   style="'+reader_button_position(6)+'">py</div>';
     elem.innerHTML=inner_e;
          

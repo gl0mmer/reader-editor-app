@@ -134,7 +134,7 @@
 	</div>
 	
 	
-	<div hidden style="position:fixed;top:80%;">
+	<div hidden style="position:fixed;top:30%;">
 		
 		<div id="add-folder" class="btn btn-primary"> Add folder </div> 
 		
@@ -200,6 +200,7 @@
 	
 	
 	
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.6.6/tinymce.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
@@ -246,11 +247,14 @@
 	      clickable: '#upload-button',
 	      dictDefaultMessage: 'Or drop files here to upload',
 	      init: function() {
+			fff = "{{ lcfirst(str_singular(request('type'))) == 'image' ? implode(',', config('lfm.valid_image_mimetypes')) : implode(',', config('lfm.valid_file_mimetypes')) }}";
+	        //fff = fff.replace('image','application');
+	        maxfff = ({{ lcfirst(str_singular(request('type'))) == 'image' ? config('lfm.max_image_size') : config('lfm.max_file_size') }} / 1000);
 	        var _this = this; // For the closure
 	        this.on("addedfile", function(file) { refreshFoldersAndItems('OK'); });
-	        this.on('success', function(file, response) {
+	        this.on('success', function(file, response) {                console.log('RESP: ',response, fff, maxfff);
 	          
-	          if(response != 'OK'){
+	          if(response != 'OK'){   console.log('RESP: ',response);
 	            this.defaultOptions.error(file, response.join('\n'));
 	          }  
 	      });
