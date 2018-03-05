@@ -30,7 +30,8 @@ var files = {
 	//url: 'http://localhost/laravel-filemanager/files',
 	url: '',
 	alert_guest: 'You need registration to proceed',
-	items_protected: ['mail', 'trash', 'readme.txt'],
+	//items_protected: ['mail', 'trash', 'readme.txt'],
+	items_protected: ['mail', 'trash'],
 	
 	get_fname: function(i){                                              //consolelog_func('brown');
 		if (i===undefined) {i=this.iter;} 
@@ -70,13 +71,13 @@ var files = {
 		var path = '';
 		var dir = this.dir.substring(1);                                 //console.log('Savepath: ',dir);
 		if (dir.indexOf('/')==-1){ dir = ''; }
-		else{ dir = dir.substring(dir.lastIndexOf('/')+1)+'/'; }         //console.log('Savepath: ',dir, this.entries[i]);
+		else{ dir = dir.substring(dir.indexOf('/')+1)+'/'; }         //console.log('Savepath: ',dir, this.entries[i]);
 		return dir+this.entries[i];
 	},
 	get_subdir: function(){
 		var dir = this.dir.substring(1);                                 //console.log('Savepath: ',dir);
 		if (dir.indexOf('/')==-1){ dir = ''; }
-		else{ dir = dir.substring(dir.lastIndexOf('/')+1)+'/'; }         //console.log('Savepath: ',dir, this.entries[i]);
+		else{ dir = dir.substring(dir.indexOf('/')+1)+'/'; }         //console.log('Savepath: ',dir, this.entries[i]);
 		return dir;
 	},
 }                                                        
@@ -296,6 +297,8 @@ function files_ajax_upload(id){
 	}else{
 		document.getElementById('upload-button').click();
 		loadFolders(true);
+		//location.reload();
+		
 	}
 }
 function files_ajax_download(){                                          consolelog_func();

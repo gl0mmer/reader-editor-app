@@ -171,7 +171,7 @@ function reader_parse_images(txt){
 		//if (name.indexOf('chapter')==0){
 		var image_dir = fname.substring(0,fname.lastIndexOf('/'))+'/files/';  
 	}       
-	image_dir = 'files/files/'+user.id+'/'+image_dir;                    //console.log('fname: '+image_dir, fname);
+	image_dir = 'files/files/'+user.id+'/'+image_dir;                    //console.log('fname: '+image_dir+' | '+ fname);
  	var proceed = true; var word=''; i=0;
  	var i1=0, i2=0, i3=0;
 	while(proceed){

@@ -54,20 +54,20 @@ function loadItems(dir) {
   path = path.substring(1);
   if (path.indexOf('/')>-1){
 	  path = path.substring(path.indexOf('/'));
-  }else{ path = '' };                  console.log('loadItems: '+path);  // Bug may occure here!!!
+  }else{ path = '' };                                                    // Bug may occure here!!!
   $.ajax( {type: 'GET', dataType: 'text', url: 'jsonitems', cache: false, sort_type: 'alphabetic', data: {path: path}} )
     .done(function (data) {
       var response = JSON.parse(data);
-      $('#content').html(response.html);                                 console.log('Resp.html: '+response.html);
-      files.entries = response.entries;                                  console.log('Paths: '+response.paths);
+      $('#content').html(response.html);                                 //console.log('Resp.html: '+response.html);
+      files.entries = response.entries;                                  //console.log('Paths: '+response.paths);
       files.entrytype = response.entrytype;                              
       var home_path = response.path;
       files.home = home_path.substring(0,home_path.lastIndexOf('/'));   
       files.dir = response.working_dir;
-      files.url = response.homedir.substring(0,response.homedir.lastIndexOf('/'));   console.log('Homedir: ', files.url, home_path);
+      files.url = response.homedir.substring(0,response.homedir.lastIndexOf('/'));   //console.log('Homedir: ', files.url, response.homedir, home_path);
       $('#working_dir').val(response.working_dir);                       
       localStorage.setItem("working_dir", response.working_dir);         //console.log('loadItems Dir: '+response.working_dir);
-      $('#current_dir').text(response.working_dir);                      console.log('Current working_dir : ' + $('#working_dir').val());
+      $('#current_dir').text(response.working_dir);                      //console.log('Current working_dir : ' + $('#working_dir').val());
       setOpenFolders();                                                  	
       files_update();
     });
