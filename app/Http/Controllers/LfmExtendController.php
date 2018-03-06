@@ -38,7 +38,6 @@ class LfmExtendController extends LfmController
 		$directories = parent::sortFilesAndDirectories(parent::getDirectories($path), $sort_type);
         //$files = parent::sortFilesAndDirectories(parent::getFilesWithInfo($path), $sort_type);   // !!!!!
         $files = File::files($path);                                     // !!!!!
-        //$msg = $msg.count($files).' - '.$files[0].' - '.(string)$files[0].' - '.$path0.' -- '.strlen($path0);
         
         $fnames_arr = array();
         foreach($files as $f){ 
@@ -77,11 +76,11 @@ class LfmExtendController extends LfmController
     public function checkMissingFiles()
 	{
 		$path = parent::getCurrentPath("");
-        $new_path = $path.'/readme.txt';
+        $new_path = $path.'/Welcome.txt';
         $msg = '';
         
         $old_path = substr($path, 0,strrpos($path,'/'));
-        $old_path = $old_path.'/shares/readme.txt';
+        $old_path = $old_path.'/shares/Welcome.txt';
         $msg = $msg.$old_path;
         if (!File::copy($old_path, $new_path)) {
 			$msg = $msg.' Error ';

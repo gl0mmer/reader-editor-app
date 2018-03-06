@@ -48,6 +48,7 @@
 	<div hidden id='hidden_fname' > </div>
 	<div hidden id='hidden_text' > </div>
 	
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/dict.js') }}"></script> 
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/common_variables.js') }}"></script> 
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/common.js') }}"></script> 
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/files.js') }}"></script>

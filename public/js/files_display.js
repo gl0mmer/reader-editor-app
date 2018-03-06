@@ -208,7 +208,7 @@ function files_show_upload(){                                            console
     
 function files_welcome(){
 	var text = "Hi! <br>This website helps people to read and write. <br><br>";
-	text+=     "Check 'readme.txt' file for details. ";
+	text+=     "Check 'Welcome.txt' file for details. ";
 	text+=     "You will see it after closing this window. ";
 	text+=     "To open the file click on the file icon and 'check' button to the right. ";
 	

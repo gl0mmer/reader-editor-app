@@ -25,7 +25,6 @@ class UserController extends Controller
 	{
 		$username = User::where('id', Auth::user()->id) -> value('first_name');
 		//return view('test');
-		//return view('index_demo');
 		
 		return view('index', [
 						'in_contacts'=>false, 

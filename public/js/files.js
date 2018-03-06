@@ -29,7 +29,7 @@ var files = {
 	userid: -1,
 	url: '',
 	alert_guest: 'You need registration to proceed',
-	//items_protected: ['mail', 'trash', 'readme.txt'],
+	//items_protected: ['mail', 'trash', 'Welcome.txt'],
 	items_protected: ['mail', 'trash'],
 	
 	get_fname: function(i){                                              //consolelog_func('brown');
