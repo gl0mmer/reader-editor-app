@@ -213,7 +213,7 @@ function editor_run(parent, text_raw, destination, iter){                console
 	
 	document.getElementById('editor_text_area').innerHTML=editor.text_raw;  
     if (editor.text_raw.length>1){
-		editor.iter = editor.text_raw.length-1;
+		editor.iter = editor.text_raw.length;
 	}
 	editor_set_cursor();                                                     
 	editor_show_start();                                                   

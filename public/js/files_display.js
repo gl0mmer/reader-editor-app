@@ -86,10 +86,13 @@ function files_show_files(){                                             console
 }
 
 function files_fill_zoom(){                                              consolelog_func();
-    var fname = common_make_fname( files.get_savepath(files.iter) );     //console.log('zoom: '+files.zoom);
-    var dir = '<em style="font-style:normal;color:black;opacity:0.3;">'+fname[0]+' </em>';
-    
-    document.getElementById('zoom_text').innerHTML = dir+fname[1]; 
+    var fname = files.entries[files.iter];
+    var dir = user.name+'/ '+files.get_subdir();
+    dir = '<em style="font-style:normal;color:black;opacity:0.3;">'+dir+' </em>';
+    var elem = document.getElementById('zoom_text');
+    if (elem){
+		document.getElementById('zoom_text').innerHTML = dir+fname;
+	} 
 }   
 
 //-- show buttons --------------------------------------------------------

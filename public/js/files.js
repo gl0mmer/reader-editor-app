@@ -71,7 +71,7 @@ var files = {
 		var path = '';
 		var dir = this.dir.substring(1);                                 //console.log('Savepath: ',dir);
 		if (dir.indexOf('/')==-1){ dir = ''; }
-		else{ dir = dir.substring(dir.indexOf('/')+1)+'/'; }         //console.log('Savepath: ',dir, this.entries[i]);
+		else{ dir = dir.substring(dir.indexOf('/')+1)+'/'; }             //console.log('Savepath: '+this.dir+' - '+dir+' - '+this.entries[i]);
 		return dir+this.entries[i];
 	},
 	get_subdir: function(){
@@ -111,6 +111,10 @@ function files_update(){                                                 console
 		useFile( localStorage.getItem("reader_url") ); 
 		
 	}else{		
+		var path = localStorage.getItem("folder_path");                  console.log('Enter load: '+path+' | '+files.dir);
+		if (path!=files.dir && path!='' && path!=undefined){
+			goTo( path );
+		}
 		files_show_buttons();                                            //console.log('Paths: ',files.paths);	       
 		common_set_fontsize(common.f_fontsize_scale, files);                                                                                                             
 		common.style.resize();
@@ -162,7 +166,6 @@ function files_ajax_enter(){                                             console
 	var path = files.get_enterpath(files.iter);                               
 	
 	if (files.entries[files.iter]=='mail') {                             // show contacts
-		//console.log('Enter Mail ');
 		goTo( path );
 		document.getElementById('show_contacts').click();
 	}else if (files.in_contacts && files.iter==0){                       // exit contacts
@@ -178,12 +181,12 @@ function files_ajax_enter(){                                             console
 			useFile( path );                                             console.log('EnterPath: '+path); console.log('SavePath: '+files.get_savepath(files.iter));
 		}
 	}else{                                                               // open folder
-		//path = files.get_fpath(files.iter);   
 		if (files.iter==0){
 			var previous_dir = getPreviousDir();                         
 			if (previous_dir == '') return;
 			path = previous_dir;
 		}
+		localStorage.setItem("folder_path", path);                       console.log('Enter save: '+path+' | '+files.dir);
 		goTo( path );
 		files.iter_prev = 0;
 		files.iter = 0;
@@ -391,8 +394,16 @@ function files_login_remember(){                                         console
 //-- misc ----------------------------------------------------------------
 function files_edittext(id){                                             consolelog_func('darkblue');
 	//var text = common.editor_text;
-	var text = "";
-    editor_run('files', text, id);
+	var text = "";                                                       
+	if (id=="files_options_edit"){
+		var fname = files.entries[files.iter];                           //console.log('Edit: '+id+' '+text+' '+files.entrytype[files.iter]);
+		if (files.entrytype[files.iter]!='folder'){
+			text = fname.substring(0,fname.lastIndexOf('.'));
+		}else{
+			text = fname;
+		}
+	}
+    editor_run('files', text, id);                                       //console.log('Edit: '+id+' '+text+' '+files.entrytype);
 }
 
 function files_beforunload() {                                           consolelog_func();

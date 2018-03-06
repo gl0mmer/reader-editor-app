@@ -8,6 +8,7 @@ if (localStorage.getItem("isset")!="true"){
 	localStorage.setItem("show_welcome", "yes");
 	localStorage.setItem("working_dir", "");
 	localStorage.setItem("delete_fname", "");
+	localStorage.setItem("folder_path", "");
 	
 	localStorage.setItem("in_reader", "no");
 	localStorage.setItem("reader_fname", "");
