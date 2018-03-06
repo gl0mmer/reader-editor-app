@@ -5,6 +5,7 @@ if (localStorage.getItem("isset")!="true"){
 	localStorage.setItem("isset", "true");
 	localStorage.setItem("copy_path", "");
 	localStorage.setItem("copy_working_dir", "");
+	localStorage.setItem("copy_shortpath", "");
 	localStorage.setItem("show_welcome", "yes");
 	localStorage.setItem("working_dir", "");
 	localStorage.setItem("delete_fname", "");

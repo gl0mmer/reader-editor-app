@@ -27,7 +27,6 @@ var files = {
 	contacts: [],
 	messages: [],
 	userid: -1,
-	//url: 'http://localhost/laravel-filemanager/files',
 	url: '',
 	alert_guest: 'You need registration to proceed',
 	//items_protected: ['mail', 'trash', 'readme.txt'],
@@ -35,7 +34,7 @@ var files = {
 	
 	get_fname: function(i){                                              //consolelog_func('brown');
 		if (i===undefined) {i=this.iter;} 
-		return document.getElementById('fileid_'+this.iter.toString()+'_name').innerHTML; 
+		return files.entries[i];  
 	},
 	get_fid: function(i){                                                //consolelog_func('brown');
 		if (i===undefined) {i=this.iter;} 
@@ -56,10 +55,9 @@ var files = {
 		if (elem) { type=elem.getAttribute('title'); }
 		return type;
 	},
-	get_enterpath: function(i){
-		var path = '';
+	get_enterpath: function(i){                                       
+		var path = '';                                                   // for folders same as   files.dir+'/'+files.get_fname()
 		if (this.entrytype[i]=='file'){
-			//path = 'http://localhost/laravel-filemanager/files';
 			path = this.url;
 		}
 		path += this.dir+'/'+this.entries[i];                            //console.log('this.dir: ',this.dir);
@@ -111,8 +109,8 @@ function files_update(){                                                 console
 		useFile( localStorage.getItem("reader_url") ); 
 		
 	}else{		
-		var path = localStorage.getItem("folder_path");                  console.log('Enter load: '+path+' | '+files.dir);
-		if (path!=files.dir && path!='' && path!=undefined){
+		var path = localStorage.getItem("folder_path");                  
+		if ( [files.dir,"", undefined, null, 'mail'].indexOf(path)==-1 ){
 			goTo( path );
 		}
 		files_show_buttons();                                            //console.log('Paths: ',files.paths);	       
@@ -155,17 +153,35 @@ function files_scroll(order, i_utter){                                   console
     scroll_to(files.get_fid(), 'content_box', title=0);
     
     if (iter==0){fname_ii='..';}
-    else{fname_ii = files.get_fname(); }
+    else{fname_ii = files.get_fname(); }                                 
     fname_ii = fname_ii.replace('_',' ');                               
-    if (i_utter===undefined){ utter(fname_ii, 1, onend=0); }             
+    if (i_utter===undefined){ utter(fname_ii, 1, onend=0); } 
+    
+    var name = files.get_subdir()+files.get_fname();                     //console.log('Opt name: '+name);
+    var ifdisable = !(files.items_protected.indexOf(name)==-1 && files.iter!=0);
+    files_disable_button("files_opt", ifdisable, function(){ files_show_options();} );   //console.log('Opt name: '+name, ifdisable);
+         
 }                                                        
 
+function files_disable_button(id, disable, todo){
+	var elem = document.getElementById(id);
+	if (elem){
+		if (disable){
+			elem.onclick = "";
+			$("#"+id).addClass("disabled");
+		}else{
+			elem.onclick = todo;
+			$("#"+id).removeClass("disabled");
+		}
+	}
+}
 //-- ajax functions ------------------------------------------------------
 
 function files_ajax_enter(){                                             consolelog_func("orange");  
-	var path = files.get_enterpath(files.iter);                               
+	var path = files.get_enterpath(files.iter);                          //console.log('EPath: '+path+' - '+files.dir+'/'+files.get_fname());           
 	
-	if (files.entries[files.iter]=='mail') {                             // show contacts
+	if (files.get_fname()=='mail') {                                     // show contacts
+		localStorage.setItem("folder_path", 'mail');
 		goTo( path );
 		document.getElementById('show_contacts').click();
 	}else if (files.in_contacts && files.iter==0){                       // exit contacts
@@ -173,7 +189,7 @@ function files_ajax_enter(){                                             console
 		document.getElementById('show_home').click();
 	}
 	else if (files.entrytype[files.iter]=='file'){                       // open file
-		if (files.in_contacts){                                          //console.log('Contact: '+files.paths[files.iter]);
+		if (files.in_contacts){                                          
 			document.getElementById('contact_'+files.paths[files.iter]).click();
 		}else{
 			localStorage.setItem("reader_savepath", files.get_savepath(files.iter));  
@@ -186,7 +202,7 @@ function files_ajax_enter(){                                             console
 			if (previous_dir == '') return;
 			path = previous_dir;
 		}
-		localStorage.setItem("folder_path", path);                       console.log('Enter save: '+path+' | '+files.dir);
+		localStorage.setItem("folder_path", path);                       
 		goTo( path );
 		files.iter_prev = 0;
 		files.iter = 0;
@@ -232,12 +248,12 @@ function files_ajax_addcontact(){
 
 function files_ajax_rename(){
 	var alert = 'Not allowed.';
-	var item_name = files.entries[files.iter]; 
+	var item_name = files.get_fname(); 
 	if ( !common_ajax_permit() ){
 		alert = files.alert_guest;
 	}else if ( files.get_savepath(files.iter)!='' && files.items_protected.indexOf(item_name)==-1){
 		
-		var item_name = files.entries[files.iter];
+		var item_name = files.get_fname();
 		var new_name = common.editor_text;
 		var i = files.entries.indexOf(new_name);
 		
@@ -256,7 +272,7 @@ function files_ajax_rename(){
 }
 
 function files_ajax_delete(sync, fname){
-	var item_name = files.get_subdir()+files.entries[files.iter];
+	var item_name = files.get_subdir()+files.get_fname();
 	var i = files.iter;
 	if (fname!=undefined){                                               console.log('delete to trash: '+fname);
 		item_name = fname;
@@ -282,7 +298,7 @@ function files_ajax_totrash(){
 		alert = files.alert_guest;
 	}else if ( files.get_savepath(files.iter)!='' ){
 		var short_path = files.get_savepath(files.iter); 
-		var fname = files.get_subdir()+files.entries[files.iter];
+		var fname = files.get_subdir()+files.get_fname();
 		localStorage.setItem("delete_fname", fname);  
 		
 		$.ajax( {type: 'GET', dataType: 'text', url: 'copyitem', cache: false, data: {copy_shortpath: short_path, past_dir: "trash/"}} )
@@ -306,7 +322,7 @@ function files_ajax_upload(id){
 }
 function files_ajax_download(){                                          consolelog_func();
 	if (files.entrytype[files.iter]=='file' && files.get_savepath(files.iter)!=''){
-		var fname = files.entries[files.iter]; 
+		var fname = files.get_fname(); 
 		download(fname);
 	} 
 }
@@ -396,7 +412,7 @@ function files_edittext(id){                                             console
 	//var text = common.editor_text;
 	var text = "";                                                       
 	if (id=="files_options_edit"){
-		var fname = files.entries[files.iter];                           //console.log('Edit: '+id+' '+text+' '+files.entrytype[files.iter]);
+		var fname = files.get_fname();                           //console.log('Edit: '+id+' '+text+' '+files.entrytype[files.iter]);
 		if (files.entrytype[files.iter]!='folder'){
 			text = fname.substring(0,fname.lastIndexOf('.'));
 		}else{
@@ -433,7 +449,3 @@ function files_set_image(){                                              console
 	common.style.class_arr = ["", "", "", "", "", ""];
 }
 
-function files_disable(id){                                              consolelog_func();
-    document.getElementById(id).onclick=''; 
-    document.getElementById(id).className='buttons disabled';
-}

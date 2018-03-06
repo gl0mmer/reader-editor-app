@@ -86,7 +86,7 @@ function files_show_files(){                                             console
 }
 
 function files_fill_zoom(){                                              consolelog_func();
-    var fname = files.entries[files.iter];
+    var fname = files.get_fname();
     var dir = user.name+'/ '+files.get_subdir();
     dir = '<em style="font-style:normal;color:black;opacity:0.3;">'+dir+' </em>';
     var elem = document.getElementById('zoom_text');
@@ -109,8 +109,8 @@ function files_show_buttons(){                                           console
 		inner_e+= '<div onclick="files_show_sync();" '  +common.style.buttonpos(6,4)+'> sync </div>' ;
     }
     if (files.in_contacts==false){
-		inner_e+= '<div onclick="files_ajax_upload();" '     +common.style.buttonpos(5,2)+'>upload</div>' ;
-		inner_e+= '<div onclick="files_show_options();" '    +common.style.buttonpos(1,4)+'> opt </div>';
+		inner_e+= '<div onclick="files_ajax_upload();" '                 +common.style.buttonpos(5,2)+'>upload</div>' ;
+		inner_e+= '<div onclick="files_show_options();" id="files_opt" ' +common.style.buttonpos(1,4)+'> opt </div>';
 	}
 	//inner_e+= '<div id="files_test"    onclick="clean_tmp();" '             +common.style.buttonpos(6,4)+'>clean_tmp</div>' ;
     //inner_e+= '<div id="files_python_button" class="buttons" onclick="files_click(10);"   style="'+reader_button_position(6)+'">py</div>';
@@ -157,13 +157,18 @@ function files_show_options(){                                           console
     files.editor_text = text;
     var inner_e = ""; 
     inner_e += '<div '+common.style.buttonpos_menu(0,2)+'><div id="files_options_edit" onclick="files_edittext(this.id);" class="text_zoom menu_zoom">'+text+'</div></div>';
-    //inner_e += '<div onclick="files_ajax_delete();" '  +common.style.buttonpos_menu(4,0)+'> delete </div>';
-    inner_e += '<div onclick="files_ajax_totrash();" '  +common.style.buttonpos_menu(4,0)+'> delete </div>';
-    inner_e += '<div onclick="files_ajax_rename();" '  +common.style.buttonpos_menu(7,0)+'> edit name </div>';
+	//inner_e += '<div onclick="files_ajax_delete();" '  +common.style.buttonpos_menu(4,0)+'> delete </div>';
+	inner_e += '<div onclick="files_ajax_totrash();" ' +common.style.buttonpos_menu(4,0)+'> delete </div>';
+	inner_e += '<div onclick="files_ajax_rename();" '  +common.style.buttonpos_menu(7,0)+'> edit name </div>';
+	inner_e += '<div onclick="files_copy();" '         +common.style.buttonpos_menu(6,0)+'> copy </div>'; 
     //inner_e += '<div onclick="" '                      +common.style.buttonpos_menu(5,0)+'> html to txt </div>';
     inner_e += '<div onclick="files_ajax_download();"' +common.style.buttonpos_menu(3,0)+'> down- load </div>';
-    inner_e += '<div onclick="files_ajax_past();" '    +common.style.buttonpos_menu(5,0)+'> past </div>';
-    inner_e += '<div onclick="files_copy();" '    +common.style.buttonpos_menu(6,0)+'> copy </div>';    
+    var copy_path = localStorage.getItem("copy_shortpath");              //console.log('Copy_path: '+copy_path);
+    if (["", undefined, null].indexOf(copy_path)!=-1 ){
+		inner_e += '<div onclick="" '                      +common.style.buttonpos_menu(5,3)+'> past </div>';
+	}else{
+		inner_e += '<div onclick="files_ajax_past();" '    +common.style.buttonpos_menu(5,0)+'> past </div>';
+    }   
     common_create_menu('files_options', 0, inner_e);
 }
 function files_show_login(){                                             consolelog_func();
