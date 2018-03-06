@@ -1,5 +1,3 @@
-var month_names = ["January", "February", "March", "April", "May", "June",
-                  "July", "August", "September", "October", "November", "December"];
 
 if (localStorage.getItem("isset")!="true"){
 	localStorage.setItem("isset", "true");

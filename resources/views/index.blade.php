@@ -70,8 +70,8 @@
     
     <script>
 	files_start();
-	contacts = [-1];
-	contact_names = ['..'];
+	contacts = [];
+	contact_names = [];
 	posts = [];
 	files.in_contacts = false;
 	common.in_messages = false;
@@ -121,7 +121,6 @@
 			</form>
 			@foreach($posts as $post)
 				<p>  {{ $post->message }} </p>
-				<!-- <div class="info">Posted by {{ $post->user->first_name }} on {{ $post->created_at }}, to {{ $post->user_id_to }}</div> -->
 				<div>Posted by {{ $post->user_id }} on {{ $post->created_at }}, to {{ $post->user_id_to }}</div>
 				<div>
 					<a href="#">Edit</a> |
@@ -220,8 +219,6 @@
 	<script>
 		performLfmRequest('newfolder', {name: 'trash'})
 		.done(refreshFoldersAndItems); 
-		performLfmRequest('newfolder', {name: 'mail'})
-		.done(refreshFoldersAndItems);
 		$.ajax( {type: 'GET', dataType: 'text', url: 'create_init', cache: false} );
 	</script>
 	@endif

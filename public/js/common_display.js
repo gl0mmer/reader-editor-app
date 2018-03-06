@@ -59,6 +59,18 @@ function scroll_to(id, id_area, title){                                  console
         {elem.scrollIntoView(true);} 
 }
 
+function common_disable_button(id, disable, todo){
+	var elem = document.getElementById(id);
+	if (elem){
+		if (disable){
+			elem.onclick = "";
+			$("#"+id).addClass("disabled");
+		}else{
+			elem.onclick = todo;
+			$("#"+id).removeClass("disabled");
+		}
+	}
+}
 
 //-- show menu -----------------------------------------------------------
 

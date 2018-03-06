@@ -30,7 +30,7 @@ var files = {
 	url: '',
 	alert_guest: 'You need registration to proceed',
 	//items_protected: ['mail', 'trash', 'Welcome.txt'],
-	items_protected: ['mail', 'trash'],
+	items_protected: ['..','trash'],
 	
 	get_fname: function(i){                                              //consolelog_func('brown');
 		if (i===undefined) {i=this.iter;} 
@@ -159,36 +159,20 @@ function files_scroll(order, i_utter){                                   console
     
     var name = files.get_subdir()+files.get_fname();                     //console.log('Opt name: '+name);
     var ifdisable = !(files.items_protected.indexOf(name)==-1 && files.iter!=0);
-    files_disable_button("files_opt", ifdisable, function(){ files_show_options();} );   //console.log('Opt name: '+name, ifdisable);
+    common_disable_button("files_opt", ifdisable, function(){ files_show_options();} );   //console.log('Opt name: '+name, ifdisable);
          
 }                                                        
 
-function files_disable_button(id, disable, todo){
-	var elem = document.getElementById(id);
-	if (elem){
-		if (disable){
-			elem.onclick = "";
-			$("#"+id).addClass("disabled");
-		}else{
-			elem.onclick = todo;
-			$("#"+id).removeClass("disabled");
-		}
-	}
-}
 //-- ajax functions ------------------------------------------------------
 
-function files_ajax_enter(){                                             consolelog_func("orange");  
-	var path = files.get_enterpath(files.iter);                          //console.log('EPath: '+path+' - '+files.dir+'/'+files.get_fname());           
-	
-	if (files.get_fname()=='mail') {                                     // show contacts
-		localStorage.setItem("folder_path", 'mail');
-		goTo( path );
-		document.getElementById('show_contacts').click();
-	}else if (files.in_contacts && files.iter==0){                       // exit contacts
-		//loadItems();
-		document.getElementById('show_home').click();
+function files_ajax_enter(path){                                         consolelog_func("orange");  
+	if (path==undefined){
+		var path = files.get_enterpath(files.iter);                      //console.log('EPath: '+path+' - '+files.dir+'/'+files.get_fname());           
 	}
-	else if (files.entrytype[files.iter]=='file'){                       // open file
+	if (path==-1 && files.in_contacts ){
+		files.in_contacts = false;
+		document.getElementById('show_home').click();
+	}else if (files.entrytype[files.iter]=='file'){                       // open file
 		if (files.in_contacts){                                          
 			document.getElementById('contact_'+files.paths[files.iter]).click();
 		}else{
@@ -209,6 +193,11 @@ function files_ajax_enter(){                                             console
 	}
 	
 }  
+function files_ajax_contacts(){
+		localStorage.setItem("folder_path", 'mail');
+		//goTo( 'mail' );
+		document.getElementById('show_contacts').click();
+}
 
 function files_ajax_create(type){
 	var new_name = files.get_subdir()+common.editor_text;                console.log('New fname: '+new_name);

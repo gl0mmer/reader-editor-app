@@ -86,9 +86,9 @@ class LfmExtendController extends LfmController
 			$msg = $msg.' Error ';
 		}
 		
-		$path = parent::getCurrentPath('mail');
-		parent::createFolderByPath($path);
-		$msg = $msg.' | '.$path.' Created ';
+		//$path = parent::getCurrentPath('mail');
+		//parent::createFolderByPath($path);
+		//$msg = $msg.' | '.$path.' Created ';
 		
 		$path = parent::getCurrentPath('trash');
 		if (!File::exists($path)) {

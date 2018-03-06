@@ -6,11 +6,8 @@ function loadContacts(ids, names){
 	localStorage.setItem("in_reader", "no");                             
 	files.in_contacts =true;
 	files.entries = names;                                               //console.log('Entries: ',files.entries);    
-	files.entrytype = Array(ids.length+1).fill('file');                        
-	files.entrytype[0]='folder';                                         //console.log(files.entrytype);
-	files.entries.push('+');
+	files.entrytype = Array(ids.length).fill('file');                        
 	files.paths = ids;      
-	files.paths.push(-1);                                                //console.log(files.paths); console.log(files.entries);
 	files_update();     
 }
 function loadMessages(messages) {                                               

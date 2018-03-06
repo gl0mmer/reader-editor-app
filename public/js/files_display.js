@@ -77,12 +77,6 @@ function files_show_files(){                                             console
 	document.getElementById('files_array').innerHTML = inner_e;          //console.log(inner_e);
 	common_set_fontsize(common.f_fontsize_scale, files);
 	
-	if (files.in_contacts==true){                                        //console.log('id',files_arr.length);                        
-        var id = 'fileid_'+(files_arr.length-1).toString();              //console.log('id',id, files_arr.length-1); 
-        document.getElementById(id).onclick=function() { files_show_addcontact(); } 
-        document.getElementById(id+'_pic').innerHTML = symbol_addcontact;
-	    document.getElementById(id+'_name').innerHTML = "add contact";    
-	}
 }
 
 function files_fill_zoom(){                                              consolelog_func();
@@ -100,7 +94,8 @@ function files_fill_zoom(){                                              console
 function files_show_buttons(){                                           consolelog_func();  
     var elem = document.getElementById('buttons_area');                  
     var inner_e="";
-    inner_e+= '<div onclick="files_show_menu();" '       +common.style.buttonpos(0,4)+'> menu </div>' ;
+    
+    inner_e+= '<div onclick="files_show_menu();" '       +common.style.buttonpos(0,4)+'>'+'menu'+'</div>' ;
     inner_e+= '<div onclick="files_ajax_enter();" '      +common.style.buttonpos(2,2)+'>'+symbol_enter+'</div></div>';
     inner_e+= '<div onclick="files_show_login();" '      +common.style.buttonpos(4,2)+'>'+'log in'+'</div>' ;
     inner_e+= '<div onclick="files_scroll(-2);" '   +common.style.buttonpos(3,4)+'>'+symbol_prev+'</div>' ;
@@ -108,12 +103,15 @@ function files_show_buttons(){                                           console
     if (user.name=='admin'){
 		inner_e+= '<div onclick="files_show_sync();" '  +common.style.buttonpos(6,4)+'> sync </div>' ;
     }
-    if (files.in_contacts==false){
-		inner_e+= '<div onclick="files_ajax_upload();" '                 +common.style.buttonpos(5,2)+'>upload</div>' ;
+    if (files.in_contacts){
+		inner_e+= '<div onclick="files_show_addcontact();" ' +common.style.buttonpos(5,4)+'> add </div>';
+	}else{
 		inner_e+= '<div onclick="files_show_options();" id="files_opt" ' +common.style.buttonpos(1,4)+'> opt </div>';
+		inner_e += '<div onclick="files_show_create();" '                +common.style.buttonpos(5,2)+'>new file</div>';
 	}
 	//inner_e+= '<div id="files_test"    onclick="clean_tmp();" '             +common.style.buttonpos(6,4)+'>clean_tmp</div>' ;
     //inner_e+= '<div id="files_python_button" class="buttons" onclick="files_click(10);"   style="'+reader_button_position(6)+'">py</div>';
+     
     elem.innerHTML=inner_e;
          
 }
@@ -126,14 +124,16 @@ function files_show_sync(){                                              console
 }
 function files_show_menu(){                                              consolelog_func();
 	var inner_e = "";  var obj = 'files';
-    inner_e += '<div onclick="common_show_lang(1)" '           +common.style.buttonpos_menu(2,0)+'>lang</div>';
+    inner_e += '<div onclick="common_show_lang(1);" '           +common.style.buttonpos_menu(2,0)+'>lang</div>';
     inner_e += '<div onclick="files_set_zoom();" id="files_zoom_btn"' +common.style.buttonpos_menu(3,0)+'>'+files.zoom_arr[files.zoom]+'</div>';
     inner_e += '<div onclick="common_show_clickdelay();" '     +common.style.buttonpos_menu(4,0)+'> click delay </div>';
-    inner_e += '<div onclick="common_show_fontsize('+obj+');" '+common.style.buttonpos_menu(6,0)+'> font size </div>';
-    inner_e += '<div onclick="" '                              +common.style.buttonpos_menu(5,3)+'> sound </div>';
+    inner_e += '<div onclick="common_show_fontsize('+obj+');" '+common.style.buttonpos_menu(5,0)+'> font size </div>';
+    inner_e += '<div onclick="" '                              +common.style.buttonpos_menu(1,3)+'> sound </div>';
     inner_e += '<div onclick="files_show_bugfix();" '          +common.style.buttonpos_menu(0,0)+'> bug fix </div>';
-    if (files.in_contacts==false){
-		inner_e += '<div onclick="files_show_create();" '          +common.style.buttonpos_menu(7,0)+'>new file</div>';
+    if (files.in_contacts){
+		inner_e += '<div onclick="files_ajax_enter(-1);" '    +common.style.buttonpos_menu(7,0)+'>'+'exit'+'</div>';
+	}else{
+		inner_e += '<div onclick="files_ajax_contacts();" '    +common.style.buttonpos_menu(7,0)+'>'+symbol_mail+'</div>';
 	}
     common_create_menu('files_menu', 0, inner_e);
 }
@@ -146,9 +146,16 @@ function files_show_bugfix(){                                            console
 function files_show_create(){                                            consolelog_func();
 	var inner_e = "";
     inner_e += '<div '+common.style.buttonpos_menu(0,2)+'><div id="files_create_edit" onclick="files_edittext(this.id);" class="text_zoom menu_zoom">file name</div></div>';    
-    inner_e += '<div onclick="files_ajax_create(1);" '+common.style.buttonpos_menu(6,0)+'>create txt</div>';
+    inner_e += '<div onclick="files_ajax_create(1);" '+common.style.buttonpos_menu(5,0)+'>create txt</div>';
     inner_e += '<div onclick="files_ajax_create(0);" '+common.style.buttonpos_menu(4,0)+'>create dir </div>';
-    common_create_menu('files_create', 1, inner_e);
+    inner_e += '<div onclick="files_ajax_upload();" ' +common.style.buttonpos_menu(3,0)+'>upload</div>' ;
+    var copy_path = localStorage.getItem("copy_shortpath");
+    if (["", undefined, null].indexOf(copy_path)!=-1 ){
+		inner_e += '<div onclick="" '                      +common.style.buttonpos_menu(7,3)+'> past </div>';
+	}else{
+		inner_e += '<div onclick="files_ajax_past();" '    +common.style.buttonpos_menu(7,0)+'> past </div>';
+    }   
+    common_create_menu('files_create', 0, inner_e);
 }
 function files_show_options(){                                           consolelog_func();
     var fname = files.get_fname();
@@ -163,12 +170,7 @@ function files_show_options(){                                           console
 	inner_e += '<div onclick="files_copy();" '         +common.style.buttonpos_menu(6,0)+'> copy </div>'; 
     //inner_e += '<div onclick="" '                      +common.style.buttonpos_menu(5,0)+'> html to txt </div>';
     inner_e += '<div onclick="files_ajax_download();"' +common.style.buttonpos_menu(3,0)+'> down- load </div>';
-    var copy_path = localStorage.getItem("copy_shortpath");              //console.log('Copy_path: '+copy_path);
-    if (["", undefined, null].indexOf(copy_path)!=-1 ){
-		inner_e += '<div onclick="" '                      +common.style.buttonpos_menu(5,3)+'> past </div>';
-	}else{
-		inner_e += '<div onclick="files_ajax_past();" '    +common.style.buttonpos_menu(5,0)+'> past </div>';
-    }   
+    
     common_create_menu('files_options', 0, inner_e);
 }
 function files_show_login(){                                             consolelog_func();

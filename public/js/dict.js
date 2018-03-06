@@ -56,4 +56,10 @@ var newlogin_messages_en = ['The new user is added successfully.', 'The name is 
 var newlogin_messages_ru = ['Новый аккаунт успешно создан.', 'Невозможно создать новый аккаунт. Указанное имя занято.', ''];
 
 
-//--
+//-- misc ----------------------------------------------------------------
+
+var month_names = ["January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December"];
+
+//-- button names --------------------------------------------------------
+
