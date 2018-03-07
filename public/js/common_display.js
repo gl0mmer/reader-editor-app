@@ -33,7 +33,6 @@ function menu_blur(ineditor){                                            console
 	if (common.browser!='Firefox'){
 		if (ineditor){ $('#editor_base_elements').foggy({ blurRadius:5, opacity:0.8, cssFilterSupport:true }); }
 		else{          $('#base_elements').foggy({ blurRadius:5, opacity:0.8, cssFilterSupport:true }); 
-		               //$('#base_elements').css('webkitFilter', 'blur (5px)');
 		}
 	}
 }
@@ -45,7 +44,7 @@ function menu_back(id, foggyoff, ineditor){                              console
 		else{          if (foggyoff==1){ $('#base_elements').foggy(false);  } }
 	}
 	
-    elem = document.getElementById(id).parentNode;  //console.log('Parent id: '+elem.getAttribute('id')+' | '+elem.parentNode.getAttribute('id'));
+    elem = document.getElementById(id).parentNode;                       //console.log('Parent id: '+elem.getAttribute('id')+' | '+elem.parentNode.getAttribute('id'));
     elem.parentNode.removeChild(elem);
 }
 
@@ -76,51 +75,49 @@ function common_disable_button(id, disable, todo){
 
 function common_show_lang(lvl, parent){                                  consolelog_func(); 
     var inner_e = ''; var lang='';
-    inner_e+=     '<div id="en"               onclick="common_set_lang(this.id,'+true+');" '+common.style.buttonpos_menu(1,0)+'>en</div>';
-    inner_e+=     '<div id="ru"               onclick="common_set_lang(this.id,'+true+');" '+common.style.buttonpos_menu(2,0)+'>ru</div>';
-    inner_e+=     '<div id="en"               onclick="common_set_lang(this.id,'+false+');" '+common.style.buttonpos_menu(5,0)+'>en</div>';
-    inner_e+=     '<div id="ru"               onclick="common_set_lang(this.id,'+false+');" '+common.style.buttonpos_menu(6,0)+'>ru</div>';
-    inner_e+=     '<div id="auto"             onclick="common_set_lang(this.id,'+false+');" '+common.style.buttonpos_menu(7,0)+'>auto</div>';
-    inner_e+=     '<div id="common_langbase_zoom"  onclick="" '+common.style.buttonpos_menu(0,1)+'>'+common.langbase+'</div>';
-    inner_e+=     '<div id="common_lang_zoom"      onclick="" '+common.style.buttonpos_menu(4,1)+'>'+common.lang+'</div>';
+    var inner_e = button_html(1, [['place_lang', [0,2]],
+                                  ['js_lang',    [4,0], 0],
+                                  ['js_lang',    [5,0], 1],
+                                 ]);
     if (editor!=undefined) {parent = "editor_created_elements";}
     common_create_menu('common_lang',lvl, inner_e, parent);
+    document.getElementById('place_lang').innerHTML = common.langbase;
 }
 
-function common_show_fontsize(obj){                                      consolelog_func(); 
-	var alpha_def = 1, font_def = 3, scale=1;
-	if (obj.name==='files'){ alpha=common.style.f_fontalpha; font_def = common.style.f_fontsize; scale = common.f_fontsize_scale; }
-	if (obj.name==='common'){ alpha=common.style.r_fontalpha; font_def = common.style.r_fontsize; scale = common.r_fontsize_scale; }            
-	if (obj.name==='reader'){ alpha=common.style.r_fontalpha; font_def = common.style.r_fontsize; scale = common.r_fontsize_scale; } 
-    var inner_e = ''; 
-    if (obj.name==='files'){
-	    inner_e+=     '<div id="0.8"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(7,0)+'> x 0.8 </div>';
-	    inner_e+=     '<div id="1"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(6,0)+'> x 1 </div>';
-	    inner_e+=     '<div id="1.2"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(5,0)+'> x 1.2 </div>';
-	    inner_e+=     '<div id="1.4"    class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(4,0)+'> x 1.4 </div>';
-    }
-    if (obj.name==='reader'){
-		inner_e+=     '<div id="0.8"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(2,0)+'> x 0.8 </div>';
-		inner_e+=     '<div id="1"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(3,0)+'> x 1 </div>';
-		inner_e+=     '<div id="1.2"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(7,0)+'> x 1.2 </div>';
-		inner_e+=     '<div id="1.4"    class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(6,0)+'> x 1.4 </div>';
-		inner_e+=     '<div id="2.0"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(5,0)+'> x 2.0 </div>';
-		inner_e+=     '<div id="3.0"      class="buttons"  onclick="common_set_fontsize(this.id,'+obj.name+');" '+common.style.buttonpos_menu(4,0)+'> x 3.0 </div>';
-	}
-    inner_e+=     '<div class="text_zoom_box" '+common.style.buttonpos_menu(0,2)+'><div id="common_fontsize_zoom" class="text_zoom menu_zoom" style="color:rgba(0,0,0,'+alpha+'); font-size:'+font_def*scale*common.style.vmin+'px;">text example</div></div>';
+function reader_show_fontsize(){
+	var inner_e = button_html(1, 
+		[['js_rfontsize',    [7,0], 0], ['js_rfontsize',   [6,0],1],
+		 ['js_rfontsize',    [5,0], 2], ['js_rfontsize',   [4,0],3],
+		 ['js_rfontsize',    [3,0], 4], ['js_rfontsize',   [2,0],5],
+		 ['place_fontsize', [0,2]   ],
+		]);
+	var alpha=common.style.r_fontalpha, font_def = common.style.r_fontsize, scale = common.r_fontsize_scale;
+	var style='"color:rgba(0,0,0,'+alpha+'); font-size:'+font_def*scale*common.style.vmin+'px;"';
+	
     common_create_menu('common_fontsize',1, inner_e);
-}
+}  
+function files_show_fontsize(){
+	var inner_e = button_html(1, 
+		[['js_ffontsize',    [7,0], 0], ['js_ffontsize',   [6,0],1],
+		 ['js_ffontsize',    [5,0], 2], ['js_ffontsize',   [4,0],3],
+		 ['place_fontsize', [0,2]   ],
+		]);
+	var alpha=common.style.f_fontalpha, font_def = common.style.f_fontsize, scale = common.f_fontsize_scale;
+	var style='"color:rgba(0,0,0,'+alpha+'); font-size:'+font_def*scale*common.style.vmin+'px;"';
+	
+    common_create_menu('common_fontsize',1, inner_e);
+}  
 
 function common_show_clickdelay(){                                       consolelog_func(); 
-	var delay = common.time_delay/1000;
-    var inner_e = ''; 
-    inner_e+= '<div id="common_clickdelay_zoom"  onclick="" ' +common.style.buttonpos_menu(0,1)+'>'+delay+' sec</div>';
-    inner_e+= '<div id="0.0"      class="buttons"  onclick="common_set_clickdelay(0.01);"'+common.style.buttonpos_menu(3,0)+'> 0.0 sec </div>';
-    inner_e+= '<div id="0.1"      class="buttons"  onclick="common_set_clickdelay(0.1);" '+common.style.buttonpos_menu(4,0)+'> 0.1 sec </div>';
-    inner_e+= '<div id="0.4"      class="buttons"  onclick="common_set_clickdelay(0.4);" '+common.style.buttonpos_menu(5,0)+'> 0.4 sec </div>';
-    inner_e+= '<div id="0.7"      class="buttons"  onclick="common_set_clickdelay(0.7);" '+common.style.buttonpos_menu(6,0)+'> 0.7 sec </div>';
-    inner_e+= '<div id="1.0"      class="buttons"  onclick="common_set_clickdelay(1.0);" '+common.style.buttonpos_menu(7,0)+'> 1.0 sec </div>';
+	var inner_e = button_html(1, 
+		[['js_delay',    [4,0], 0], ['js_delay',   [5,0], 1],
+		 ['js_delay',    [6,0], 2], ['js_delay',   [7,0], 3],
+		 ['place_delay', [0,2]]
+	    ]);
     common_create_menu('common_clickdelay',1, inner_e);
+    
+    var delay = common.time_delay/1000;                                 
+	document.getElementById('place_delay').innerHTML = delay+' sec';
 }
 
 function common_show_notification(text, welcome, blur){                        consolelog_func();
@@ -136,11 +133,11 @@ function common_show_notification(text, welcome, blur){                        c
 	inner_e+= '<div class="menu_area" >';
 	inner_e+= '<div class="text_scroll_box" style="position:fixed;top:15vh;left:12vw;width:76vw;height:'+(b_top-23)+'vh;font-size:4.8vmin;line-height:7.5vh; color: rgba(0,0,0,0.55);">';
 	inner_e+= '<div class="text_scroll" align="left" style="top:0;"> <div class="reader_text" style="top:-5vh;height:20%;">'+text+' &nbsp </div> </div> </div> </div>' ;
-                                       
-    inner_e += '<div onclick="utter_sentence(0, 1, 0, 1);" ' +common.style.buttonpos_menu(19,0,4,5)+' > utter </div>';
+      
+    inner_e += button_html(1, [['js_utternote', [19,0]] ], 5,4);
     if (welcome){
-		inner_e += '<div onclick="welcome_donot();" ' +common.style.buttonpos_menu(16,0,4,5)+" > Don't show again </div>";
-	}
+		inner_e += button_html(1, [['js_donotshow', [16,0]] ], 5,4);
+	}                                 
                   
     element = document.createElement('div');
     element.setAttribute('id', id);

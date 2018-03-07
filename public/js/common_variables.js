@@ -45,22 +45,12 @@ var common = {
 	cookie_suffix: "_",
 	name: "common",
 	play_counter: 1,
-	utter_text: '',
-	utter_stop: 0,
+	utter_text: '',            // to utter long sentences
 	utter_onend: 0,
 	utter_playall: 0,
-	repeat_text: '',
-	in_messages: false,
-	
-	symbol_ltag: '<abbr>',
-	symbol_rtag: '</abbr>',
-	otag: "span",
-	ctag: "span",
-	ptag: "span",
-	
+	repeat_text: '',           // used in common_show_notification() only
+	in_messages: false,	
 	time_click: 0,
-	//url_php: "https://hedgehogappp.com/",
-	url_php: "",
 	
 	cookie_save: function(){                                             consolelog_func('brown');
 	    var keys = Object.keys(this);                                    
@@ -148,7 +138,7 @@ common.style = {
 	    return('class="'+class_name+'" style="'+style+'"'); 
 	},
 	
-	buttonpos_menu: function(i, class_n, x_dim, y_dim, shift_n, shift_nleft){  //consolelog_func('brown'); 
+	buttonpos_menu: function(i, class_n, y_dim, x_dim, shift_n, shift_nleft){  //consolelog_func('brown'); 
 		if (class_n===undefined) {class_n=0;}
 		var class_arr = ["buttons", "buttons_text", "text_zoom_box", "buttons disabled"];
 		var class_name = class_arr[class_n];
@@ -170,8 +160,7 @@ common.style = {
 		var x = b_left + b_width*nx + b_xspace*(nx-shift_nleft) + b_sspace*shift_nleft;
 		var b_yspace = (b_bot-b_top-b_height*y_dim)/(y_dim-1);
 		var y = b_top + (b_yspace+b_height)*ny;
-		//if (class_n===1) { x += b_xspace-1; }
-		//if (class_n===2) { b_width = ( b_right-b_left-3*b_xspace-b_width); }
+		
 		var fontsize = this.b_fontsize*common.b_fontsize_scale*this.vmin;   
 		var lineheight = fontsize*this.b_lineheight;
 		if (class_n===2) { b_width = 2*b_width+b_xspace; lineheight = b_height*this.vmin+lineheight/2.0; }

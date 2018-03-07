@@ -50,13 +50,9 @@ function reader_scroll(order,stop,onend){                                console
     var mail_noedit = false;
     if(reader.in_messages && $('#'+id).parents('#mail_editable').length === 0) { mail_noedit=true; } 
                                                                          console.log('scroll iter: '+iter+'  '+mail_noedit+' '+reader.in_messages);
-    if (iter==-1 || mail_noedit===true){ edit_function = ''; edit_class='buttons disabled'; 
-        document.getElementById('reader_edit').className='buttons symbol disabled';
-        document.getElementById('reader_edit').setAttribute( "onclick", '' );
-    } else {
-        document.getElementById('reader_edit').className='buttons symbol';
-        document.getElementById('reader_edit').setAttribute( "onclick", 'reader_editor(reader_edit)' );
-    }
+    var ifdisable = (iter==-1 || mail_noedit===true); 
+    common_disable_button("js_edit", ifdisable, function(){ reader_editor(reader_edit);});
+    
 }    
 function reader_utter(stop_i, onend) {                                   consolelog_func(); 
     id = reader.get_id();                                                //console.log('reader onend: '+onend);
@@ -107,57 +103,47 @@ function reader_highlite(){                                              console
 //-- show buttons --------------------------------------------------------
 
 function reader_show_buttons(){                                          consolelog_func(); 
-	var types = ['select <br> -','select <br> - -','select <br> - - -']; 
-    var iter = reader.iter;                                              //console.log('iter: '+iter+' '+reader.readonly);
-    if (iter==-1 || reader.readonly){ edit_function = ''; edit_class='buttons symbol disabled'; }
-    else { edit_function='onclick="reader_editor(reader_edit);"'; edit_class='buttons symbol'; }
-    
-    elem = document.getElementById('buttons_area');
-    inner_e = '<div id="reader_menu" onclick="reader_show_menu();" '+common.style.buttonpos(0,4)+'>menu</div>' ;
-    inner_e+= '<div id="reader_edit" class="'+edit_class+'" '+edit_function+' '+common.style.buttonpos(1,2)+'>edit</div>' ;
-    inner_e+= '<div id="reader_selecttype" onclick="reader_set_selecttype(1,1);" '+common.style.buttonpos(5,4)+'>'+types[reader.selecttype]+'</div>' ;
-    inner_e+= '<div id="prev" onclick="reader_play_single(0);" '+common.style.buttonpos(3,4)+'>'+symbol_prev+'</div>' ;
-    inner_e+= '<div id="next" onclick="reader_play_single(1);" '+common.style.buttonpos(7,4)+'>'+symbol_next+'</div>' ;
-    
-    //inner_e+= '<div id="reader_speed"     class="buttons" onclick=""  style="'+reader_button_position(4)+'">'+symbol_speed+'</div>' ;
-    inner_e+= '<div id="playpause"   onclick="reader_play_pause();" '         +common.style.buttonpos(6,4)+'>'+symbol_play+'</div>' ;
-    inner_e+= '<div id="reader_navigate"   onclick="reader_show_navigate()" ' +common.style.buttonpos(2,4)+'>'+symbol_up_down+'</div>' ;
-    
-    if (reader.in_messages){
-		inner_e+= '<div id="reader_mail" onclick="reader_show_mail();" '   +common.style.buttonpos(4,2)+'>'+symbol_mail+'</div>' ;
+    var inner_e = button_html(0, 
+		[['show_rmenu',    [0,4]],   ['js_edit',   [1,2]],
+		 ['js_rprev',      [3,4]],   ['js_rnext',   [7,4]],
+		 ['js_selecttype', [5,4]],   ['js_playpause', [6,4]],
+		 ['show_navigate', [2,4]],   
+		]);
+		
+	if (reader.in_messages){
+		inner_e+= button_html(0,    [['show_mail',    [4,2]], ]);
 	}else{
-		inner_e+= '<div id="readall"     onclick="reader_play_all()"' +common.style.buttonpos(4,4)+'>read all</div>' ;
+		inner_e+= button_html(0,    [['js_readall',   [4,2]], ]);
 	}
+    var elem = document.getElementById('buttons_area');
     elem.innerHTML=inner_e;
-}
-function reader_show_navigate(){                                         consolelog_func(); 
-	elem = document.getElementById('nvigate_area');
-	inner_e = '';
-	inner_e+= '<div id="navigate_0" onclick="reader_navigate(0);" '+common.style.buttonpos_menu(4,0)+'> start </div>' ;
-	inner_e+= '<div id="navigate_1" onclick="reader_navigate(0.5);" '+common.style.buttonpos_menu(6,0)+'> mid </div>' ;
-	inner_e+= '<div id="navigate_2" onclick="reader_navigate(1);" '+common.style.buttonpos_menu(7,0)+'> end </div>' ;
-    common_create_menu('reader_navigate', 0, inner_e);
 }
 
 function reader_show_menu(){                                             consolelog_func(); 
     var n_zoom = reader.zoomtype; var obj='reader';
-    inner_e = '';
-    inner_e+= '<div id="reader_fontsize"        onclick="common_show_fontsize('+obj+');" '+    common.style.buttonpos_menu(4,0)+'> font size </div>';    
-    inner_e+= '<div id="reader_menu_sound"      onclick="" ' +common.style.buttonpos_menu(0,3)+'>sound</div>';
-    inner_e+= '<div id="common_lang"            onclick="common_show_lang(1);" '+common.style.buttonpos_menu(2,0)+'>lang</div>';
-    inner_e+= '<div id="reader_go"              onclick="" '+common.style.buttonpos_menu(3,3)+'>go</div>' ;
-    inner_e+= '<div id="reader_menu_go-files"   onclick="reader_exit();" '+common.style.buttonpos_menu(7,0)+'">exit</div>';
-    inner_e+= '<div id="reader_menu_zoomtype"   onclick="reader_show_zoomtype();" '+common.style.buttonpos_menu(6,0)+'>zoom</div>' ;
-    //inner_e+= '<div id="common_lang_both_zoom"  onclick="" ' +common.style.buttonpos_menu(1,1,4,2,0,-1)+'>'+common.langbase+' +<br> '+common.lang+'</div>';
-    //inner_e+= '<div id="reader_menu_zoomtype_text" '+common.style.buttonpos_menu(5,1,4,2,0,-1)+'>'+reader.zoomtype_arr[n_zoom]+'</div>' ;
+    var inner_e = button_html(1, 
+		[['show_rfontsize',  [4,0]],   ['show_sound',      [0,3]],
+		 ['show_lang',       [2,0]],   ['ajax_readerexit', [7,0]],
+		 ['show_readerzoom', [6,0]],
+		]);
     common_create_menu('reader_menu', 0, inner_e);
 }
+
+function reader_show_navigate(){                                         consolelog_func(); 
+	var inner_e = button_html(1, 
+		[['js_navigate',  [4,0], 0],   ['js_navigate',    [6,0], 1],
+		 ['js_navigate',  [7,0], 2]
+		]);
+    common_create_menu('reader_navigate', 0, inner_e);
+}
 function reader_show_zoomtype(){                                         consolelog_func(); 
-    n_zoom = reader.zoomtype;
-    inner_e = '<div id="reader_zoomtype_zoombox" '+common.style.buttonpos_menu(0,2)+'><div id="reader_zoomtype_zoom" class="text_zoom menu_zoom">'+reader.zoomtype_arr[n_zoom]+'</div></div>';
-    inner_e+= '<div id="0"   onclick="reader_set_zoomtype(this.id)" '+common.style.buttonpos_menu(4,0)+'> no zoom </div>';
-    inner_e+= '<div id="1"   onclick="reader_set_zoomtype(this.id)" '+common.style.buttonpos_menu(5,0)+'> by word </div>';
-    inner_e+= '<div id="2"   onclick="reader_set_zoomtype(this.id)" '+common.style.buttonpos_menu(6,0)+'> by sentence </div>';
+    var inner_e = button_html(1, 
+		[['place_readerzoom',  [0,2]],   ['js_readerzoom',    [4,0], 0],
+		 ['js_readerzoom',  [5,0], 1],   ['js_readerzoom',  [6,0], 2]
+		]);
     common_create_menu('reader_zoomtype', 1, inner_e);
+    
+    var n_zoom = reader.zoomtype;
+    document.getElementById('place_readerzoom').innerHTML = reader.zoomtype_arr[n_zoom];
 }
 

@@ -107,9 +107,12 @@ function utter(txt, stop, onend, rate){                                  console
     //console.log(msg.voice);
     
     ru = /[а-яА-ЯЁё]/.test(txt); en = /[a-zA-Z]/.test(txt); 
-    if (common.lang=='auto'){ if (en){ msg.lang='en'; } if (ru){ msg.lang='ru'; } }
-    else { msg.lang=common.lang; }
-    if (!ru && !en && common.lang=='auto'){ msg.lang=common.langbase; }
+    if (common.lang=='auto'){ 
+		if (en && en+ru==1){ msg.lang='en'; } 
+		if (ru && ru+en==1){ msg.lang='ru'; } 
+		if (ru==en){ msg.lang=common.langbase; }	
+	}
+    else { msg.lang=common.lang; }                                       //console.log(common.lang, common.langbase,  msg.lang, en+'-'+ru);
     msg.rate = rate;                                                     //console.log('rate: '+msg.rate+', lang: '+msg.lang+', txt: '+msg.text+', stop: '+stop);
     msg.rate = 0.9;                                                     //console.log('rate: '+msg.rate+', lang: '+msg.lang+', txt: '+msg.text+', stop: '+stop);
     if (stop==1){ 
@@ -121,7 +124,7 @@ function utter(txt, stop, onend, rate){                                  console
     
     window.speechSynthesis.speak(msg);  
       
-    var elem = document.getElementById('playpause');
+    var elem = document.getElementById('js_playpause');
     if (elem){                                                           //console.log('Utter in reader '+editor.if_spell+' | '+common.utter_text);
 		if (common.utter_playall==0){ onend = 0; }                       //console.log('common.onend: '+common.utter_playall);
 		common.play_counter=1;                                           //console.log('onend: '+onend);
@@ -137,7 +140,7 @@ function utter(txt, stop, onend, rate){                                  console
 	}
 }    
 function common_playpause_icon(i){
-	var elem = document.getElementById('playpause');
+	var elem = document.getElementById('js_playpause');
     if (elem){          
 		// [ ||> ,  || ]   
 		elem.innerHTML=symbols_play_pause[i]; //console.log(i);
@@ -184,32 +187,28 @@ function cookie_delete_all() {                                           console
 
 //-- menu functions ------------------------------------------------------
 
-function common_set_clickdelay(delay){                                   consolelog_func(); 
+function common_set_clickdelay(delay){                                      consolelog_func(); 
 	common.time_delay = delay*1000;                                     
-	document.getElementById('common_clickdelay_zoom').innerHTML = delay+' sec';
+	document.getElementById('place_delay').innerHTML = delay+' sec';
 }
 
-function common_set_lang(lang, is_base){                                 consolelog_func(); 
-    if (is_base===true){ 
-		common.langbase = lang; 
-		document.getElementById('common_langbase_zoom').innerHTML = lang;
-	}else{ 
-		common.lang = lang; 
-		document.getElementById('common_lang_zoom').innerHTML = lang;
-	}          
-    document.getElementById('common_lang_both_zoom').innerHTML = common.langbase+'+ <br>'+common.lang;       
+function common_set_lang(lang){                                   consolelog_func(); 
+	common.langbase = lang; 
+	document.getElementById('place_lang').innerHTML = lang;
+	        
 }
 
-function common_set_fontsize(id, obj){                                   consolelog_func(); 
+function common_set_fontsize(id, obj){                                   consolelog_func(); //console.log('scale: '+id+'|'+obj);
+	obj = parseInt(obj); 
+	
 	var s = common.style;
 	var classname = ''; var lineheight = 1.1; 
 	var alpha_def=s.fontalpha_def; 
 	var font_default = 3;
-	if (obj.name==='files'){ classname = 'files_name'; lineheight = s.f_lineheight; font_default = s.f_fontsize; }
-	if (obj.name==='common'){ classname = 'text_scroll'; lineheight = s.r_lineheight; font_default = s.r_fontsize; }            
-	if (obj.name==='reader'){ classname = 'text_scroll'; lineheight = s.r_lineheight; font_default = s.r_fontsize; }                         
-	var scale = parseFloat(id);      
-	var elem = document.getElementById('common_fontsize_zoom');
+	if (obj==0){ classname = 'files_name';  lineheight = s.f_lineheight; font_default = s.f_fontsize; }
+	if (obj==1){ classname = 'text_scroll'; lineheight = s.r_lineheight; font_default = s.r_fontsize; }                         
+	var scale = parseFloat(id);                                          //console.log('scale: '+id);
+	var elem = document.getElementById('place_fontsize');
     var alpha = alpha_def-(0.11-0.05*(scale-1)/2.0)*(scale-1);                                 
     var fontsize = font_default*scale*s.vmin;                            //console.log('Fontsize: '+fontsize+' | '+alpha);
     common.style.f_fontalpha = alpha;
@@ -220,14 +219,15 @@ function common_set_fontsize(id, obj){                                   console
     $('.'+classname).css('font-size', fontsize+'px');
     $('.'+classname).css('line-height', lineheight*fontsize+'px');
     $('.'+classname).css('color', 'rgba(0,0,0,'+alpha+')');
-    if (obj.name==='files'){ common.f_fontsize_scale = scale;   common.style.f_fontalpha = alpha; }
-    if (obj.name==='reader'){                                            //console.log('READER');
+    if (obj==0){ common.f_fontsize_scale = scale;   common.style.f_fontalpha = alpha; }
+    if (obj==1){                                            //console.log('READER');
 		common.r_fontsize_scale = scale;   common.style.r_fontalpha = alpha; 
 		var elem = document.getElementById('text_scroll_area');
 	    elem.style.fontSize = fontsize+'px';                             //console.log(elem.style.fontSize);
 		elem.style.color = 'rgba(0,0,0,'+common.style.r_fontalpha+');'; 
 		elem.style.lineHeight = lineheight*fontsize+'px'; 
 	}  
+	
     //common.style.resize();                    
 }
 

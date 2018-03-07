@@ -229,9 +229,8 @@ function editor_exit(){                                                  console
     input.onkeydown = "";
     input.onkeypress = "";
     common.editor_text = editor.text_raw;
-    common.ineditor = false;
+    common.ineditor = false;                                             //console.log(editor.parent);
     if (editor.parent=="reader"){ 
-		//console.log('EDITOR ischanged_text: '+common.ischanged_text+', text: '+common.editor_text+' ID: '+reader.id_curr);    
 		if (editor.text_origin!=editor.text_raw){
 			common.ischanged_text = true;
 		}

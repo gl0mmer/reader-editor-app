@@ -14,22 +14,17 @@ var files = {
 	cookie_suffix: "_f",
 	name: "files",
 	
-	nentry:1,
-	nfolders: 1,
 	entries: [],
 	paths: [],
 	entrytype: [],
-	json_tmp: "",
 	dir: "",
 	zoom_arr: ['no zoom', 'add zoom'],
 	home: '',
 	in_contacts: false,
 	contacts: [],
 	messages: [],
-	userid: -1,
 	url: '',
 	alert_guest: 'You need registration to proceed',
-	//items_protected: ['mail', 'trash', 'Welcome.txt'],
 	items_protected: ['..','trash'],
 	
 	get_fname: function(i){                                              //consolelog_func('brown');
@@ -40,20 +35,13 @@ var files = {
 		if (i===undefined) {i=this.iter;} 
 		return 'fileid_'+i.toString(); 
 	}, 
-	get_felem: function(i){                                              //consolelog_func('brown');
-		if (i===undefined) {i=this.iter;}                                //console.log('ID: '+this.get_fid(i));
-		return document.getElementById(this.get_fid(i));
-	},
-	get_felem_pic: function(i){                                          //consolelog_func('brown');
+	get_felem_pic: function(i){                                          //consolelog_func('brown');  !! Not used
 		if (i===undefined) {i=this.iter;} 
 		return document.getElementById(this.get_fid(i)+'_pic');
 	},
 	get_ftype: function(i){                                              //consolelog_func('brown');
 		if (i===undefined) {i=this.iter;} 
-		var type = "";
-		var elem = document.getElementById(this.get_fid(i));
-		if (elem) { type=elem.getAttribute('title'); }
-		return type;
+		return files.entrytype[i];
 	},
 	get_enterpath: function(i){                                       
 		var path = '';                                                   // for folders same as   files.dir+'/'+files.get_fname()
@@ -114,7 +102,7 @@ function files_update(){                                                 console
 			goTo( path );
 		}
 		files_show_buttons();                                            //console.log('Paths: ',files.paths);	       
-		common_set_fontsize(common.f_fontsize_scale, files);                                                                                                             
+		common_set_fontsize(common.f_fontsize_scale, 0);                                                                                                             
 		common.style.resize();
 		files_show_files();
 		files_scroll(files.iter, 'no'); 
@@ -126,42 +114,7 @@ function files_update(){                                                 console
 		} 
 	}
 	                                                                     //console.log('Parent dir: '+getPreviousDir());
-}    
-
-function files_scroll(order, i_utter){                                   consolelog_func('darkblue');
-
-    var iter = files.iter;                                               
-    var iter_prev = files.iter_prev;                                     
-    if (order==-1){ if (iter<files.entries.length-1) {iter+=1;} }
-    else if (order==-2){ if (iter>0) {iter-=1;} }
-    else { iter = order };                                               
-    iter_prev = files.iter;   
-    files.iter_prev = files.iter;
-    files.iter = iter;
-    
-    if (files.iter>files.entries.length-1  || files.iter<0){
-		files.iter = 0; 
-		files.iter_prev = 0;
-	}
-                                                                         console.log('scroll iter: '+files.iter+' | '+files.iter_prev);
-    files.get_felem(files.iter).className = 'files-hover';
-    if (files.iter_prev != files.iter) {
-		files.get_felem(files.iter_prev).className = 'files';
-	}
-    
-    files_fill_zoom();
-    scroll_to(files.get_fid(), 'content_box', title=0);
-    
-    if (iter==0){fname_ii='..';}
-    else{fname_ii = files.get_fname(); }                                 
-    fname_ii = fname_ii.replace('_',' ');                               
-    if (i_utter===undefined){ utter(fname_ii, 1, onend=0); } 
-    
-    var name = files.get_subdir()+files.get_fname();                     //console.log('Opt name: '+name);
-    var ifdisable = !(files.items_protected.indexOf(name)==-1 && files.iter!=0);
-    common_disable_button("files_opt", ifdisable, function(){ files_show_options();} );   //console.log('Opt name: '+name, ifdisable);
-         
-}                                                        
+}                                                     
 
 //-- ajax functions ------------------------------------------------------
 
@@ -172,7 +125,7 @@ function files_ajax_enter(path){                                         console
 	if (path==-1 && files.in_contacts ){
 		files.in_contacts = false;
 		document.getElementById('show_home').click();
-	}else if (files.entrytype[files.iter]=='file'){                       // open file
+	}else if (files.get_ftype()=='file'){                                // open file
 		if (files.in_contacts){                                          
 			document.getElementById('contact_'+files.paths[files.iter]).click();
 		}else{
@@ -191,11 +144,10 @@ function files_ajax_enter(path){                                         console
 		files.iter_prev = 0;
 		files.iter = 0;
 	}
-	
 }  
+
 function files_ajax_contacts(){
 		localStorage.setItem("folder_path", 'mail');
-		//goTo( 'mail' );
 		document.getElementById('show_contacts').click();
 }
 
@@ -229,7 +181,7 @@ function files_ajax_addcontact(){
 	if ( !common_ajax_permit() ){
 		alert = files.alert_guest;
 	}else{
-		var new_contact = document.getElementById('files_addcontact_edit').innerHTML;
+		var new_contact = document.getElementById('edit_contactname').innerHTML;
 		document.getElementById('addcontact_name').value = new_contact;
 		document.getElementById('addcontact_submit').click(); 
 	}
@@ -310,7 +262,7 @@ function files_ajax_upload(id){
 	}
 }
 function files_ajax_download(){                                          consolelog_func();
-	if (files.entrytype[files.iter]=='file' && files.get_savepath(files.iter)!=''){
+	if (files.get_ftype()=='file' && files.get_savepath(files.iter)!=''){
 		var fname = files.get_fname(); 
 		download(fname);
 	} 
@@ -367,8 +319,8 @@ function common_ajax_permit(){
 
 //-- account functions ---------------------------------------------------
 function files_signin(){                                                 consolelog_func();
-    var name = document.getElementById('files_loginname_edit').innerHTML;
-    var pass = document.getElementById('files_loginpass_edit').innerHTML;
+    var name = document.getElementById('edit_username').innerHTML;
+    var pass = document.getElementById('edit_userpass').innerHTML;
     document.getElementById('signin_username').value = name;
     document.getElementById('signin_password').value = pass;
     document.getElementById('signin_submit').click();  
@@ -376,9 +328,9 @@ function files_signin(){                                                 console
     //utter(login_messages_en[user_access],0,0,0);
 }
 function files_signup(){                                                 consolelog_func();
-    var name = document.getElementById('files_loginname_edit').innerHTML;
-    var pass = document.getElementById('files_loginpass_edit').innerHTML;   
-    var email = document.getElementById('files_loginmail_edit').innerHTML;   
+    var name = document.getElementById('edit_username').innerHTML;
+    var pass = document.getElementById('edit_userpass').innerHTML;   
+    var email = document.getElementById('edit_usermail').innerHTML;   
 	
 	document.getElementById('signup_email').value = email;
 	document.getElementById('signup_username').value = name;
@@ -391,18 +343,17 @@ function files_logout(){                                                 console
     document.getElementById('logout_submit').click();
 }
 function files_login_remember(){                                         consolelog_func();
-    files.username = document.getElementById('files_loginname_edit').innerHTML;
-    files.userpass = document.getElementById('files_loginpass_edit').innerHTML;  
+    files.username = document.getElementById('edit_username').innerHTML;
+    files.userpass = document.getElementById('edit_userpass').innerHTML;  
     files.userremember = true;
 }
 
 //-- misc ----------------------------------------------------------------
 function files_edittext(id){                                             consolelog_func('darkblue');
-	//var text = common.editor_text;
 	var text = "";                                                       
-	if (id=="files_options_edit"){
-		var fname = files.get_fname();                           //console.log('Edit: '+id+' '+text+' '+files.entrytype[files.iter]);
-		if (files.entrytype[files.iter]!='folder'){
+	if (id=="edit_filename"){
+		var fname = files.get_fname();                           //console.log('Edit: '+id+' '+text+' '+files.get_ftype());
+		if (files.get_ftype()!='folder'){
 			text = fname.substring(0,fname.lastIndexOf('.'));
 		}else{
 			text = fname;
@@ -420,21 +371,5 @@ function files_cleancookie(){                                            console
 	files.iter = 0;
 	files.iter_prev = 0;
 	loadFolders(true);
-	//window.location.href = '/index.html'; 
-}
-
-//-- not used ----------------------------------------------------------------
-
-function clean_tmp(){
-	//window.location.href = '/script/cron.php';
-	//document.getElementById('ffiles_test_submit').click(); 
-	files_click_ajax("ffiles_test_submit");
-}
-
-function files_set_image(){                                              consolelog_func('brown');
-	document.getElementById("body").className += " body_bkg_image";
-	document.getElementById("buttons_area").className += " buttons_area_image";
-	common.style.last_class = " buttons_image ";
-	common.style.class_arr = ["", "", "", "", "", ""];
 }
 

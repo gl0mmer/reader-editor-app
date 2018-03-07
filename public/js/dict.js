@@ -63,3 +63,193 @@ var month_names = ["January", "February", "March", "April", "May", "June",
 
 //-- button names --------------------------------------------------------
 
+
+var dict_en = {
+	show_fmenu      : 'menu',
+	show_rmenu      : 'menu',
+	show_opt        : 'opt',
+	show_clickdelay : 'click delay',
+	show_ffontsize  : 'font size',
+	show_rfontsize  : 'font size',
+	show_create     : 'create',
+	show_lang       : 'lang',
+	show_sound      : 'sound',
+	show_bugfix     : 'bug fix',
+	show_login      : 'log in',
+	show_sync       : 'sync',
+	show_readerzoom : 'zoom',
+	show_addcontact : symbol_addcontact,
+	show_mail       : symbol_mail,
+	
+	js_zoom       : 'zoom',
+	js_fprev      : symbol_prev,
+	js_fnext      : symbol_next,
+	js_rprev      : symbol_prev,
+	js_rnext      : symbol_next,
+	ajax_enter      : symbol_enter,
+	ajax_contacts   : symbol_mail,
+	ajax_mailexit   : 'exit',
+	ajax_readerexit : 'exit',
+	
+	js_copy       : 'copy',
+	ajax_past       : 'past',
+	ajax_rename     : 'rename',
+	ajax_rm         : 'delete',
+	ajax_totrash    : 'delete',
+	ajax_download   : 'down- load',
+	ajax_upload     : 'upload',
+	ajax_newdir     : 'create dir',
+	ajax_newtxt     : 'create txt',
+	ajax_addcontact : 'add',
+	ajax_reinit     : 'reinit files',
+	js_cleancookie: 'clean cookie',
+	
+	ajax_logout     : 'log out',
+	ajax_signup     : 'sign up',
+	ajax_signin     : 'sign in',
+	ajax_maildata   : 'mail data',
+	ajax_deleteuser : '',
+	js_rememberme : 'remem- ber me',
+	
+	show_mail       : symbol_mail,  
+	show_navigate   : symbol_up_down,  
+	js_edit       : 'edit',
+	js_readall    : 'read all',
+	js_playpause  : symbol_play,
+	ajax_readerexit : 'exit',
+	ajax_mailexit   : 'exit',
+	ajax_refresh    : 'refresh',
+	ajax_sendmail   : 'send mail',
+	
+	ajax_sync_past  : 'past',
+	ajax_sync_rm    : 'rm',
+	
+	edit_create    : '',
+	edit_filename  : '',
+	edit_username  : 'name', 
+	edit_userpass  : 'password', 
+	edit_usermail  : 'email',
+	edit_contactname : '',
+	
+	place_lang     : 'lang',
+	js_lang        : ['','ru','en'],
+	place_delay    : 'delay',
+	js_delay       : ['','0.1','0.4','0.7','1.0'],
+	place_fontsize : 'Example text',
+	js_ffontsize   : ['x','0.8','1','1.2','1.4'],
+	js_rfontsize   : ['x','0.8','1','1.2','1.4', '2', '3'],
+	js_navigate    : ['', 'start', 'mid', 'end'],
+	place_readerzoom: '',
+	js_readerzoom  : ['', 'no', 'word', 'sentence'], 
+	
+	js_utternote : 'utter',
+	js_donotshow : "don't show again", 
+
+}
+var dict_ru = {}
+var dict = dict_en;
+
+//-- button oncklick -----------------------------------------------------
+
+var onclick = {
+	show_fmenu : 'files_show_menu();',
+	show_rmenu : 'reader_show_menu();',
+	show_opt: 'files_show_options();',
+	show_clickdelay: 'common_show_clickdelay();',
+	show_ffontsize: 'files_show_fontsize();',
+	show_rfontsize: 'reader_show_fontsize();',
+	show_create: 'files_show_create();',
+	show_lang: 'common_show_lang(1);',
+	show_sound: '',
+	show_bugfix: 'files_show_bugfix();',
+	show_login: 'files_show_login()',
+	show_sync: 'files_show_sync();',
+	show_addcontact: 'files_show_addcontact();',
+	
+	js_zoom: 'files_set_zoom();',
+	js_fprev: 'files_scroll(-2);',
+	js_fnext: 'files_scroll(-1);',
+	js_rprev: 'reader_play_single(0);',
+	js_rnext: 'reader_play_single(1);',
+	ajax_enter: 'files_ajax_enter();',
+	ajax_contacts: 'files_ajax_contacts();',
+	ajax_readerexit: 'reader_exit();',
+	ajax_mailexit: 'files_ajax_enter(-1)',
+	
+	js_copy: 'files_copy();',
+	ajax_past: 'files_ajax_past();',
+	ajax_rename: 'files_ajax_rename();',
+	ajax_totrash: 'files_ajax_totrash();',
+	ajax_rm: 'files_ajax_delete();',
+	ajax_download: 'files_ajax_download();',
+	ajax_upload: 'files_ajax_upload();',
+	ajax_newdir: 'files_ajax_create(0);', 
+	ajax_newtxt: 'files_ajax_create(1);', 
+	ajax_addcontact: 'files_ajax_addcontact();', 
+	ajax_reinit: 'files_ajax_createinit();',
+	js_cleancookie: 'files_cleancookie();',
+	
+	edit_create  : 'files_edittext(this.id);',
+	edit_filename  : 'files_edittext(this.id);',
+	edit_username  : 'files_edittext(this.id);', 
+	edit_userpass  : 'files_edittext(this.id);', 
+	edit_usermail  : 'files_edittext(this.id);', 
+	edit_contactname  : 'files_edittext(this.id);', 
+	
+	ajax_logout     : 'files_logout();',
+	ajax_signup     : 'files_signup();',
+	ajax_signin     : 'files_signin();',
+	ajax_maildata   : '',
+	ajax_deleteuser : '',
+	js_rememberme : 'files_login_remember();',
+	
+	ajax_sync_past: 'files_ajax_past(1);',
+	ajax_sync_rm: 'files_ajax_delete(1);',
+	
+	show_mail: 'reader_show_mail();',
+	show_navigate: 'reader_show_navigate();',
+	show_readerzoom : 'reader_show_zoomtype();',
+	js_edit: 'reader_editor();',
+	js_readall: 'reader_play_all();',
+	js_selecttype: 'reader_set_selecttype(1,1);',
+	js_playpause: 'reader_play_pause();',
+	js_navigate: 'reader_navigate(this.id);',
+	js_readerzoom: 'reader_set_zoomtype(0,this.id);',
+	ajax_refresh: 'location.reload();',
+	ajax_sendmail: 'reader_ajax_send();',
+	
+	js_utternote : 'utter_sentence(0, 1, 0, 1);',
+	js_donotshow : 'welcome_donot();',
+	
+	js_lang: 'common_set_lang(this.id)',
+	js_delay : 'common_set_clickdelay(this.id);',
+	js_ffontsize : 'common_set_fontsize(this.id,0);',
+	js_rfontsize : 'common_set_fontsize(this.id,1);',
+}
+
+function button_html(lvl, arr, y_dim, x_dim){
+	if (y_dim==undefined){ y_dim = 2; }
+	if (x_dim==undefined){ x_dim = 4; }
+	var html = '';
+	var name = '', tail='', inner='', id='';
+	var pos = [];
+	for (var i=0; i<arr.length; i++){
+		pos = arr[i][1];                                                 //console.log(arr[i]);
+		name = arr[i][0]; 
+		inner = dict[name];
+		if (arr[i].length>2){                                            //console.log('inner: '+inner);           
+			tail = inner[ 1+ arr[i][2] ];
+			id = tail;
+			inner = inner[0] +' '+ tail;
+		}else{
+			inner = dict[ arr[i][0] ];
+			id = name;
+		}                                                                //console.log('name: '+name+'|'+tail+'|'+inner);
+		
+		if (lvl==0){ var position = common.style.buttonpos(pos[0],pos[1], y_dim, x_dim); }
+		if (lvl==1){ var position = common.style.buttonpos_menu(pos[0],pos[1], y_dim, x_dim); }
+		html += '<div id="'+id+'"onclick="'+onclick[name]+'" '+position+'>'+inner+'</div>' ;
+	}
+	return html;
+}
+//-- 

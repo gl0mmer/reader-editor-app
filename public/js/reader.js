@@ -16,12 +16,8 @@ var reader = {
     name: 'reader',
     
     fname: "",
-    readonly: false,
     text_parsed: "",
     word_id: [], sentence_id: [], paragraph_id: [],
-    mailnum: 0,
-    navigate: 0,
-    json_tmp: "",
     messages_arr: [],
     draft: '',
     save_inprocess: false,
@@ -141,7 +137,7 @@ function reader_update(start) {                                          console
     reader_show_buttons();    
     reader_set_selecttype(order=0);                                  
     reader_set_zoomtype(reader.zoomtype);                                       
-    common_set_fontsize(common.r_fontsize_scale, reader);                console.log('ReaderIter: '+reader.iter+' '+reader.iter_prev);
+    common_set_fontsize(common.r_fontsize_scale, 1);                console.log('ReaderIter: '+reader.iter+' '+reader.iter_prev);
     if (reader.in_messages){
         reader.iter = reader.get_id_array().length-1;                  
         reader_highlite(); 
@@ -154,7 +150,7 @@ function reader_update(start) {                                          console
 //-- ajax function -------------------------------------------------------
 
 function reader_ajax_save(){                                                  consolelog_func('darkblue'); 
-    if ( common_ajax_permit() && files.items_protected.indexOf(reader.fname)==-1 ){
+    if ( common_ajax_permit() ){
 	
 	    var text = "", text_parsed = "";
 	    reader.save_inprocess = true;
@@ -219,11 +215,18 @@ function reader_set_selecttype(order, settype){                          console
     reader_fill_zoom();                           
     id=reader.get_id(); 
     reader.id_curr = id;                                              
-    document.getElementById('reader_selecttype').innerHTML=types[n_select_type];
+    document.getElementById('js_selecttype').innerHTML=types[n_select_type];
 }
 
-function reader_set_zoomtype(n_zoomtype){                                consolelog_func(); 
-    reader.zoomtype = n_zoomtype;
+function reader_set_zoomtype(order,id){                                  //consolelog_func(); 
+	if (id!=undefined){
+		var nav = {no:0, word:1, sentence:2};                            //console.log('nav: '+id);
+		var n_zoomtype = nav[id];   
+	}else{
+		var n_zoomtype = order;
+	}
+	reader.zoomtype = n_zoomtype;
+    
     var bodyStyles = window.getComputedStyle(document.body);
     textheight_zoom = bodyStyles.getPropertyValue('--reader-textheight-zoom'); 
     var elem = document.getElementById("zoom_box");              
@@ -235,7 +238,7 @@ function reader_set_zoomtype(n_zoomtype){                                console
         document.getElementById('content_box').style.height = common.style.textheight_zoom+3+'%'; 
     }                                                                    
     reader_fill_zoom();                                                   
-    elem = document.getElementById('reader_zoomtype_zoom');
+    elem = document.getElementById('place_readerzoom');
     if (elem){ elem.innerHTML=reader.zoomtype_arr[n_zoomtype]; }
     elem = document.getElementById('reader_menu_zoomtype_text');
     if (elem){ elem.innerHTML=reader.zoomtype_arr[n_zoomtype]; }          
@@ -274,19 +277,11 @@ function reader_play_single(order){
     
 function reader_navigate(order){                                         consolelog_func(); 
 	var len = reader.paragraph_id.length;
-	if (order===undefined){
-		if (reader.navigate===0){
-			reader.iter = 0;
-		}else if (reader.navigate===1){
-			reader.iter = (len-len%2)/2;
-		}else if (reader.navigate===2){
-			reader.iter = len-1;
-		}
-		reader.navigate = (reader.navigate+1)%3;
-	}else{
-		reader.iter = Math.floor(len*order);
-		if (reader.iter==len){reader.iter = len-1;}                  
-	}
+	var nav = {start:'0.0', mid:'0.5', end:'1.0'};                   //console.log('nav: '+order);
+	order = nav[order];                                              //console.log('nav: '+order);
+	reader.iter = Math.floor(len*order);
+	
+	if (reader.iter==len){reader.iter = len-1;}                  
 	var id = reader.get_id();                                       
     reader.id_curr = id;
     reader_highlite(); 
@@ -337,9 +332,9 @@ function reader_if_editable(){                                           console
 }
 
 function reader_show_mail(){                                             consolelog_func(); 
-    var inner_e = '';
-    inner_e += '<div id="freader_sendmail_submit" onclick="reader_ajax_send();" '+common.style.buttonpos_menu(7,0)+'> send mail </div>';
-    inner_e += '<div id="reader_refresh"  onclick="location.reload();" '  +common.style.buttonpos_menu(4,0)+'> refresh </div>';
+	var inner_e = button_html(1, 
+		[['ajax_refresh',  [4,0]],   ['ajax_sendmail', [7,0]]
+		]);
     common_create_menu('reader_mail', 0, inner_e);
 }
 
