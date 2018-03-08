@@ -117,9 +117,9 @@ editor.style = {
 		    this.b_yratio=0.5; this.b_xratio=0.5;
 		    this.b_left=2; this.b_right=98; this.b_top=42.5; this.b_bottom=97; this.b_botheight=1;
 		    this.b_leftwidth=1; this.b_rightwidth=1; this.zoomspace = 6;
-		    var zoomheight = this.b_top - 2 - this.zoomspace;
-		    document.getElementById('editor_text_box').style.height=zoomheight+'%';
-		    document.getElementById('editor_buttons_area').style.top=(this.b_top-this.zoomspace/2)+'%';
+		    var zoomheight = this.b_top - 2 - this.zoomspace;            //console.log(this.zoomspace, this.b_top);
+		    document.getElementById('editor_text_box').style.height=zoomheight+'vh';
+		    document.getElementById('editor_buttons_area').style.top=(this.b_top-this.zoomspace/2)+'vh';
 		    editor_set_fontsize(this.nlines_lvl1,1);  
 		     
 		}else if (stylename==='bottom_2rows') {                          
@@ -128,17 +128,11 @@ editor.style = {
 		    this.b_yratio=0.5; this.b_xratio=0.5;
 		    this.b_left=2; this.b_right=98; this.b_top=64; this.b_bottom=97; this.b_botheight=1;
 		    this.b_leftwidth=1; this.b_rightwidth=1; this.zoomspace = 5;
-		    var zoomheight = this.b_top - 2 - this.zoomspace;
-		    document.getElementById('editor_text_box').style.height = zoomheight+'%';  
-		    document.getElementById('editor_buttons_area').style.top=(this.b_top-this.zoomspace/2)+'%';
+		    var zoomheight = this.b_top - 2 - this.zoomspace;            //console.log('2rows:',this.zoomspace, this.b_top);
+		    document.getElementById('editor_text_box').style.height = zoomheight+'vh';  
+		    document.getElementById('editor_buttons_area').style.top=(this.b_top-this.zoomspace/2)+'vh';
 		    editor_set_fontsize(this.nlines_lvl0,0);                     
 		    		    
-		}else if (stylename==='cut_leftright') {                         
-		    this.b_nx=7; 
-		    this.b_left=1.5; this.b_right=98.5;
-		    this.b_rightwidth=0.6; this.b_leftwidth=0.6;
-		    document.getElementById('editor_text_box').style.width='97%';
-		    document.getElementById('editor_text_box').style.left='1.5%';
 		}
 	},
 	button_exit:   function(i) { return '<div id="editor_exit"    onclick="editor_exit();" '    +this.get_button(i) +'> exit </div>'; },
@@ -172,7 +166,7 @@ function editor_run(parent, text_raw, destination, iter){                console
     create_element('editor_area','editor_bkg', 'editor_base_elements');
     
 	var elem=create_element('editor_text_box','editor_scroll_box', 'editor_area'); 
-	elem.innerHTML = '<div class="text_scroll" ><div id="editor_text_area"  class="editor_text" >zoom word</div></div>'; 
+	elem.innerHTML = '<div class="text_scroll" id="editor_text_scroll"><div id="editor_text_area"  class="editor_text" >zoom word</div></div>'; 
 	elem = create_element('editor_buttons_area', 'editor_buttons_area', 'editor_area'); 
 	
 	//var input = document.getElementById('body');
@@ -307,15 +301,16 @@ function editor_sound(){                                                 console
     document.getElementById('editor_sound').innerHTML = symbols_sound[editor.sound_navigator];
 }
 function editor_set_fontsize(id, lvl){                                   consolelog_func(); 
-    var zoomheight = editor.style.b_top - 2 - editor.style.zoomspace;  
+	id = parseInt(id);
+    var area = document.getElementById('editor_text_box').getBoundingClientRect(); 
     if (lvl===0){
-		editor.style.nlines_lvl0 = parseInt(id);                                              
-		common.editor_nlines_lvl0 = parseInt(id);                                   
+		editor.style.nlines_lvl0 = id;                                              
+		common.editor_nlines_lvl0 = id;                                   
 	}else if (lvl===1){
-		editor.style.nlines_lvl1 = parseInt(id);                                            
-		common.editor_nlines_lvl1 = parseInt(id);         
+		editor.style.nlines_lvl1 = id;                                            
+		common.editor_nlines_lvl1 = id;         
 	}            
-    var fontsize = editor.style.window_height * zoomheight/100 / 1.2 / id;  
+    var fontsize = (area.bottom-area.top) / (id+0.3);                    //console.log('area: '+area.top+' - '+area.bottom+' - '+fontsize+' - '+id);
 	document.getElementById('editor_text_area').style.fontSize = fontsize.toString()+'px';
 	editor.style.fontsize = fontsize;    
 }

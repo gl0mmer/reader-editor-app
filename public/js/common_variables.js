@@ -89,6 +89,7 @@ common.style = {
     dy: 16.5, xy_ratio: 1.1,
     textheight_zoom: 77,
     textheight: 97,
+    b_shape: 1.1,
     b_width: 12, 
     b_height: 17,
     b_fontsize_base: 5,
@@ -132,43 +133,49 @@ common.style = {
 	    var bright = wratio*this.bright;           
 	    var n_x = (i-i%this.yn)/this.yn;
 	    
-	    var dx = this.dy*1.1;
+	    var dx = this.dy*this.b_shape;
 	    var yspace = (this.bbot-this.btop-(this.yn)*this.dy ) / (this.yn-1); 
 	    var y = this.btop + (i%this.yn)*(yspace+this.dy*1);
 	    var x = bright - (this.xn-n_x)*dx - (this.xn-n_x-1)*this.xspace; 
 	    if ((i-i%this.yn)/this.yn==this.xn-1){ dx = dx*this.dx_side; }    
 	    var fontsize = this.b_fontsize*common.b_fontsize_scale*this.vmin;  //console.log('fontsize: '+this.b_fontsize+' | '+common.b_fontsize_scale+' | '+this.vmin+' | '+fontsize);
-	    var style = 'left:'+x/wratio+'%;top:'+y+'%;width:'+dx/wratio+'%;height:'+this.dy+'%; border-bottom-width:'+this.dy*0.13+'%; font-size:'+fontsize+'px; line-height:'+fontsize*this.b_lineheight+'px;';
+	    var style = 'left:'+x/wratio+'vw;top:'+y+'vh;width:'+dx/wratio+'vw;height:'+this.dy+'vh; border-bottom-width:'+this.dy*0.13+'vmin; font-size:'+fontsize+'px; line-height:'+fontsize*this.b_lineheight+'px;';
 	    return('class="'+class_name+'" style="'+style+'"'); 
 	},
 	
-	buttonpos_menu: function(i, class_n, y_dim, x_dim, shift_n, shift_nleft){  //consolelog_func('brown'); 
+	buttonpos_menu: function(i, class_n, y_dim, x_dim){  //consolelog_func('brown'); 
+		if (y_dim==undefined){ y_dim = 2; x_dim = 4; }
 		if (class_n===undefined) {class_n=0;}
 		var class_arr = ["buttons", "buttons_text", "text_zoom_box", "buttons disabled"];
 		var class_name = class_arr[class_n];
-		
-		if (shift_nleft===undefined) {shift_nleft=0; shift_n=0;}
-		if (x_dim===undefined) {x_dim=4; y_dim=2;}
-		var b_width = 12; var b_height = 17;
-		var b_width = this.b_width; var b_height = this.b_height;
-		var b_left = 16;  var b_right = 84; 
-		var b_top = 25; var b_bot = 75;
-		if (y_dim===3) { b_left=15; b_right=85; b_top=17; b_bot=83; }
-		if (y_dim===5) { b_left=15; b_right=85; b_top=14; b_bot=86; }
-		var b_sspace = 1;
+				
+		var b_height = 17;
+		var b_left = 10;  var b_right = 90; 
+		var b_top = 10; var b_bot = 90;
+		var wratio = window.innerWidth/window.innerHeight; 
+		if (x_dim*y_dim==8){              
+			if (wratio<1.3 && wratio>0.8){ x_dim=3; y_dim=3; }
+			if (wratio>1.3 ){ x_dim=4; y_dim=2; }
+			if (wratio<0.8 ){ x_dim=2; y_dim=4; }                           
+		}else if (x_dim*y_dim==12){
+			if (wratio<2.3 && wratio>1){ x_dim=4; y_dim=3; }
+			if (wratio<1 && wratio>0.67){ x_dim=3; y_dim=4; }
+			if (wratio>2.3 ){ x_dim=6; y_dim=2; }
+			if (wratio<0.67 ){ x_dim=2; y_dim=6; } 
+		}                                                                //console.log('wratio: '+wratio+' '+x_dim+' '+y_dim);
 		var nx = i%(x_dim); var ny = (i-i%(x_dim))/x_dim;
-		
-		var class_arr = ["buttons"]
-		
-		var b_xspace = (b_right-b_left-b_width*x_dim - b_sspace*shift_n)/(x_dim-1-shift_n);
-		var x = b_left + b_width*nx + b_xspace*(nx-shift_nleft) + b_sspace*shift_nleft;
-		var b_yspace = (b_bot-b_top-b_height*y_dim)/(y_dim-1);
-		var y = b_top + (b_yspace+b_height)*ny;
+		var dx = this.dy*this.b_shape/wratio;
+		var ratio = 1.2;
+		var x = b_left +(b_right-b_left)*(ratio-1)/2. + (b_right-b_left)/(x_dim*ratio) *(nx+0.5) - dx/2.;
+		var y = b_top + (b_bot-b_top)*(ratio-1)/2. +    (b_bot-b_top)/(y_dim*ratio) *(ny+0.5) - this.dy/2.;       //console.log(dx,this.dy,x,y);
 		
 		var fontsize = this.b_fontsize*common.b_fontsize_scale*this.vmin;   
 		var lineheight = fontsize*this.b_lineheight;
-		if (class_n===2) { b_width = 2*b_width+b_xspace; lineheight = b_height*this.vmin+lineheight/2.0; }
-		var style = 'left:'+x+'%; top:'+y+'%;'+'width:'+b_width+'%; height:'+b_height+'%; font-size:'+fontsize+'px; line-height:'+lineheight+'px;';  
+		if (class_n===2) { 
+			lineheight = b_height*this.vmin+lineheight/2.0; 
+			dx = dx + (b_right-b_left)/(x_dim*ratio);
+		}
+		var style = 'left:'+x+'vw; top:'+y+'vh;'+'width:'+dx*wratio+'vmin; height:'+this.dy+'vmin; font-size:'+fontsize+'px; line-height:'+lineheight+'px;';  
 		if (class_n===0){ style+= 'background-color: rgba(110, 152, 27, 0.7);'; }
 		if (class_n===0){ style+= 'background-color: rgba(110, 152, 27, 0.7);'; }
 		return('class="'+class_name+'" style="'+style+'"');
@@ -178,13 +185,16 @@ common.style = {
 		this.vmin = Math.min(window.innerWidth, window.innerHeight)/100;
 	    common.style.init_font(0.9,1.1);
 		var wratio = window.innerWidth/window.innerHeight;
+		
 		var content_width = this.get_content_width();
 		var elem = document.getElementById('content_box');
-	    if (elem){ elem.style.width= content_width/wratio+'%'; }
+	    if (elem){ elem.style.width= (content_width-3.4*wratio)/wratio+'vw'; }
 	    var elem = document.getElementById('zoom_box');
-	    if (elem){ elem.style.width= (content_width-3.4*wratio)/wratio+'%'; }  
+	    if (elem){ elem.style.width= (content_width-3.4*wratio)/wratio+'vw'; }  
 	    var elem = document.getElementById('buttons_area');
-	    if (elem){ elem.style.left= (content_width-0.5*wratio)/wratio+'%'; } 
+	    if (elem){ elem.style.left= (content_width-0.5*wratio)/wratio+'vw'; } 
+	    elem = document.getElementById('show_menu');
+	    
 	}	
 }
 

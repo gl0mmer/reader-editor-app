@@ -49,14 +49,14 @@ function files_set_zoom(order){                                          console
     var elem = document.getElementById("zoom_box");               
     if (files.zoom===1){ 
         elem.style.visibility='hidden';
-        document.getElementById('content_box').style.height = '105%';  
+        document.getElementById('content_box').style.height = '105vh';  
     }else{
         elem.style.visibility='visible';
-        document.getElementById('content_box').style.height = common.style.textheight_zoom+'%'; 
+        document.getElementById('content_box').style.height = common.style.textheight_zoom+'vh'; 
     }                                                                    
     var name = files.zoom_arr[files.zoom];                               
-    document.getElementById('zoom_box').style.height = (100 - common.style.textheight_zoom -2.3)+'%';
-    document.getElementById('zoom_box').style.top = (common.style.textheight_zoom +3)+'%';
+    document.getElementById('zoom_box').style.height = (100 - common.style.textheight_zoom -2.3)+'vh';
+    document.getElementById('zoom_box').style.top = (common.style.textheight_zoom +3)+'vh';
     
     var elem = document.getElementById('js_zoom'); 
     if (elem) { 
@@ -69,11 +69,16 @@ function files_show_files(){                                             console
 	var files_arr = files.entries;                                       //console.log(files.entries);
 	
 	var wratio = window.innerWidth/window.innerHeight;                   //console.log('wratio: '+wratio+' '+window.innerWidth+' '+window.innerHeight);              
+	
 	var left_pc = -1; 
 	var top_pc=-5.4; 
     var ywidth_pc=22; var yspace_pc=3.7;
     
-    var content_width = common.style.get_content_width()/wratio/100*window.innerWidth; 
+    var area = document.getElementById('files_scroll').getBoundingClientRect(); 
+    //if (wratio>0){
+	var content_width = common.style.get_content_width()/wratio/100*window.innerWidth;  
+	//console.log('width: '+content_width+' '+window.innerWidth+' '+window.innerHeight+' | '+(area.right-area.left));
+	//}else{ content_width = 1; }
     var ywidth = ywidth_pc*window.innerHeight/100; 
     var yspace = yspace_pc*window.innerHeight/100;
     var top  = top_pc*window.innerHeight/100;
@@ -87,6 +92,7 @@ function files_show_files(){                                             console
     var ratio = ( content_width - xwidth*xn )/(xspace*(xn+1.5));
     var pic_width = 0.6*xwidth;                                          //console.log('xwidth: '+xwidth+' ratio: '+ratio);
     xspace = xspace*ratio;
+    
     var i=0; var type=''; 
     var inner_e = "";
 	for (i=0; i<files_arr.length; i+=1){                                 

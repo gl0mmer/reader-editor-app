@@ -132,15 +132,17 @@ var dict_en = {
 	edit_contactname : '',
 	
 	place_lang     : 'lang',
-	js_lang        : ['','ru','en'],
+	js_lang        : ['','',  'ru','en'],
 	place_delay    : 'delay',
-	js_delay       : ['','0.1','0.4','0.7','1.0'],
+	js_delay       : ['','',  '0.1','0.4','0.7','1.0'],
 	place_fontsize : 'Example text',
-	js_ffontsize   : ['x','0.8','1','1.2','1.4'],
-	js_rfontsize   : ['x','0.8','1','1.2','1.4', '2', '3'],
-	js_navigate    : ['', 'start', 'mid', 'end'],
+	js_ffontsize   : ['x','', '0.8','1','1.2','1.4'],
+	js_rfontsize   : ['x','', '0.8','1','1.2','1.4', '2', '3'],
+	js_navigate    : ['','',  'start', 'mid', 'end'],
 	place_readerzoom: '',
-	js_readerzoom  : ['', 'no', 'word', 'sentence'], 
+	js_readerzoom  : ['','',  'no', 'word', 'sentence'], 
+	show_editorfont: 'font size', 
+	js_editorfont  : ['','lines', '5', '4', '3','2'],
 	
 	js_utternote : 'utter',
 	js_donotshow : "don't show again", 
@@ -218,6 +220,8 @@ var onclick = {
 	js_readerzoom: 'reader_set_zoomtype(0,this.id);',
 	ajax_refresh: 'location.reload();',
 	ajax_sendmail: 'reader_ajax_send();',
+	show_editorfont: 'editor_show_fontsize();',
+	js_editorfont: 'editor_set_fontsize(this.id,0);',
 	
 	js_utternote : 'utter_sentence(0, 1, 0, 1);',
 	js_donotshow : 'welcome_donot();',
@@ -239,9 +243,9 @@ function button_html(lvl, arr, y_dim, x_dim){
 		name = arr[i][0]; 
 		inner = dict[name];
 		if (arr[i].length>2){                                            //console.log('inner: '+inner);           
-			tail = inner[ 1+ arr[i][2] ];
+			tail = inner[ 2+ arr[i][2] ];
 			id = tail;
-			inner = inner[0] +' '+ tail;
+			inner = inner[0] +' '+ tail +' '+ inner[1];
 		}else{
 			inner = dict[ arr[i][0] ];
 			id = name;

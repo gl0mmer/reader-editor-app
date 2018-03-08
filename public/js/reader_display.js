@@ -51,7 +51,7 @@ function reader_scroll(order,stop,onend){                                console
     if(reader.in_messages && $('#'+id).parents('#mail_editable').length === 0) { mail_noedit=true; } 
                                                                          console.log('scroll iter: '+iter+'  '+mail_noedit+' '+reader.in_messages);
     var ifdisable = (iter==-1 || mail_noedit===true); 
-    common_disable_button("js_edit", ifdisable, function(){ reader_editor(reader_edit);});
+    common_disable_button("js_edit", ifdisable, function(){ reader_editor();});
     
 }    
 function reader_utter(stop_i, onend) {                                   consolelog_func(); 
@@ -117,6 +117,7 @@ function reader_show_buttons(){                                          console
 	}
     var elem = document.getElementById('buttons_area');
     elem.innerHTML=inner_e;
+    document.getElementById('js_selecttype').innerHTML=reader.selecttext[reader.selecttype];
 }
 
 function reader_show_menu(){                                             consolelog_func(); 

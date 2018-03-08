@@ -318,7 +318,6 @@ function consolelog_func(color, noargs) {
 		else {msg_shift += '.'; }
 	}
 	//if (lvl>3) { msg+= " <-- " + caller.caller.name + "()"; }
-	
 	//console.log('%c'+msg_shift+msg, 'color:'+color); 
 	
 }

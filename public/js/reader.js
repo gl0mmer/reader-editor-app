@@ -24,6 +24,7 @@ var reader = {
     
     in_messages: false,
     
+    selecttext: ['select <br> -','select <br> - -','select <br> - - -'],
     zoomtype_arr: ['no zoom', 'by word', 'by sentence'],
     
     get_id_array: function(){                                            //consolelog_func('brown'); 
@@ -146,7 +147,7 @@ function reader_update(start) {                                          console
 
 //-- ajax function -------------------------------------------------------
 
-function reader_ajax_save(){                                                  consolelog_func('darkblue'); 
+function reader_ajax_save(){                                             consolelog_func('darkblue'); 
     if ( common_ajax_permit() ){
 	
 	    var text = "", text_parsed = "";
@@ -156,24 +157,25 @@ function reader_ajax_save(){                                                  co
 			text_parsed = $('#text_from_file').find('#mail_editable').html();     
 		}else{
 			text_parsed = reader.text_parsed;
-		}                                                                    //console.log('true text_parsed: '+text_parsed);
+		}                                                                //console.log('true text_parsed: '+text_parsed);
 		
 		reader.id_curr = reader.get_id();                                
 		text = common.editor_text;                                       
 		document.getElementById('tmp').innerHTML = text_parsed;         
-		var id = reader.id_curr;                                             console.log('text_new: '+text+' ID: '+id);
+		var id = reader.id_curr;                                         //console.log('text_new: '+text+' ID: '+id);
 		document.getElementById("text_from_file").innerHTML = "";
-		document.getElementById(id).innerHTML = text;                        //console.log('text_new_parsed: '+document.getElementById('tmp').innerHTML);
+		document.getElementById(id).innerHTML = text;                    //console.log('text_new_parsed: '+document.getElementById('tmp').innerHTML);
 		
 		var text_all_parsed = document.getElementById('tmp').innerHTML; 
 		var text_all_origin = merge_text(text_all_parsed);               
 	
-		common.ischanged_text = false;                                       //console.log('NEW TEXT: '+text_all_origin);
+		common.ischanged_text = false;                                   //console.log('NEW TEXT: '+text_all_origin);
 		
 		if (reader.in_messages){ 
 			document.getElementById('savedraft_text').value = text_all_origin;
 			document.getElementById('savedraft_submit').click();
 		}else{
+			var fname = localStorage.getItem("reader_savepath");         //console.log('Fname: '+fname);
 			$.ajax( {type: 'GET', dataType: 'text', url: 'update', cache: false, data: {file_name: fname, file_text: text_all_origin}} )
 			.done( function () { location.reload(); } );
 			alert = 'File was saved.';     
@@ -194,7 +196,7 @@ function reader_ajax_send(){
 function reader_set_selecttype(order, settype){                          consolelog_func(); 
 	if (settype===undefined){settype=0;}
     n_select_type = reader.selecttype;
-    types = ['select <br> -','select <br> - -','select <br> - - -'];
+    
     if (settype==1){
         n_select_type = (n_select_type+1)%3;
         reader.selecttype = n_select_type;
@@ -210,7 +212,7 @@ function reader_set_selecttype(order, settype){                          console
     reader_fill_zoom();                           
     id=reader.get_id(); 
     reader.id_curr = id;                                              
-    document.getElementById('js_selecttype').innerHTML=types[n_select_type];
+    document.getElementById('js_selecttype').innerHTML=reader.selecttext[n_select_type];
 }
 
 function reader_set_zoomtype(order,id){                                  //consolelog_func(); 
@@ -227,10 +229,10 @@ function reader_set_zoomtype(order,id){                                  //conso
     var elem = document.getElementById("zoom_box");              
     if (n_zoomtype==0){ 
         elem.style.visibility='hidden';
-        document.getElementById('content_box').style.height = '100%'; 
+        document.getElementById('content_box').style.height = '100vh'; 
     }else{
         elem.style.visibility='visible';
-        document.getElementById('content_box').style.height = common.style.textheight_zoom+3+'%'; 
+        document.getElementById('content_box').style.height = common.style.textheight_zoom+3+'vh'; 
     }                                                                    
     reader_fill_zoom();                                                   
     elem = document.getElementById('place_readerzoom');
@@ -238,8 +240,8 @@ function reader_set_zoomtype(order,id){                                  //conso
     elem = document.getElementById('reader_menu_zoomtype_text');
     if (elem){ elem.innerHTML=reader.zoomtype_arr[n_zoomtype]; }          
     common.style.resize();
-    document.getElementById('zoom_box').style.height = (100 - common.style.textheight_zoom-2.3)+'%';
-    document.getElementById('zoom_box').style.top = (common.style.textheight_zoom +3)+'%';
+    document.getElementById('zoom_box').style.height = (100 - common.style.textheight_zoom-2.3)+'vh';
+    document.getElementById('zoom_box').style.top = (common.style.textheight_zoom +3)+'vh';
 }
    
 function reader_play_pause(){                                            consolelog_func(); 
@@ -248,10 +250,11 @@ function reader_play_pause(){                                            console
         common_playpause_icon(1);
         common.play_counter=1; 
         }
-    else if (window.speechSynthesis.speaking ){                        
-		if (common.browser!='Firefox'){
-			window.speechSynthesis.pause();       
-		} else{ window.speechSynthesis.cancel();  }
+    else if (window.speechSynthesis.speaking ){   
+		window.speechSynthesis.pause();                                  // works in windows-firefox and any-chrome      
+		//if (common.browser!='Firefox'){
+		//	window.speechSynthesis.pause();       
+		//} else{ window.speechSynthesis.cancel();  }
         common_playpause_icon(0);
         common.play_counter=0; 
     }
@@ -350,6 +353,9 @@ function goto_files(){                                                   console
 }
 
 function reader_editor(){                                                consolelog_func("darkblue"); 
+	if (window.speechSynthesis.speaking ){                        
+			window.speechSynthesis.pause();       
+	}
     text_all = document.getElementById('text_from_file').innerHTML;
     reader.text_parsed = text_all;
     id = reader.get_id();

@@ -2,7 +2,7 @@
 
 /*.body_bkg{ */
 body{
-  position: fixed; left:0;top:0; width:100%;height:100%;
+  position: fixed; left:0;top:0; width:100vw;height:100vh;
   text-align:center; 
   
   font-family: Rockwell, "Courier Bold", Courier, Georgia, Times, "Times New Roman", serif;
@@ -14,7 +14,7 @@ body{
   
 }
 .body_bkg_image{
-  background-size: auto 100%;
+  background-size: auto 100vh;
   background-position: right top;
   background-image: url("pics/reader8-01-bkg01-01.png");
   /*background-image: url("pics/reader8-01-bkg03-01.png");
@@ -29,25 +29,25 @@ body{
   background-color: white;   
   position:fixed;
   top: 0; left: 0;
-  width:100%; height:100%;
+  width:100vw; height:100vh;
 }
 .editor_buttons_area{
   background-color: rgba(0, 0, 0, 0.05); 
   position:fixed;
-  top:50%; left:0;
-  height:100%; width:100%;
+  top:50vh; left:0;
+  height:100vh; width:100vw;
 }
 /*-- buttons -------------------------------------------------------------*/
 .buttons_area{ 
   background-color: rgba(0, 0, 0, 0.05); 
   position:fixed;
-  top:0%; left:100%;
-  height:100%; width:100%;
+  top:0vh; left:100vw;
+  height:100vh; width:100vw;
  }
 .buttons_area_image{ background-color: rgba(0, 0, 0, 0);  }
 .buttons_image{ color: red; background-color: rgba(0, 0, 0, 0); }
 .buttons{
-  width:12%; height:17%;     
+  width:12vw; height:17vh;     
   position:fixed; box-sizing:border-box;
   word-break: normal; white-space: normal;
   border-radius: 0.5vmin;
@@ -79,7 +79,7 @@ body{
 .files:hover{ background-color:rgba(0,0,0,0.05); }
 .files-hover{ background-color:rgba(0,0,0,0.05); } 
 .files_name{
-  position:relative; top:0%;
+  position:relative; top:0vh;
   text-align: center;
   height: 53%; width:95%;
   word-break: break-all; white-space: normal;
@@ -143,14 +143,14 @@ height:50%;
 
 /*-- reader text ---------------------------------------------------------*/
 .text_scroll_box{
-  left:1.5%; top:0%; width:70%; height: 74%; 
+  left:1.5vw; top:0vh; width:70vw; height: 76vh; 
   position:fixed; text-align:center; box-sizing:border-box;
   color:rgba(0,0,0,0.8);
   line-height: 5vh; 
   border-radius: 0.25vmin;  
   white-space:pre;
 }.text_scroll{
-  position:relative; left:0%;top:0%; width:99.5%;height:100%; 
+  position:relative; left:0vw;top:0vh; height:100%; 
   white-space:pre-wrap; overflow-y: scroll; overflow-x: hidden; direction:rtl;
 }.text_scroll::-webkit-scrollbar {
   color:black;  border-radius: 0.25vmin; 
@@ -159,16 +159,15 @@ height:50%;
 }.text_scroll::-webkit-scrollbar-thumb {
   background-color: rgba(0,0,0,0.15); border-radius: 0.25vmin; 
 }.reader_text{
-  position:relative; left:2%;top:2%; width:93.5%;height:100%; direction:ltr;
+  position:relative; left:3vw;top:2vh; width:95%; height:80vh; direction:ltr;
 }
 
 .editor_scroll_box{
   position:fixed; text-align:center; 
   color:rgba(0,0,0,0.8);
   top:2%; width:98%; left:2%; 
-}
-.editor_text{
-  position:relative; left:0%;top:2%; direction:ltr; white-space:pre-wrap;
+}.editor_text{
+  position:relative; left:0%;top:0; direction:ltr; white-space:pre-wrap;
   line-height:115%; color:rgba(0,0,0,0.55); align:left; width:98%; height:100%;
 }
 

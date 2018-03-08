@@ -63,22 +63,16 @@ function editor_show_start(){                                            console
     elem.innerHTML = inner_e0+inner_e1+inner_e2 + inner_e3 + inner_e4;
 }
 function editor_show_menu(){                                             consolelog_func(); 
-    var inner_e = "";
-    var parent = "editor_created_elements";
-    inner_e+= '<div id="common_lang_both_zoom"  onclick="" ' +common.style.buttonpos_menu(2,1,4,2,0,-1)+'>'+common.langbase+' +<br> '+common.lang+'</div>';
-    inner_e+= '<div id="common_lang"            onclick="common_show_lang(1);" '+common.style.buttonpos_menu(3,0)+'> lang </div>';
-    inner_e+= '<div id="editor_fontsize"     onclick="editor_show_fontsize();" '+common.style.buttonpos_menu(5,0)+'> font size </div>';
-    inner_e+= '<div id="editor_sound"        onclick="" '+common.style.buttonpos_menu(0,3)+'> sound </div>';
-    inner_e+= '<div id="editor_read"         onclick="" '+common.style.buttonpos_menu(4,3)+'> read </div>';
-    inner_e+= '<div id="editor_sound_button" onclick="" '+common.style.buttonpos_menu(1,3)+'> sound </div>';
+	var inner_e = button_html(1, 
+		[['show_lang',  [5,0]], ['show_editorfont',   [7,0]]
+		]);
     common_create_menu('editor_menu', 0, inner_e,'editor_created_elements', true);
 }
 function editor_show_fontsize(){                                         consolelog_func(); 
-	var inner_e = "";
-    inner_e += '<div id="5"  onclick="editor_set_fontsize(this.id,0);"  '+common.style.buttonpos_menu(4,0)+'> 5 lines </div>';
-    inner_e += '<div id="4"  onclick="editor_set_fontsize(this.id,0);"  '+common.style.buttonpos_menu(5,0)+'> 4 lines </div>';
-    inner_e += '<div id="3"  onclick="editor_set_fontsize(this.id,0);"  '+common.style.buttonpos_menu(6,0)+'> 3 lines </div>';
-    inner_e += '<div id="2"  onclick="editor_set_fontsize(this.id,0);"  '+common.style.buttonpos_menu(7,0)+'> 2 lines </div>';
+	var inner_e = button_html(1, 
+		[['js_editorfont',  [4,0],0], ['js_editorfont',   [5,0],1],
+		 ['js_editorfont',  [6,0],2], ['js_editorfont',   [7,0],3]
+		]);
     common_create_menu('editor_fontsize', 1, inner_e, 'editor_created_elements', true);
 }
     

@@ -81,8 +81,8 @@ function files_start(){                                                  console
 	}
 	
 	var inner_e = "";
-	inner_e += "<div class='text_scroll' style='top:0%;left:0vw;' align='left' > ";
-	inner_e += "<div id='files_array' class='reader_text' style='top:2;left:0;visibility:hidden;height:20%;'></div>";
+	inner_e += "<div id='files_scroll' class='text_scroll' style='top:0vh;left:0vw;' align='left' > ";
+	inner_e += "<div id='files_array' class='reader_text' style='top:2;left:0;visibility:hidden;height:20vh;'></div>";
 	inner_e += "</div>";
 	document.getElementById("content_box").innerHTML = inner_e;
 	window.onbeforeunload = files_beforunload;
@@ -211,7 +211,7 @@ function files_ajax_rename(){
 			performLfmRequest('rename', {file: item_name, new_name: new_name})
 			.done(refreshFoldersAndItems);
 		    common.editor_text = '';
-		    alert = 'Item was renamed.'
+		    alert = 'Item was renamed'
 		}
 	}
 	common_show_notification(alert,0,1);
@@ -248,7 +248,6 @@ function files_ajax_totrash(){
 		
 		$.ajax( {type: 'GET', dataType: 'text', url: 'copyitem', cache: false, data: {copy_shortpath: short_path, past_dir: "trash/"}} )
 		.done( function () {
-			console.log('SUCCESS');
 			files_ajax_delete( 0,localStorage.getItem("delete_fname"));
 		} );
 	}
