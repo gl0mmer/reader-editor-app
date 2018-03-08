@@ -121,6 +121,9 @@ function common_show_clickdelay(){                                       console
 }
 
 function common_show_notification(text, welcome, blur){                        consolelog_func();
+	var elem = document.getElementById('menu_back_lvl0');
+	if (elem){ menu_back('menu_back_lvl0',1, 0); }
+	
 	if (blur==undefined){blur=0;}
 	if (welcome===undefined){ welcome = false; }
 	var parent='created_elements';

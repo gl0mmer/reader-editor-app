@@ -59,9 +59,6 @@ class UserController extends Controller
 		$posts = Message::where('user_id', Auth::user()->id )->get();
 		return view('dashboard', ['posts'=>[], 'connections'=>$res, 'id_to'=>-1]);
 		
-		//$filetext = request()->file_text;
-		//return view('index');
-		
 	}
 	
 	

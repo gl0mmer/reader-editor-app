@@ -4,20 +4,8 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
-
-  <!-- Chrome, Firefox OS and Opera -->
-  <meta name="theme-color" content="#75C7C3">
-  <!-- Windows Phone -->
-  <meta name="msapplication-navbutton-color" content="#75C7C3">
-  <!-- iOS Safari -->
-  <meta name="apple-mobile-web-app-status-bar-style" content="#75C7C3">
-
+  
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  <style>{!! \File::get(base_path('vendor/unisharp/laravel-filemanager/public/css/lfm.css')) !!}</style>
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.css">
-  
-  
   <link rel="stylesheet"  href="{{ URL::to('css/common.css')}}" />
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
   
@@ -39,13 +27,7 @@
 	<div id='editor_base_elements'></div>
 	<div id='editor_created_elements'></div>
 	
-	<div hidden id='hidden_files_nentry' ></div>
-	<div hidden id='hidden_files_arr' ></div>	
-	
-	<div hidden id='hidden_text_parsed' > </div>
-	<div hidden id='hidden' > </div>
 	<div hidden id='tmp' > </div>
-	<div hidden id='hidden_fname' > </div>
 	<div hidden id='hidden_text' > </div>
 	
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/dict.js') }}"></script> 
@@ -59,51 +41,32 @@
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/editor_display.js') }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader_display.js') }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader_parse.js') }}"></script>
-
-	
-	
-    <div hidden class="container-fluid" id="wrapper">
-        <div id="alerts"></div>
-        <div id="content"></div>
-	   	      
-    </div>
     
     <script>
 	files_start();
-	contacts = [];
-	contact_names = [];
-	posts = [];
-	files.in_contacts = false;
-	common.in_messages = false;
+	
+	contacts = []; contact_names = []; posts = [];
 	user.name = "{{ $username }}";   
 	user.id = "{{ Auth::user()->id }}";   
 	</script>
-	
-	
+		
 	<div hidden > Messages: <br>
 		@include('includes.message_block')
 	</div>
-	<div hidden style="position:fixed;top:50%;">
-		<a id="show_home" href="{{ route('home') }}">Show home</a> 
-		<a id="show_contacts" href="{{ route('contacts') }}">Show connections</a> 
+	<div hidden style="position:fixed;top:50%;">		
 		
+		<meta name="csrf-token" content="{{ Session::token() }}"> 
 		@if ($in_contacts)
 			<?php $i=0; ?>
 			Connection: {{ count($connections) }}<br>
 			@foreach($connections as $connection)
-				<a id="contact_{{ $connection }}" href="{{ route('messages', ['name'=> $connection] ) }}">  {{ $connection }}</a> |
 				<script>
 					contacts.push("{{ $connection }}");
 					contact_names.push("{{ $names[$i] }}");
-					//console.log("COntact "+"{{$i}}"+":","{{ $connection }}","{{ $names[$i] }}");
 				</script>
 				<?php $i+=1; ?>
 			@endforeach
-			<form action="{{ route('connection_add') }}" method="post">
-				<input id="addcontact_name" class="form-control" type="text" name="addcontact_name" value=""  > 
-				<button id="addcontact_submit" type="submit" class="btn btn-primary"> Add connection </button>
-				<input type="hidden" name="_token" value="{{ Session::token() }}">
-			</form>
+			
 		@endif
 	
 		@if ($in_messages)
@@ -120,68 +83,14 @@
 				<input type="hidden" value="{{ Session::token() }}" name="_token">
 			</form>
 			@foreach($posts as $post)
-				<p>  {{ $post->message }} </p>
-				<div>Posted by {{ $post->user_id }} on {{ $post->created_at }}, to {{ $post->user_id_to }}</div>
-				<div>
-					<a href="#">Edit</a> |
-					<a href="{{ route('message_delete', ['post_id'=> $post->id]) }}">Delete</a> 
-				</div>
 				<script>
 					posts.push(["{{ $post->id }}", "{{ $post->user_id }}", "{{ $post->created_at }}",  "{{ $post->message }}"]);
 				</script>
 			@endforeach
 		@endif
-	</div>
-	
-	
-	<div hidden style="position:fixed;top:30%;">
+		
 		
 		<div id="add-folder" class="btn btn-primary"> Add folder </div> 
-		
-		<form action="{{ route('create_init') }}" method="post">
-			<button id="createinit_submit" type="submit" class="btn btn-primary"> Create init items </button>
-			<input type="hidden" name="_token" value="{{ Session::token() }}">
-		</form>
-		<form action="{{ route('delete_dir') }}" method="post">
-			<input  name='deletedir_text' id='deletedir_text' value='empty'> 
-			<input  name='delete_misc' id='delete_misc' value='empty'> 
-			<button id="deletedir_submit" type="submit" class="btn btn-primary"> Delete dir </button>
-			<input type="hidden" name="_token" value="{{ Session::token() }}">
-		</form>
-			
-		<form action="{{ route('reader') }}" method="get"style="position:absolute;top:0;width:50%;left:0;">
-			<input  type='hidden'  name='file_text' id='goreader_filetext' value='some text'> 
-			<button id="goreader_submit" type="submit" class="btn btn-primary"> Reader </button>
-			<input type="hidden" name="_token" value="{{ Session::token() }}">
-		</form>
-		
-	   
-	    <form action="{{ route('create') }}" role='form' id='createForm' name='createForm' method='post' enctype='multipart/form-data' >
-	            <input               name='file_name' id='create_filename'>Fname</input>
-	            <input               name='file_text' id='create_filetext'>Text</input>
-	            <input type='hidden' name='type' value='{{ request("type") }}'>
-	            <input type='hidden' name='_token' value='{{csrf_token()}}'>
-	            <button id='create_submit' type="submit" class="btn btn-primary">Create</button>
-	    </form>
-	    
-	    
-	    <form action="{{ route('copyitem') }}" role='form' id='copyForm' name='copyForm' method='post' enctype='multipart/form-data' >
-	            <input               name='copy_shortpath' id='copy_shortpath'>Short Path</input>
-	            <input               name='past_dir'       id='past_dir'>Past Dir</input>
-	            <input               name='copy_misc'      id='copy_misc' value='empty'>Past Misc</input>
-	            <input type='hidden' name='type' value='{{ request("type") }}'>
-	            <input type='hidden' name='_token' value='{{csrf_token()}}'>
-	            <button id='copy_submit' type="submit" class="btn btn-primary">Copy</button>
-	    </form>
-	    
-	    <form action="{{ route('update') }}" role='form' id='updateForm' name='updateForm' method='post' enctype='multipart/form-data' >
-	            <input               name='file_name' id='update_filename'>Fname</input>
-	            <input               name='file_text' id='update_filetext'>Text</input>
-	            <input type='hidden' name='type' value='{{ request("type") }}'>
-	            <input type='hidden' name='_token' value='{{csrf_token()}}'>
-	            <button id="update_submit" type="submit" class="btn btn-primary">Update</button>
-	    </form>
-	
 		<form action="{{ route('unisharp.lfm.upload') }}" role='form' id='uploadForm' name='uploadForm' method='post' enctype='multipart/form-data' class="dropzone">
 			<div class="form-group" id="attachment">
 			  
@@ -195,16 +104,13 @@
 			<input type='hidden' name='type' value='{{ request("type") }}'>
 			<input type='hidden' name='_token' value='{{csrf_token()}}'>
 		</form>
-		
 	</div>
 	
 	
 	
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.6.6/tinymce.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
-   <script language=JavaScript type="text/javascript" src="{{ URL::to('js/plugins/jquery.foggy.min.js') }}"></script>
+  <script language=JavaScript type="text/javascript" src="{{ URL::to('js/plugins/jquery.foggy.min.js') }}"></script>
   <script>
     var route_prefix = "{{ url('/') }}";
     var lfm_route = "{{ url(config('lfm.url_prefix', config('lfm.prefix'))) }}";
@@ -216,16 +122,16 @@
  
   
 	@if ($create=='yes')
-	<script>
-		performLfmRequest('newfolder', {name: 'trash'})
-		.done(refreshFoldersAndItems); 
-		$.ajax( {type: 'GET', dataType: 'text', url: 'create_init', cache: false} );
+	<script>              
+		performLfmRequest('newfolder', {name: 'trash'});
+		$.ajax( {type: 'GET', dataType: 'text', url: 'create_init', cache: false} )
+		.done(refreshFoldersAndItems('OK'));
 	</script>
-	@endif
-	@if ($in_messages)
+	@elseif ($in_messages)
 		<script>
 			reader.draft = '{{ $draft }}';                               //console.log('Draft: '+reader.draft);
 			user.contact_name = '{{ $contactname }}';
+			user.contact_id = '{{ $id_to }}';
 			loadMessages(posts);
 		</script>
 	@elseif ($in_contacts)
@@ -246,7 +152,6 @@
 	      dictDefaultMessage: 'Or drop files here to upload',
 	      init: function() {
 			fff = "{{ lcfirst(str_singular(request('type'))) == 'image' ? implode(',', config('lfm.valid_image_mimetypes')) : implode(',', config('lfm.valid_file_mimetypes')) }}";
-	        //fff = fff.replace('image','application');
 	        maxfff = ({{ lcfirst(str_singular(request('type'))) == 'image' ? config('lfm.max_image_size') : config('lfm.max_file_size') }} / 1000);
 	        var _this = this; // For the closure
 	        this.on("addedfile", function(file) { refreshFoldersAndItems('OK'); });

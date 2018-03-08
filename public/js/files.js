@@ -105,9 +105,11 @@ function files_update(){                                                 console
 		common_set_fontsize(common.f_fontsize_scale, 0);                                                                                                             
 		common.style.resize();
 		files_show_files();
-		files_scroll(files.iter, 'no'); 
-		files_fill_zoom();
-		files_set_zoom('no');                                            //console.log('files.dir: '+files.dir+',  get_subdir(): '+files.get_subdir());
+		if (files.entries.length>0){
+			files_scroll(files.iter, 'no');
+			files_fill_zoom();
+			files_set_zoom('no');    
+		}                                                                //console.log('files.dir: '+files.dir+',  get_subdir(): '+files.get_subdir());
 		if (common.welcome=='do' && localStorage.getItem("show_welcome")==="yes" ){ 
 			files_welcome();
 			localStorage.setItem("show_welcome",'no');
@@ -123,11 +125,11 @@ function files_ajax_enter(path){                                         console
 		var path = files.get_enterpath(files.iter);                      //console.log('EPath: '+path+' - '+files.dir+'/'+files.get_fname());           
 	}
 	if (path==-1 && files.in_contacts ){
-		files.in_contacts = false;
-		document.getElementById('show_home').click();
+		files.in_contacts = false;                                       
+		window.location.href=localStorage.getItem("url")+'home';
 	}else if (files.get_ftype()=='file'){                                // open file
 		if (files.in_contacts){                                          
-			document.getElementById('contact_'+files.paths[files.iter]).click();
+			window.location.href=localStorage.getItem("url")+'messages/'+files.paths[files.iter];
 		}else{
 			localStorage.setItem("reader_savepath", files.get_savepath(files.iter));  
 			localStorage.setItem("reader_fname", files.get_savepath(files.iter));
@@ -147,33 +149,38 @@ function files_ajax_enter(path){                                         console
 }  
 
 function files_ajax_contacts(){
-		localStorage.setItem("folder_path", 'mail');
-		document.getElementById('show_contacts').click();
+	var url = files.url;
+	url = url.substring(0, url.indexOf('/', url.indexOf('://')+3)+1);
+	
+	localStorage.setItem("folder_path", 'mail');                     //console.log('Url: '+files.get_url());
+	localStorage.setItem("url", url);
+	window.location.href=url+'contacts';
 }
 
 function files_ajax_create(type){
 	var new_name = files.get_subdir()+common.editor_text;                console.log('New fname: '+new_name);
 	var i = files.entries.indexOf(new_name);
 	
+	var alert = 'Error';
 	if ( !common_ajax_permit() ){
 		alert = files.alert_guest;
 	}else if (new_name==''){
-		alert = 'Name is empty.';
+		alert = 'Name is empty';
 	}else if(i>-1 && (files.entrytype[i]=='folder' && type==0  || files.entrytype[i]=='file' && type==1 )){
-		alert = 'File exists.';
+		alert = 'Name exists';
 	}else{
 		if (type == 0){
 			new_name = common.editor_text;
 			performLfmRequest('newfolder', {name: new_name})
 			.done(refreshFoldersAndItems);                               //console.log('New folder');
-			alert = 'New folder is created.';
+			alert = 'New folder was created';
 		}else if (type == 1){
-			document.getElementById('create_filename').value = new_name;
-			document.getElementById('create_submit').click();            //console.log('New .txt');
-			alert = 'New text file is created.';
+			$.ajax( {type: 'GET', dataType: 'text', url: 'create', cache: false, data: {file_name: new_name, file_text:''}} )
+			.done( refreshFoldersAndItems('OK') );  
+			alert = 'New text file was created';	
 		}
 	}
-	common_show_notification(alert);
+	common_show_notification(alert,0,1);
 	common.editor_text = '';
 }
 
@@ -182,13 +189,13 @@ function files_ajax_addcontact(){
 		alert = files.alert_guest;
 	}else{
 		var new_contact = document.getElementById('edit_contactname').innerHTML;
-		document.getElementById('addcontact_name').value = new_contact;
-		document.getElementById('addcontact_submit').click(); 
+		$.ajax( {type: 'POST', dataType: 'text', url: 'connection_add', cache: false, data: {addcontact_name:new_contact, '_token': $('meta[name=csrf-token]').attr('content')}} )
+		.done( location.reload() );  
 	}
 }
 
 function files_ajax_rename(){
-	var alert = 'Not allowed.';
+	var alert = 'Error';
 	var item_name = files.get_fname(); 
 	if ( !common_ajax_permit() ){
 		alert = files.alert_guest;
@@ -199,17 +206,15 @@ function files_ajax_rename(){
 		var i = files.entries.indexOf(new_name);
 		
 		if (i>-1){
-			alert = 'Name exists.';
+			alert = 'Name exists';
 		}else{
-			performLfmRequest('rename', {
-		        file: item_name,
-		        new_name: new_name
-		      }).done(refreshFoldersAndItems);
+			performLfmRequest('rename', {file: item_name, new_name: new_name})
+			.done(refreshFoldersAndItems);
 		    common.editor_text = '';
 		    alert = 'Item was renamed.'
 		}
 	}
-	common_show_notification(alert);
+	common_show_notification(alert,0,1);
 }
 
 function files_ajax_delete(sync, fname){
@@ -219,22 +224,21 @@ function files_ajax_delete(sync, fname){
 		item_name = fname;
 		i = 'something';
 	}
-	var alert = 'Not allowed.';                                          console.log('delete item: '+item_name);
+	var alert = 'Error';                                          console.log('delete item: '+item_name);
 	
 	if ( !common_ajax_permit() ){
 		alert = files.alert_guest;
 	}else if ( i!=0 && files.items_protected.indexOf(item_name)==-1){
-		document.getElementById("deletedir_text").value = item_name;
-		if (sync==1){
-			document.getElementById("delete_misc").value = 'sync';
-		}
-		document.getElementById("deletedir_submit").click(); 	
-	    alert = 'Item was deleted.'
+		var misc = 'empty';
+		if (sync==1){ misc = 'sync';}
+		$.ajax( {type: 'GET', dataType: 'text', url: 'delete_dir', cache: false, data: {delete_name: item_name, delete_misc: misc}} )
+		.done( refreshFoldersAndItems('OK') );
+	    alert = 'Item was deleted';
 	}
-	common_show_notification(alert);
+	common_show_notification(alert,0,1);
 }      
 function files_ajax_totrash(){
-	var alert = 'Not allowed.';
+	var alert = 'Error';
 	if ( !common_ajax_permit() ){
 		alert = files.alert_guest;
 	}else if ( files.get_savepath(files.iter)!='' ){
@@ -247,9 +251,7 @@ function files_ajax_totrash(){
 			console.log('SUCCESS');
 			files_ajax_delete( 0,localStorage.getItem("delete_fname"));
 		} );
-		alert = 'Moved to trash';
 	}
-	common_show_notification(alert);
 }      
 function files_ajax_upload(id){
 	if ( !common_ajax_permit() ){
@@ -257,6 +259,7 @@ function files_ajax_upload(id){
 	}else{
 		document.getElementById('upload-button').click();
 		loadFolders(true);
+		menu_back('menu_back_lvl0',1, 0);
 		//location.reload();
 		
 	}
@@ -269,43 +272,34 @@ function files_ajax_download(){                                          console
 }
 
 function files_ajax_past(sync){                                              consolelog_func();
-	var alert = 'Not allowed.';
+	var alert = 'Error';
 	if ( !common_ajax_permit() ){
 		alert = files.alert_guest;
 	}else {
-		document.getElementById("copy_shortpath").value = localStorage.getItem("copy_shortpath");
-		document.getElementById("past_dir").value = files.get_subdir(); 
-		if (sync==1){
-			document.getElementById("copy_misc").value = 'sync';
-		}
-		document.getElementById("copy_submit").click();
+		var misc = 'empty';
+		if (sync==1){ misc = 'sync'; }
+		$.ajax( {type: 'GET', dataType: 'text', url: 'copyitem', cache: false, 
+			data: {copy_shortpath: localStorage.getItem("copy_shortpath"), past_dir:files.get_subdir(), copy_misc:misc}} )
+		.done(refreshFoldersAndItems('OK'));
+		alert = 'Item was pasted';
 	}
-	common_show_notification(alert);
+	common_show_notification(alert,0,1);
 }    
-function files_ajax_sync(){                                              consolelog_func();
-	var alert = 'Not allowed.';
-	if ( !common_ajax_permit() ){
-		alert = files.alert_guest;
-	}else {
-		document.getElementById("copy_shortpath").value = files.get_savepath(files.iter);
-		document.getElementById("past_dir").value = files.get_subdir();
-		document.getElementById("copy_misc").value = 'sync';
-		document.getElementById("copy_submit").click(); 
-	}
-	common_show_notification(alert);
-}    
+
 function files_copy(){                                                   consolelog_func();
-	var alert = 'Not allowed.';
+	var alert = 'Error';
 	if (files.get_savepath(files.iter)!='' ){
 		var short_path = files.get_savepath(files.iter);
 		localStorage.setItem("copy_shortpath", short_path);              //console.log('Copy short_path: '+short_path);
-		alert='Copied.';
+		alert='Item was copied';
+		//menu_back('menu_back_lvl0',1, 0);
 	}
-	common_show_notification(alert);
+	common_show_notification(alert, 0,1);
 }
 
 function files_ajax_createinit(){
-	document.getElementById('createinit_submit').click();     
+	$.ajax( {type: 'GET', dataType: 'text', url: 'create_init', cache: false} )
+	.done(refreshFoldersAndItems('OK'));     
 }
 
 function common_ajax_permit(){
@@ -324,7 +318,6 @@ function files_signin(){                                                 console
     document.getElementById('signin_username').value = name;
     document.getElementById('signin_password').value = pass;
     document.getElementById('signin_submit').click();  
-                  
     //utter(login_messages_en[user_access],0,0,0);
 }
 function files_signup(){                                                 consolelog_func();
@@ -352,7 +345,7 @@ function files_login_remember(){                                         console
 function files_edittext(id){                                             consolelog_func('darkblue');
 	var text = "";                                                       
 	if (id=="edit_filename"){
-		var fname = files.get_fname();                           //console.log('Edit: '+id+' '+text+' '+files.get_ftype());
+		var fname = files.get_fname();                                   //console.log('Edit: '+id+' '+text+' '+files.get_ftype());
 		if (files.get_ftype()!='folder'){
 			text = fname.substring(0,fname.lastIndexOf('.'));
 		}else{

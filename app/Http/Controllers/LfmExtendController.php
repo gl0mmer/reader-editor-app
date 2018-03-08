@@ -82,13 +82,10 @@ class LfmExtendController extends LfmController
         $old_path = substr($path, 0,strrpos($path,'/'));
         $old_path = $old_path.'/shares/Welcome.txt';
         $msg = $msg.$old_path;
+        //return $msg;  
         if (!File::copy($old_path, $new_path)) {
 			$msg = $msg.' Error ';
 		}
-		
-		//$path = parent::getCurrentPath('mail');
-		//parent::createFolderByPath($path);
-		//$msg = $msg.' | '.$path.' Created ';
 		
 		$path = parent::getCurrentPath('trash');
 		if (!File::exists($path)) {
@@ -96,13 +93,14 @@ class LfmExtendController extends LfmController
 			$msg = $msg.' | '.$path.' Created ';
 		}
         //return $msg;  
-        return redirect()->back() ->with(['msg'=>$msg]);
+        return redirect()->route('home') ->with(['msg'=>$msg]);
 	} 
     
     
     public function create()
     {
 		$msg = 'Create: ';
+		//return $msg;
         $filename = request()->file_name;
         //$filename = request('file_name');
         $filetext = request()->file_text;
@@ -212,9 +210,9 @@ class LfmExtendController extends LfmController
     {
 		$msg = 'delete';
 		
-		$filename = request()->deletedir_text;
+		$filename = request()->delete_name;
 		$path = parent::getCurrentPath("");
-        //$old_path = $path.'/'.$filename;
+        $msg = $msg.'/'.$filename;
         
         if ( request()->delete_misc=='sync' ){
 			$guest_id = User::where('first_name','guest')->first()->id;
@@ -262,12 +260,10 @@ class LfmExtendController extends LfmController
     private function rrmdir($dir) 
     {
 		$msg = '';
-		//$msg = 'rrmdir: '.$dir;
 		
 	     $objects = scandir($dir); 
 	     foreach ($objects as $object) { 
 	       if ($object != "." && $object != "..") {
-			   //$msg = $msg.' - '.$object; 
 			   if (is_dir($dir."/".$object))
 					$this->rrmdir($dir."/".$object);
 			   else

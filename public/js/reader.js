@@ -58,10 +58,7 @@ var reader = {
 
 function reader_start(){                                                 consolelog_func('darkblue');    
 	reader.in_messages = common.in_messages;     
-	localStorage.setItem("in_reader", "yes");	                         
-	var exitpath = localStorage.getItem("reader_url");                 //console.log('Exitpath0: '+exitpath);
-	exitpath = exitpath.substring(0, exitpath.lastIndexOf('/'));
-	localStorage.setItem("reader_exitpath", exitpath);	                 
+	localStorage.setItem("in_reader", "yes");	                                  
 	
 	var inner_e = "";
 	inner_e += "<div id='text_scroll_area' class='text_scroll' align='left' >";
@@ -101,8 +98,8 @@ function reader_exit(){
 	if (window.speechSynthesis.speaking ){                        
 			window.speechSynthesis.pause();       
 	}
-	if (reader.in_messages){
-		document.getElementById('show_contacts').click();
+	if (reader.in_messages){                                             //console.log('U: '+localStorage.getItem("reader_exitpath"));
+		window.location.href=localStorage.getItem("url")+'contacts';
 	}else{
 		files_start();
 		files_update();
@@ -177,10 +174,8 @@ function reader_ajax_save(){                                                  co
 			document.getElementById('savedraft_text').value = text_all_origin;
 			document.getElementById('savedraft_submit').click();
 		}else{
-			var fname = localStorage.getItem("reader_savepath");             console.log('Fname: '+fname);
-			document.getElementById('update_filename').value = fname;        console.log('Text: '+text);
-			document.getElementById('update_filetext').value = text_all_origin;
-			document.getElementById('update_submit').click();                    //console.log('New .txt');
+			$.ajax( {type: 'GET', dataType: 'text', url: 'update', cache: false, data: {file_name: fname, file_text: text_all_origin}} )
+			.done( function () { location.reload(); } );
 			alert = 'File was saved.';     
 		}
 	}

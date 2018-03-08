@@ -214,7 +214,7 @@ function files_show_login(){                                             console
     
     var name="name", pass="password";
 	if (files.userremember) {name = files.username; pass = files.userpass; }
-	var c = document.getElementById('edit_username').className;          console.log('c: '+c);
+	var c = document.getElementById('edit_username').className;          
 }
 function files_show_addcontact(){                                        consolelog_func(); console.log('Show_add_contact');
 	if (get_usrname(files.dir)=="guests"){

@@ -180,6 +180,7 @@ var onclick = {
 	ajax_past: 'files_ajax_past();',
 	ajax_rename: 'files_ajax_rename();',
 	ajax_totrash: 'files_ajax_totrash();',
+	//ajax_totrash: 'files_ajax_delete();',
 	ajax_rm: 'files_ajax_delete();',
 	ajax_download: 'files_ajax_download();',
 	ajax_upload: 'files_ajax_upload();',

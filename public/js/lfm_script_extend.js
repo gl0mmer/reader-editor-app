@@ -51,8 +51,8 @@ function loadItems(dir) {
   path = path.substring(1);
   if (path.indexOf('/')>-1){
 	  path = path.substring(path.indexOf('/'));
-  }else{ path = '' };                                                    // Bug may occure here!!!
-  $.ajax( {type: 'GET', dataType: 'text', url: 'jsonitems', cache: false, sort_type: 'alphabetic', data: {path: path}} )
+  }else{ path = '' };                                                    //console.log('jsonitem: |'+path+'|');  // Bug may occure here!!!
+  $.ajax( {type: 'GET', dataType: 'text', url: 'jsonitems', cache: false, data: {path: path}} )
     .done(function (data) {
       var response = JSON.parse(data);
       $('#content').html(response.html);                                 //console.log('Resp.html: '+response.html);

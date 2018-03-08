@@ -425,7 +425,7 @@ function editor_scroll(order){                                           console
             }else{iter+=1;}
         }
     }else if (order==0 && iter > 0) { 
-        i = text.substr(0,iter).lastIndexOf(rtag);
+        i = text.substr(0,iter).lastIndexOf(rtag);                       //console.log('E: '+text.length+' - '+i+' - ');
         if (iter==i+rtag.length && i!=-1){
             iter = text.substr(0,iter).lastIndexOf(ltag);              
         }else{

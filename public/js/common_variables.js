@@ -8,12 +8,12 @@ if (localStorage.getItem("isset")!="true"){
 	localStorage.setItem("working_dir", "");
 	localStorage.setItem("delete_fname", "");
 	localStorage.setItem("folder_path", "");
+	localStorage.setItem("url", "");
 	
 	localStorage.setItem("in_reader", "no");
 	localStorage.setItem("reader_fname", "");
 	localStorage.setItem("reader_url", "");
 	localStorage.setItem("reader_savepath", "");
-	localStorage.setItem("reader_exitpath", "");
 }else{
 	localStorage.setItem("show_welcome", "no");
 }
@@ -23,6 +23,7 @@ var user = {
 	id: 0,
 	name: '',
 	contact_name: '',
+	contact_id: '',
 };
 
 var common = {
@@ -51,6 +52,9 @@ var common = {
 	repeat_text: '',           // used in common_show_notification() only
 	in_messages: false,	
 	time_click: 0,
+	
+	symbol_ltag: '<abbr>',
+	symbol_rtag: '</abbr>',
 	
 	cookie_save: function(){                                             consolelog_func('brown');
 	    var keys = Object.keys(this);                                    
