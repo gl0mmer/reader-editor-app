@@ -109,6 +109,7 @@ common.style = {
     b_lineheight: 0,
     r_lineheight: 0,
     vmin: 10,
+    rx: 1.0, ry:1.0, rmin:1,
     cursorshift:0.25,
     
     init_font: function(scale, hscale){
@@ -135,11 +136,11 @@ common.style = {
 	    
 	    var dx = this.dy*this.b_shape;
 	    var yspace = (this.bbot-this.btop-(this.yn)*this.dy ) / (this.yn-1); 
-	    var y = this.btop + (i%this.yn)*(yspace+this.dy*1);
-	    var x = bright - (this.xn-n_x)*dx - (this.xn-n_x-1)*this.xspace; 
-	    if ((i-i%this.yn)/this.yn==this.xn-1){ dx = dx*this.dx_side; }    
+	    var y =  this.btop + (i%this.yn)*(yspace+this.dy*1) ;
+	    var x =  bright - (this.xn-n_x)*dx - (this.xn-n_x-1)*this.xspace ; 
+	    
 	    var fontsize = this.b_fontsize*common.b_fontsize_scale*this.vmin;  //console.log('fontsize: '+this.b_fontsize+' | '+common.b_fontsize_scale+' | '+this.vmin+' | '+fontsize);
-	    var style = 'left:'+x/wratio+'vw;top:'+y+'vh;width:'+dx/wratio+'vw;height:'+this.dy+'vh; border-bottom-width:'+this.dy*0.13+'vmin; font-size:'+fontsize+'px; line-height:'+fontsize*this.b_lineheight+'px;';
+	    var style = 'left:'+x/wratio*this.rx+'vw;top:'+y*this.ry+'vh;width:'+dx/wratio*this.rx+'vw;height:'+this.dy*this.ry+'vh; border-bottom-width:'+this.dy*0.13+'vmin; font-size:'+fontsize+'px; line-height:'+fontsize*this.b_lineheight+'px;';
 	    return('class="'+class_name+'" style="'+style+'"'); 
 	},
 	
@@ -164,36 +165,40 @@ common.style = {
 			if (wratio<0.67 ){ x_dim=2; y_dim=6; } 
 		}                                                                //console.log('wratio: '+wratio+' '+x_dim+' '+y_dim);
 		var nx = i%(x_dim); var ny = (i-i%(x_dim))/x_dim;
-		var dx = this.dy*this.b_shape/wratio;
-		var ratio = 1.2;
-		var x = b_left +(b_right-b_left)*(ratio-1)/2. + (b_right-b_left)/(x_dim*ratio) *(nx+0.5) - dx/2.;
-		var y = b_top + (b_bot-b_top)*(ratio-1)/2. +    (b_bot-b_top)/(y_dim*ratio) *(ny+0.5) - this.dy/2.;       //console.log(dx,this.dy,x,y);
+		if (wratio<1){wratio = 1;}
+			var dx = this.dy*this.b_shape/wratio;
+		
+		var add = 0.6;
+		var x = b_left + (b_right-b_left)/(x_dim+add) *(nx+1-(1-add)/2) - dx/2.;
+		var y = b_top +  (b_bot-b_top)/(y_dim+add) *(ny+1-(1-add)/2) - this.dy/2.;       //console.log(dx,this.dy,x,y);
 		
 		var fontsize = this.b_fontsize*common.b_fontsize_scale*this.vmin;   
 		var lineheight = fontsize*this.b_lineheight;
 		if (class_n===2) { 
 			lineheight = b_height*this.vmin+lineheight/2.0; 
-			dx = dx + (b_right-b_left)/(x_dim*ratio);
-		}
-		var style = 'left:'+x+'vw; top:'+y+'vh;'+'width:'+dx*wratio+'vmin; height:'+this.dy+'vmin; font-size:'+fontsize+'px; line-height:'+lineheight+'px;';  
-		if (class_n===0){ style+= 'background-color: rgba(110, 152, 27, 0.7);'; }
+			dx = dx + (b_right-b_left)/(x_dim+add);
+		}        
+		var style = 'left:'+x*this.rx+'vw; top:'+y*this.ry+'vh;'+'width:'+dx*this.rx+'vw; height:'+this.dy*this.ry+'vmin; font-size:'+fontsize+'px; line-height:'+lineheight+'px;';  
 		if (class_n===0){ style+= 'background-color: rgba(110, 152, 27, 0.7);'; }
 		return('class="'+class_name+'" style="'+style+'"');
 	},
 	
 	resize: function(){                                                  consolelog_func('brown');
 		this.vmin = Math.min(window.innerWidth, window.innerHeight)/100;
+		this.rx = window.innerWidth/document.body.clientWidth;   
+	    this.ry = window.innerHeight/document.body.clientHeight; 
 	    common.style.init_font(0.9,1.1);
 		var wratio = window.innerWidth/window.innerHeight;
+		if (wratio>1){ this.rmin = this.ry; }
+		else{ this.rmin = this.rx; }
 		
 		var content_width = this.get_content_width();
 		var elem = document.getElementById('content_box');
-	    if (elem){ elem.style.width= (content_width-3.4*wratio)/wratio+'vw'; }
+	    if (elem){ elem.style.width= (content_width-3.4*wratio)/wratio*this.rx+'vw'; }
 	    var elem = document.getElementById('zoom_box');
-	    if (elem){ elem.style.width= (content_width-3.4*wratio)/wratio+'vw'; }  
+	    if (elem){ elem.style.width= (content_width-3.4*wratio)/wratio*this.rx+'vw'; }  
 	    var elem = document.getElementById('buttons_area');
-	    if (elem){ elem.style.left= (content_width-0.5*wratio)/wratio+'vw'; } 
-	    elem = document.getElementById('show_menu');
+	    if (elem){ elem.style.left= (content_width-0.5*wratio)/wratio*this.rx+'vw'; } 
 	    
 	}	
 }

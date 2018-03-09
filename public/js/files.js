@@ -101,10 +101,7 @@ function files_update(){                                                 console
 		if ( [files.dir,"", undefined, null, 'mail'].indexOf(path)==-1 ){
 			goTo( path );
 		}
-		files_show_buttons();                                            //console.log('Paths: ',files.paths);	       
-		common_set_fontsize(common.f_fontsize_scale, 0);                                                                                                             
-		common.style.resize();
-		files_show_files();
+		files_resize();
 		if (files.entries.length>0){
 			files_scroll(files.iter, 'no');
 			files_fill_zoom();

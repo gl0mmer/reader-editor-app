@@ -100,6 +100,12 @@ function utter(txt, stop, onend, rate){                                  console
 	}
 	txt.replace('.', ' ');                                               
 	
+	if ( !('speechSynthesis' in window)) {
+		console.log('Error: Your browser does not support speech synthesis.');
+		return true;
+	}else{  
+		console.log('Error: Your browser supports speech synthesis.');
+		}
     var msg = new SpeechSynthesisUtterance();
     msg.text = txt;
     //var voices = speechSynthesis.getVoices();
@@ -208,10 +214,11 @@ function common_set_fontsize(id, obj){                                   console
 	if (obj==0){ classname = 'files_name';  lineheight = s.f_lineheight; font_default = s.f_fontsize; }
 	if (obj==1){ classname = 'text_scroll'; lineheight = s.r_lineheight; font_default = s.r_fontsize; }                         
 	var scale = parseFloat(id);                                          //console.log('scale: '+id);
-	var elem = document.getElementById('place_fontsize');
     var alpha = alpha_def-(0.11-0.05*(scale-1)/2.0)*(scale-1);                                 
     var fontsize = font_default*scale*s.vmin;                            //console.log('Fontsize: '+fontsize+' | '+alpha);
     common.style.f_fontalpha = alpha;
+    
+    var elem = document.getElementById('place_fontsize');
     if (elem) {
 		elem.style.fontSize = fontsize+'px'; 
 		elem.style.color = 'rgba(0,0,0,'+alpha+')';

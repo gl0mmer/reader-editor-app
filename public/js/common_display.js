@@ -52,9 +52,9 @@ function scroll_to(id, id_area, title){                                  console
     if (title==0){ elem = document.getElementById(id);  }
     else { elem= document.querySelectorAll('[id="'+id+'"]')[1]; 
     }
-    rect_scroll = document.getElementById(id_area).getBoundingClientRect(); // area
-    rect = elem.getBoundingClientRect();                                 // element position
-    if (rect.top+0.5*(rect.bottom-rect.top)>rect_scroll.bottom || rect.left+0.5*(rect.right-rect.left)>rect_scroll.right || rect.bottom-0.5*(rect.bottom-rect.top)<rect_scroll.top || rect.right-0.5*(rect.right-rect.left)<rect_scroll.left )
+    area = document.getElementById(id_area).getBoundingClientRect();     
+    rect = elem.getBoundingClientRect();                                 //console.log(rect);
+    if (rect.top+0.5*(rect.bottom-rect.top)>area.bottom || rect.left+0.5*(rect.right-rect.left)>area.right || rect.bottom-0.5*(rect.bottom-rect.top)<area.top || rect.right-0.5*(rect.right-rect.left)<area.left )
         {elem.scrollIntoView(true);} 
 }
 
@@ -134,8 +134,8 @@ function common_show_notification(text, welcome, blur){                        c
 	
 	inner_e = '<div id="back_lvl" onclick="menu_back(this.id,'+blur+',false);" class="back_area"> </div>';
 	inner_e+= '<div class="menu_area" >';
-	inner_e+= '<div class="text_scroll_box" style="position:fixed;top:15vh;left:12vw;width:76vw;height:'+(b_top-23)+'vh;font-size:4.8vmin;line-height:7.5vh; color: rgba(0,0,0,0.55);">';
-	inner_e+= '<div class="text_scroll" align="left" style="top:0;"> <div class="reader_text" style="top:-5vh;height:20vh;">'+text+' &nbsp </div> </div> </div> </div>' ;
+	inner_e+= '<div class="text_scroll_box" style="position:fixed;top:'+15*common.style.ry+'vh;left:12vw;width:76vw;height:'+(b_top-23)*common.style.ry+'vh;font-size:'+4.8*common.style.ry+'vmin;line-height:'+7.5*common.style.ry+'vmin; color: rgba(0,0,0,0.55);">';
+	inner_e+= '<div class="text_scroll" align="left" style="top:0vh;"> <div class="reader_text" style="top:'+(-5*common.style.ry)+'vh;height:'+20*common.style.ry+'vh;">'+text+' &nbsp </div> </div> </div> </div>' ;
       
     inner_e += button_html(1, [['js_utternote', [19,0]] ], 5,4);
     //if (welcome){	inner_e += button_html(1, [['js_donotshow', [16,0]] ], 5,4); }                                 

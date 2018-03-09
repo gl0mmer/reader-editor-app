@@ -41,6 +41,7 @@ function files_resize(){                                                 console
 	common_set_fontsize(common.f_fontsize_scale, 0);
 	files_show_buttons();
 	files_show_files();
+	files_set_zoom('no'); 
 }
 
 function files_set_zoom(order){                                          consolelog_func();
@@ -49,14 +50,16 @@ function files_set_zoom(order){                                          console
     var elem = document.getElementById("zoom_box");               
     if (files.zoom===1){ 
         elem.style.visibility='hidden';
-        document.getElementById('content_box').style.height = '105vh';  
+        document.getElementById('content_box').style.height = 105*common.style.ry+'vh';  
     }else{
         elem.style.visibility='visible';
-        document.getElementById('content_box').style.height = common.style.textheight_zoom+'vh'; 
+        document.getElementById('content_box').style.height = common.style.textheight_zoom*common.style.ry+'vh'; 
     }                                                                    
     var name = files.zoom_arr[files.zoom];                               
-    document.getElementById('zoom_box').style.height = (100 - common.style.textheight_zoom -2.3)+'vh';
-    document.getElementById('zoom_box').style.top = (common.style.textheight_zoom +3)+'vh';
+    document.getElementById('zoom_box').style.height = (100 - common.style.textheight_zoom -2.5)*common.style.ry+'vh';
+    document.getElementById('zoom_box').style.top = (common.style.textheight_zoom +2.8)*common.style.ry+'vh';
+    document.getElementById('zoom_box').style.fontSize = 11*common.style.rmin+'vh';
+    document.getElementById('zoom_box').style.lineHeight = 18*common.style.rmin+'vh';
     
     var elem = document.getElementById('js_zoom'); 
     if (elem) { 

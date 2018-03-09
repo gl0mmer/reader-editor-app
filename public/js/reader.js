@@ -96,9 +96,7 @@ function reader_exit(){
 	localStorage.setItem("in_reader", "no"); 
 	document.getElementById('created_elements').innerHTML = '';
 	
-	if (window.speechSynthesis.speaking ){                        
-			window.speechSynthesis.pause();       
-	}
+	reader_utter_stop();
 	if (reader.in_messages){                                             //console.log('U: '+localStorage.getItem("reader_exitpath"));
 		window.location.href=localStorage.getItem("url")+'contacts';
 	}else{
@@ -106,6 +104,16 @@ function reader_exit(){
 		files_update();
 	}
 	
+}
+function reader_utter_stop(order){
+	if ( 'speechSynthesis' in window) {
+		if (window.speechSynthesis.speaking ){                        
+				window.speechSynthesis.pause();       
+		}
+		if (order=='cancel'){
+			window.speechSynthesis.cancel(); 
+		}
+	}
 }
 
 function reader_update(start) {                                          consolelog_func('darkblue');   console.log('ischanged_text: ',common.ischanged_text);                                            
@@ -229,10 +237,10 @@ function reader_set_zoomtype(order,id){                                  //conso
     var elem = document.getElementById("zoom_box");              
     if (n_zoomtype==0){ 
         elem.style.visibility='hidden';
-        document.getElementById('content_box').style.height = '100vh'; 
+        document.getElementById('content_box').style.height = 100*common.style.ry+'vh'; 
     }else{
         elem.style.visibility='visible';
-        document.getElementById('content_box').style.height = common.style.textheight_zoom+3+'vh'; 
+        document.getElementById('content_box').style.height = (common.style.textheight_zoom+3)*common.style.ry+'vh'; 
     }                                                                    
     reader_fill_zoom();                                                   
     elem = document.getElementById('place_readerzoom');
@@ -240,25 +248,29 @@ function reader_set_zoomtype(order,id){                                  //conso
     elem = document.getElementById('reader_menu_zoomtype_text');
     if (elem){ elem.innerHTML=reader.zoomtype_arr[n_zoomtype]; }          
     common.style.resize();
-    document.getElementById('zoom_box').style.height = (100 - common.style.textheight_zoom-2.3)+'vh';
-    document.getElementById('zoom_box').style.top = (common.style.textheight_zoom +3)+'vh';
+    document.getElementById('zoom_box').style.height = (100 - common.style.textheight_zoom -2.5)*common.style.ry+'vh';
+    document.getElementById('zoom_box').style.top = (common.style.textheight_zoom +2.9)*common.style.ry+'vh';
+    document.getElementById('zoom_box').style.fontSize = 11*common.style.rmin+'vh';
+    document.getElementById('zoom_box').style.lineHeight = 18*common.style.rmin+'vh'
 }
    
 function reader_play_pause(){                                            consolelog_func(); 
-    if (common.play_counter==0){                                       
-        window.speechSynthesis.resume(); 
-        common_playpause_icon(1);
-        common.play_counter=1; 
-        }
-    else if (window.speechSynthesis.speaking ){   
-		window.speechSynthesis.pause();                                  // works in windows-firefox and any-chrome      
-		//if (common.browser!='Firefox'){
-		//	window.speechSynthesis.pause();       
-		//} else{ window.speechSynthesis.cancel();  }
-        common_playpause_icon(0);
-        common.play_counter=0; 
-    }
-    else{reader_utter(1, 0); common.play_counter=1;}
+	if ( 'speechSynthesis' in window){
+	    if (common.play_counter==0){                                       
+	        window.speechSynthesis.resume(); 
+	        common_playpause_icon(1);
+	        common.play_counter=1; 
+	        }
+	    else if (window.speechSynthesis.speaking ){   
+			window.speechSynthesis.pause();                                  // works in windows-firefox and any-chrome      
+			//if (common.browser!='Firefox'){
+			//	window.speechSynthesis.pause();       
+			//} else{ window.speechSynthesis.cancel();  }
+	        common_playpause_icon(0);
+	        common.play_counter=0; 
+	    }
+	    else{reader_utter(1, 0); common.play_counter=1;}
+	}
 }
 function reader_play_all(){                                              //console.log('common.onend: '+common.utter_playall);
 	if (common.utter_playall==1){ reader_play_pause(); }
@@ -268,7 +280,7 @@ function reader_play_all(){                                              //conso
 	}	
 }
 function reader_play_single(order){
-	window.speechSynthesis.cancel(); 
+	reader_utter_stop('cansel');
 	common.utter_playall=0;
 	reader_scroll(order,1,0); 
 }
@@ -349,13 +361,11 @@ function is_inlist(list){                                                //conso
 }
 function goto_files(){                                                   consolelog_func(); 
 	window.location.href = '/index.html'; 
-	window.speechSynthesis.cancel(); 
+	reader_utter_stop('cancel');
 }
 
 function reader_editor(){                                                consolelog_func("darkblue"); 
-	if (window.speechSynthesis.speaking ){                        
-			window.speechSynthesis.pause();       
-	}
+	reader_utter_stop();
     text_all = document.getElementById('text_from_file').innerHTML;
     reader.text_parsed = text_all;
     id = reader.get_id();

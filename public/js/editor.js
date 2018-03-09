@@ -106,7 +106,7 @@ editor.style = {
 		}
 	    
 	    var fontsize = common.style.b_fontsize*common.b_fontsize_scale*common.style.vmin; 
-	    style+= 'left:'+x+'%; top:'+y+'%; width:'+b_width+'%; height:'+b_height+'%; border-bottom-width:'+b_height*0.07+'%; font-size:'+fontsize+'px;'  ;  
+	    style+= 'left:'+x+'vw; top:'+y*common.style.ry+'vh; width:'+b_width+'vw; height:'+b_height*common.style.ry+'vh; border-bottom-width:'+b_height*common.style.ry*0.07+'vh; font-size:'+fontsize+'px;'  ;  
 	    return('class="'+class_name+'" style="'+style+'"');
 	},
 	
@@ -118,8 +118,8 @@ editor.style = {
 		    this.b_left=2; this.b_right=98; this.b_top=42.5; this.b_bottom=97; this.b_botheight=1;
 		    this.b_leftwidth=1; this.b_rightwidth=1; this.zoomspace = 6;
 		    var zoomheight = this.b_top - 2 - this.zoomspace;            //console.log(this.zoomspace, this.b_top);
-		    document.getElementById('editor_text_box').style.height=zoomheight+'vh';
-		    document.getElementById('editor_buttons_area').style.top=(this.b_top-this.zoomspace/2)+'vh';
+		    document.getElementById('editor_text_box').style.height=zoomheight*common.style.ry+'vh';
+		    document.getElementById('editor_buttons_area').style.top=(this.b_top-this.zoomspace/2)*common.style.ry+'vh';
 		    editor_set_fontsize(this.nlines_lvl1,1);  
 		     
 		}else if (stylename==='bottom_2rows') {                          
@@ -129,8 +129,8 @@ editor.style = {
 		    this.b_left=2; this.b_right=98; this.b_top=64; this.b_bottom=97; this.b_botheight=1;
 		    this.b_leftwidth=1; this.b_rightwidth=1; this.zoomspace = 5;
 		    var zoomheight = this.b_top - 2 - this.zoomspace;            //console.log('2rows:',this.zoomspace, this.b_top);
-		    document.getElementById('editor_text_box').style.height = zoomheight+'vh';  
-		    document.getElementById('editor_buttons_area').style.top=(this.b_top-this.zoomspace/2)+'vh';
+		    document.getElementById('editor_text_box').style.height = zoomheight*common.style.ry+'vh';  
+		    document.getElementById('editor_buttons_area').style.top=(this.b_top-this.zoomspace/2)*common.style.ry+'vh';
 		    editor_set_fontsize(this.nlines_lvl0,0);                     
 		    		    
 		}
@@ -169,7 +169,6 @@ function editor_run(parent, text_raw, destination, iter){                console
 	elem.innerHTML = '<div class="text_scroll" id="editor_text_scroll"><div id="editor_text_area"  class="editor_text" >zoom word</div></div>'; 
 	elem = create_element('editor_buttons_area', 'editor_buttons_area', 'editor_area'); 
 	
-	//var input = document.getElementById('body');
 	var input = document.getElementsByTagName('body')[0];
     if (common.browser=="Firefox"){ 
 		var a=0;
@@ -208,6 +207,7 @@ function editor_run(parent, text_raw, destination, iter){                console
 	document.getElementById('editor_text_area').innerHTML=editor.text_raw;  
     if (editor.text_raw.length>1){
 		editor.iter = editor.text_raw.length;
+		editor_scroll(0,'no');
 	}
 	editor_set_cursor();                                                     
 	editor_show_start();                                                   
@@ -405,7 +405,7 @@ function editor_scrollword(order){                                       console
 	var text_read = common_textto_read( text.substring(i_left, i_right) );
 	if (editor.sound_navigator==1) { utter(text_read, 1, 0); }   
 }
-function editor_scroll(order){                                           consolelog_func(); 
+function editor_scroll(order, if_utter){                                           consolelog_func(); 
     var ltag = common.symbol_ltag, rtag = common.symbol_rtag; 
     var iter = editor.iter;
     var iter_prev = iter;
@@ -432,11 +432,13 @@ function editor_scroll(order){                                           console
     }  
     editor.iter = iter;
     editor_set_cursor();
-    i1 = Math.min(iter_prev, iter); i2 = Math.max(iter_prev, iter); 
-    var letter = text.substr(i1, i2-i1);
-    var text_read = common_textto_read(letter);
-    if (editor.sound_navigator==1) { utter(text_read, 1, 0); }
-    if (letter==' '){letter='_';}
+    
+    if (if_utter==undefined){
+	    i1 = Math.min(iter_prev, iter); i2 = Math.max(iter_prev, iter); 
+	    var letter = text.substr(i1, i2-i1);
+	    var text_read = common_textto_read(letter);
+	    if (editor.sound_navigator==1) { utter(text_read, 1, 0); }
+	}
     return (iter);
 }
 

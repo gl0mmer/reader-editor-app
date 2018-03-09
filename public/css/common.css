@@ -173,7 +173,7 @@ height:50%;
 
 /*-- zoom ----------------------------------------------------------------*/
 .text_zoom_box{
-  left:1.5%; top:80%; width:70%; height: 20%; 
+  left:1.5vw; top:80vh; width:70vw; height: 20vh; 
   position:fixed; 
   border-radius: 0.25vmin; 
   background-color: rgba(0, 0, 0, 0.05); 
@@ -182,7 +182,7 @@ height:50%;
   display:flex; justify-content:center; align-items:center; color: rgba(0,0,0,0.5);
 }.text_zoom{
   border-radius: 0.25vmin; top:0;
-  position:relative; width:100%; height:96%;  
+  position:relative;  
   color: rgba(0,0,0,0.5);
   overflow-x: scroll; overflow-y: hidden; white-space:nowrap; 
 }.text_zoom::-webkit-scrollbar {
