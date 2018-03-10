@@ -101,11 +101,10 @@ function utter(txt, stop, onend, rate){                                  console
 	txt.replace('.', ' ');                                               
 	
 	if ( !('speechSynthesis' in window)) {
-		console.log('Error: Your browser does not support speech synthesis.');
+		//console.log('Error: Your browser does not support speech synthesis.');
 		return true;
-	}else{  
-		console.log('Error: Your browser supports speech synthesis.');
-		}
+	}
+	
     var msg = new SpeechSynthesisUtterance();
     msg.text = txt;
     //var voices = speechSynthesis.getVoices();

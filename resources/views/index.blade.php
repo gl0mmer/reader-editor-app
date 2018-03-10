@@ -66,7 +66,11 @@
 				</script>
 				<?php $i+=1; ?>
 			@endforeach
-			
+			<form action="{{ route('connection_add') }}" method="post">
+				<input id="addcontact_name" class="form-control" type="text" name="addcontact_name" value=""  > 
+				<button id="addcontact_submit" type="submit" class="btn btn-primary"> Add connection </button>
+				<input type="hidden" name="_token" value="{{ Session::token() }}">
+			</form>
 		@endif
 	
 		@if ($in_messages)

@@ -5,9 +5,16 @@ var  show_list = 0;
 function loadContacts(ids, names){
 	localStorage.setItem("in_reader", "no");                             
 	files.in_contacts =true;
-	files.entries = names;                                               //console.log('Entries: ',files.entries);    
-	files.entrytype = Array(ids.length).fill('file');                        
+	
+	// sort contacts by name 
+	var d = {};
+	for (var i=0; i<names.length; i++){ d[names[i]]=ids[i]; }            //console.log('Entries 1: ',names, ids);   
+	names.sort(); ids=[];
+	for (var i=0; i<names.length; i++){ ids.push(d[names[i]]); }
+	
+	files.entries = names;                                               //console.log('Entries 2: ',names, ids);                       
 	files.paths = ids;      
+	files.entrytype = Array(ids.length).fill('file');     
 	files_update();     
 }
 function loadMessages(messages) {                                               

@@ -134,10 +134,10 @@ function common_show_notification(text, welcome, blur){                        c
 	
 	inner_e = '<div id="back_lvl" onclick="menu_back(this.id,'+blur+',false);" class="back_area"> </div>';
 	inner_e+= '<div class="menu_area" >';
-	inner_e+= '<div class="text_scroll_box" style="position:fixed;top:'+15*common.style.ry+'vh;left:12vw;width:76vw;height:'+(b_top-23)*common.style.ry+'vh;font-size:'+4.8*common.style.ry+'vmin;line-height:'+7.5*common.style.ry+'vmin; color: rgba(0,0,0,0.55);">';
+	inner_e+= '<div class="text_scroll_box" style="position:fixed;top:'+15*common.style.ry+'vh;left:12vw;width:76vw;height:'+(b_top-25)*common.style.ry+'vh;font-size:'+4.8*common.style.ry+'vmin;line-height:'+7.5*common.style.ry+'vmin; color: rgba(0,0,0,0.55);">';
 	inner_e+= '<div class="text_scroll" align="left" style="top:0vh;"> <div class="reader_text" style="top:'+(-5*common.style.ry)+'vh;height:'+20*common.style.ry+'vh;">'+text+' &nbsp </div> </div> </div> </div>' ;
       
-    inner_e += button_html(1, [['js_utternote', [19,0]] ], 5,4);
+    inner_e += button_html(1, [['js_utternote', [11,0]] ], 3,4);
     //if (welcome){	inner_e += button_html(1, [['js_donotshow', [16,0]] ], 5,4); }                                 
                   
     element = document.createElement('div');

@@ -185,9 +185,11 @@ function files_ajax_addcontact(){
 	if ( !common_ajax_permit() ){
 		alert = files.alert_guest;
 	}else{
-		var new_contact = document.getElementById('edit_contactname').innerHTML;
-		$.ajax( {type: 'POST', dataType: 'text', url: 'connection_add', cache: false, data: {addcontact_name:new_contact, '_token': $('meta[name=csrf-token]').attr('content')}} )
-		.done( location.reload() );  
+		var new_contact = document.getElementById('edit_contactname').innerHTML; 
+		document.getElementById('addcontact_name').value = new_contact;
+		document.getElementById('addcontact_submit').click(); 
+		//$.ajax( {type: 'POST', dataType: 'text', url: 'connection_add', cache: false, data: {addcontact_name:new_contact, '_token': $('meta[name=csrf-token]').attr('content')}} )
+		//.done( location.reload() ); 
 	}
 }
 
