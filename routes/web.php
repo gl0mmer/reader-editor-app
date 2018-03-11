@@ -14,19 +14,9 @@
 //$namespace = '\Unisharp\Laravelfilemanager\controllers';
 
 Route::get('/', [
-	'as'=> 'login',
-	'uses' => 'UserController@getLoginPage',
-]);
-
-
-//Route::get('/home', [
-//        'uses' => 'LfmController@show',
-//        'as' => 'home', ]);
-Route::get('/home', [
 	'uses' => 'UserController@getHomePage',
 	'as' => 'home' 
 ]);
-
 
 Route::get('/reader', function () {
     return view('reader');

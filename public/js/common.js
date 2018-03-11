@@ -6,7 +6,9 @@ common.style.vmin = Math.min(window.innerWidth, window.innerHeight)/100;
 common.style.init_font(0.9,1.1);
 
 document.addEventListener("click",handler,true);
-
+if ('speechSynthesis' in window) {
+	var msg = new SpeechSynthesisUtterance();
+}
 
 //-- init functions ------------------------------------------------------
 
@@ -42,17 +44,16 @@ function check_browser(){                                                console
 
 //-- utter functions -----------------------------------------------------
 
-function utter_paragraph(id, id_all, stop, onend){             consolelog_func(); 
-    for (iii=0; iii<id_all.length; iii++){
-        id_i = id_all[iii]; stop_s=0; onend_i=0;
-        if (iii==0){ stop_s=stop; }
-        if (iii==id_all.length-1){onend_i=onend;}
-        var txt = document.getElementById(id_i).innerText;
-        utter_sentence(txt, stop_s, onend_i);
-    }    
+function utter_paragraph(id, id_all, stop){                              consolelog_func(); 
+	var txt_arr = [];
+    for (var i=0; i<id_all.length; i++){
+        var txt = document.getElementById(id_all[i]).innerText;
+        txt_arr.push(txt);
+    }                                                                    console.log('P-Arr: ',txt_arr);
+    utter_recursive(txt_arr, 1, 0, 0);
 }    
-function utter_sentence(txt, stop, onend, repeat){                       consolelog_func();  
-    if (repeat!==undefined){ txt=common.repeat_text; }                   //console.log(txt);
+function utter_split_sentence(txt){
+	var txt_arr = [];
     var proceed=true; 
     var ii=0, i=0, txt_i='', part_i='';
     var i1=0, i2=0;
@@ -65,90 +66,95 @@ function utter_sentence(txt, stop, onend, repeat){                       console
             if (i===-1){i=txt_i.lastIndexOf(' ');}
             part_i=txt_i.substring(0,i+1);
             txt=txt.substring(i+1);
-            if (ii==0){ stop_s=stop; }else{stop_s=0;}                    
-            if (common.utter_text===''){ common.utter_onend = onend; }
-            else{ onend = common.utter_onend; }
-            common.utter_onend = onend;
-            common.utter_text = txt;
-            utter(part_i, stop_s, 1);
             ii++;
+            txt_arr.push(part_i);
         }else{                                                           
-			if (common.utter_text!=''){
-				stop=0;
-				onend = common.utter_onend;
-			}
 			proceed=false;                                               
-			common.utter_text = '';
-            utter(txt, stop, onend); 
+            txt_arr.push(txt);
         }
-    }
+    }                                                                    //console.log('S-Arr: ',txt_arr);
+    return txt_arr;
 }
-function utter(txt, stop, onend, rate){                                  consolelog_func(); 
-	if (rate===undefined){rate=1;}
-	
-	if (document.title=='reader'){
-		if (editor.if_spell===1){
-			txt = editor.spell_arr[editor.i_spell];
-			editor.i_spell +=1;
-			if (editor.spell_arr.length===editor.i_spell){
-				onend=0;
-				editor.i_spell = 0;
-				editor.if_spell=0; 
-				editor.spell_arr=[];                                         
-			}
-		}
-	}
-	txt.replace('.', ' ');                                               
-	
-	if ( !('speechSynthesis' in window)) {
-		//console.log('Error: Your browser does not support speech synthesis.');
-		return true;
-	}
-	
-    var msg = new SpeechSynthesisUtterance();
-    msg.text = txt;
-    //var voices = speechSynthesis.getVoices();
-    //msg.voice = voices[0];   
-    //console.log(msg.voice);
+function utter_sentence(txt, stop, repeat){                              consolelog_func();  
+    if (repeat!==undefined){ txt=common.repeat_text; }                   //console.log(txt);
     
-    ru = /[а-яА-ЯЁё]/.test(txt); en = /[a-zA-Z]/.test(txt); 
+    if (txt.length>200){ 
+		var txt_arr = utter_split_sentence(txt);
+		utter_recursive(txt_arr, 1, 0, 0); 
+	}else{ utter(txt, stop); }
+}
+function utter(txt, stop){                                               consolelog_func(); 
+	if ( !('speechSynthesis' in window)) { return true; }  
+    
+    var ru = /[а-яА-ЯЁё]/.test(txt); var en = /[a-zA-Z]/.test(txt); 
     if (common.lang=='auto'){ 
 		if (en && en+ru==1){ msg.lang='en'; } 
 		if (ru && ru+en==1){ msg.lang='ru'; } 
 		if (ru==en){ msg.lang=common.langbase; }	
 	}
     else { msg.lang=common.lang; }                                       //console.log(common.lang, common.langbase,  msg.lang, en+'-'+ru);
-    msg.rate = rate;                                                     //console.log('rate: '+msg.rate+', lang: '+msg.lang+', txt: '+msg.text+', stop: '+stop);
-    msg.rate = 0.9;                                                     //console.log('rate: '+msg.rate+', lang: '+msg.lang+', txt: '+msg.text+', stop: '+stop);
-    if (stop==1){ 
-		if (common.browser!='Firefox'){
-			window.speechSynthesis.pause();         
-		}
-		window.speechSynthesis.cancel();        
-	}   
-    
-    window.speechSynthesis.speak(msg);  
+    //msg.rate = rate;                                                     //console.log('rate: '+msg.rate+', lang: '+msg.lang+', txt: '+msg.text+', stop: '+stop);
+    //msg.rate = 0.9;                                                     //console.log('rate: '+msg.rate+', lang: '+msg.lang+', txt: '+msg.text+', stop: '+stop);
+    if (stop==1){ window.speechSynthesis.cancel(); }   
       
     var elem = document.getElementById('js_playpause');
-    if (elem){                                                           //console.log('Utter in reader '+editor.if_spell+' | '+common.utter_text);
-		if (common.utter_playall==0){ onend = 0; }                       //console.log('common.onend: '+common.utter_playall);
-		common.play_counter=1;                                           //console.log('onend: '+onend);
-	    msg.onstart=function(event){ common_playpause_icon(1); };
-	    if (onend==0){ 
-			msg.onend=function(event){ common_playpause_icon(0); }; 
-		}else{ 
-			if (common.utter_text!='') { msg.onend=function(event){utter_sentence(common.utter_text, '', '')}; }
-			else{                                                        //console.log('go');
-				msg.onend=function(event){reader_scroll(1,0,1)}; 
-			}
+    if (elem){                                                           //
+	    msg.onstart=function(event){ 
+			common.play_counter=1; 
+			common_playpause_icon(1); 
+			console.log('--START-- '+event.utterance.text);
+		};
+	}
+	msg.text = txt;  
+    window.speechSynthesis.speak(msg);  
+}    
+var utter_recursive = function(text_arr, stop, onend, i, play_all) {
+	if ( !('speechSynthesis' in window)) { return true; }
+    var txt = text_arr[i];
+    if (txt.length>200){ 
+		var arr = utter_split_sentence(txt);
+		var a = text_arr.slice(0,i); 
+		var b = text_arr.slice(i+1);                                     //console.log('Concat: ',i,a,b,arr,' | ');
+		text_arr = a.concat(arr).concat(b); 
+		txt = text_arr[i]; 
+	}
+   
+    if (i>0){ stop=0; 
+	}else if(i>text_arr.length-2){ onend = 0; }
+	
+	if (i<text_arr.length-1){
+		msg.onend=function(event){                                       //console.log('Rec '+i+': '+text_arr[i]+' - '+stop);
+			common_playpause_icon(0);
+			utter_recursive(text_arr, stop, onend, i+1);
+		};
+	}else if (common.utter_playall==1){
+		msg.onend=function(event){                                
+			common_playpause_icon(0);      
+			reader_scroll(1,0,1); };
+	}else{ 
+		msg.onend=function(event){
+			common_playpause_icon(0);
+			return true;
 		}
 	}
-}    
+	utter(txt, stop); 
+};
+
+function utter_stop(order){
+	if ( 'speechSynthesis' in window) {
+		if (window.speechSynthesis.speaking ){                        
+				window.speechSynthesis.pause();       
+		}
+		if (order=='cancel'){
+			window.speechSynthesis.cancel(); 
+		}
+	}
+}
+
 function common_playpause_icon(i){
 	var elem = document.getElementById('js_playpause');
     if (elem){          
-		// [ ||> ,  || ]   
-		elem.innerHTML=symbols_play_pause[i]; //console.log(i);
+		elem.innerHTML=symbols_play_pause[i];                            //console.log(i);
 	}else{
 		console.log('No elem "playpause"!');
 	}

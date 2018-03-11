@@ -123,7 +123,7 @@ function files_ajax_enter(path){                                         console
 	}
 	if (path==-1 && files.in_contacts ){
 		files.in_contacts = false;                                       
-		window.location.href=localStorage.getItem("url")+'home';
+		window.location.href=localStorage.getItem("url");
 	}else if (files.get_ftype()=='file'){                                // open file
 		if (files.in_contacts){                                          
 			window.location.href=localStorage.getItem("url")+'messages/'+files.paths[files.iter];
@@ -143,6 +143,7 @@ function files_ajax_enter(path){                                         console
 		files.iter_prev = 0;
 		files.iter = 0;
 	}
+	utter_stop('cancel');
 }  
 
 function files_ajax_contacts(){

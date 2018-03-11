@@ -64,7 +64,7 @@ function editor_show_start(){                                            console
 }
 function editor_show_menu(){                                             consolelog_func(); 
 	var inner_e = button_html(1, 
-		[['show_lang',  [5,0]], ['show_editorfont',   [7,0]]
+		[['show_lang',  [5,0]], ['show_editorfont',   [6,0]]
 		]);
     common_create_menu('editor_menu', 0, inner_e,'editor_created_elements', true);
 }

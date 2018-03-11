@@ -96,7 +96,7 @@ function reader_exit(){
 	localStorage.setItem("in_reader", "no"); 
 	document.getElementById('created_elements').innerHTML = '';
 	
-	reader_utter_stop();
+	utter_stop();
 	if (reader.in_messages){                                             //console.log('U: '+localStorage.getItem("reader_exitpath"));
 		window.location.href=localStorage.getItem("url")+'contacts';
 	}else{
@@ -104,16 +104,6 @@ function reader_exit(){
 		files_update();
 	}
 	
-}
-function reader_utter_stop(order){
-	if ( 'speechSynthesis' in window) {
-		if (window.speechSynthesis.speaking ){                        
-				window.speechSynthesis.pause();       
-		}
-		if (order=='cancel'){
-			window.speechSynthesis.cancel(); 
-		}
-	}
 }
 
 function reader_update(start) {                                          consolelog_func('darkblue');   console.log('ischanged_text: ',common.ischanged_text);                                            
@@ -255,9 +245,13 @@ function reader_set_zoomtype(order,id){                                  //conso
 }
    
 function reader_play_pause(){                                            consolelog_func(); 
+	//console.log(window.speechSynthesis.speaking, window.speechSynthesis.paused, window.speechSynthesis.pending);                            
 	if ( 'speechSynthesis' in window){
-	    if (common.play_counter==0){                                       
-	        window.speechSynthesis.resume(); 
+	    if (common.play_counter==0){                                     console.log('resume: ',window.speechSynthesis.speaking, window.speechSynthesis.paused, window.speechSynthesis.pending);                            
+	        //window.speechSynthesis.speaking = false;
+	        //window.speechSynthesis.cancel(); 
+	        window.speechSynthesis.resume();                             console.log('msg: '+msg.text);                 
+	        //window.speechSynthesis.speak(); 
 	        common_playpause_icon(1);
 	        common.play_counter=1; 
 	        }
@@ -280,7 +274,7 @@ function reader_play_all(){                                              //conso
 	}	
 }
 function reader_play_single(order){
-	reader_utter_stop('cansel');
+	utter_stop('cancel');
 	common.utter_playall=0;
 	reader_scroll(order,1,0); 
 }
@@ -359,13 +353,9 @@ function is_inlist(list){                                                //conso
     }
     return(inlist);
 }
-function goto_files(){                                                   consolelog_func(); 
-	window.location.href = '/index.html'; 
-	reader_utter_stop('cancel');
-}
 
 function reader_editor(){                                                consolelog_func("darkblue"); 
-	reader_utter_stop();
+	utter_stop();
     text_all = document.getElementById('text_from_file').innerHTML;
     reader.text_parsed = text_all;
     id = reader.get_id();

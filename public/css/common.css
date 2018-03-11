@@ -51,18 +51,22 @@ body{
   position:fixed; box-sizing:border-box;
   word-break: normal; white-space: normal;
   border-radius: 0.5vmin;
-  color: rgba(0,0,0,0.5); 
+  color: rgba(0,0,0,0.5);
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08), 0 4px 13px 0 rgba(0,0,0,0.2);
- 
+  border-style: solid; border-width:2vmin;
+  border-color: rgba(110, 152, 27, 0.0001);  
   /*---------------------------*/
   display:flex; justify-content:center; align-items:center;
 }
 .buttons:hover{
-  background-color: rgba(107, 143, 36, 0.7); 
   background-color: rgba(110, 152, 27, 0.7); 
   box-shadow: 0 3px 5px 0 rgba(0,0,0,0.24), 0 10px 15px 0 rgba(0,0,0,0.19);
    
 }
+.buttons_menu{
+  background-color: rgba(110, 152, 27, 0.7);
+}
+
 .buttons_text{
   width:12vw; height:17vh;     
   position:fixed; box-sizing:border-box;
@@ -155,7 +159,7 @@ height:50%;
 }.text_scroll::-webkit-scrollbar {  width: 1.6vmin;
   color:black;  border-radius: 0.25vmin; 
 }.text_scroll::-webkit-scrollbar-track {
-  /*position:absolute;*/ left:0%; border-radius: 0.25vmin; 
+  left:0vw; border-radius: 0.25vmin; 
 }.text_scroll::-webkit-scrollbar-thumb {
   background-color: rgba(0,0,0,0.15); border-radius: 0.25vmin; 
 }.reader_text{
@@ -165,10 +169,10 @@ height:50%;
 .editor_scroll_box{
   position:fixed; text-align:center; 
   color:rgba(0,0,0,0.8);
-  top:2%; width:98%; left:2%; 
+  width:98vw; left:2vw; 
 }.editor_text{
   position:relative; left:0%;top:0; direction:ltr; white-space:pre-wrap;
-  line-height:115%; color:rgba(0,0,0,0.55); align:left; width:98%; height:100%;
+  line-height:115%; color:rgba(0,0,0,0.55); align:left; width:98vw; height:100vh;
 }
 
 /*-- zoom ----------------------------------------------------------------*/

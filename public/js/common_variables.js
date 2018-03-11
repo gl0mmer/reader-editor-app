@@ -45,16 +45,11 @@ var common = {
 	browser: "",
 	cookie_suffix: "_",
 	name: "common",
-	play_counter: 1,
-	utter_text: '',            // to utter long sentences
-	utter_onend: 0,
-	utter_playall: 0,
+	play_counter: 1,           
+	utter_playall: 0,          // in reader, play-all button
 	repeat_text: '',           // used in common_show_notification() only
 	in_messages: false,	
 	time_click: 0,
-	
-	symbol_ltag: '<abbr>',
-	symbol_rtag: '</abbr>',
 	
 	cookie_save: function(){                                             consolelog_func('brown');
 	    var keys = Object.keys(this);                                    
@@ -139,8 +134,12 @@ common.style = {
 	    var y =  this.btop + (i%this.yn)*(yspace+this.dy*1) ;
 	    var x =  bright - (this.xn-n_x)*dx - (this.xn-n_x-1)*this.xspace ; 
 	    
-	    var fontsize = this.b_fontsize*common.b_fontsize_scale*this.vmin;  //console.log('fontsize: '+this.b_fontsize+' | '+common.b_fontsize_scale+' | '+this.vmin+' | '+fontsize);
-	    var style = 'left:'+x/wratio*this.rx+'vw;top:'+y*this.ry+'vh;width:'+dx/wratio*this.rx+'vw;height:'+this.dy*this.ry+'vh; border-bottom-width:'+this.dy*0.13+'vmin; font-size:'+fontsize+'px; line-height:'+fontsize*this.b_lineheight+'px;';
+	    var fontsize = this.b_fontsize*common.b_fontsize_scale;  //console.log('fontsize: '+this.b_fontsize+' | '+common.b_fontsize_scale+' | '+this.vmin+' | '+fontsize);
+	    var style = 'left:'+x/wratio*this.rx+'vw; top:'+y*this.ry+'vh;'
+				  + 'width:'+dx/wratio*this.rx+'vw; height:'+this.dy*this.ry+'vh;'
+				  + 'border-width:'+fontsize*this.rmin*0.5+'vmin;'
+				  + 'border-bottom-width:'+this.dy*0.13+'vmin;'
+				  + 'font-size:'+fontsize*this.rmin+'vmin; line-height:'+fontsize*1.2*this.rmin+'vmin;';
 	    return('class="'+class_name+'" style="'+style+'"'); 
 	},
 	
@@ -172,15 +171,17 @@ common.style = {
 		var x = b_left + (b_right-b_left)/(x_dim+add) *(nx+1-(1-add)/2) - dx/2.;
 		var y = b_top +  (b_bot-b_top)/(y_dim+add) *(ny+1-(1-add)/2) - this.dy/2.;       //console.log(dx,this.dy,x,y);
 		
-		var fontsize = this.b_fontsize*common.b_fontsize_scale*this.vmin;   
-		var lineheight = fontsize*this.b_lineheight;
+		var fontsize = this.b_fontsize*common.b_fontsize_scale;   
+		var lineheight = fontsize*1.2;
 		if (class_n===2) { 
 			lineheight = b_height*this.vmin+lineheight/2.0; 
 			dx = dx + (b_right-b_left)/(x_dim+add);
 		}        
-		var style = 'left:'+x*this.rx+'vw; top:'+y*this.ry+'vh;'+'width:'+dx*this.rx+'vw; height:'+this.dy*this.ry+'vmin; font-size:'+fontsize+'px; line-height:'+lineheight+'px;';  
-		if (class_n===0){ style+= 'background-color: rgba(110, 152, 27, 0.7);'; }
-		return('class="'+class_name+'" style="'+style+'"');
+		var style = 'left:'+x*this.rx+'vw; top:'+y*this.ry+'vh;'
+				  + 'width:'+dx*this.rx+'vw; height:'+this.dy*this.ry+'vmin;'
+				  + 'border-width:'+fontsize*this.rmin*0.5+'vmin;'
+				  + 'font-size:'+fontsize*this.rmin+'vmin; line-height:'+lineheight*this.rmin+'vmin;';  
+		return('class="'+class_name+' buttons_menu" style="'+style+'"');
 	},
 	
 	resize: function(){                                                  consolelog_func('brown');

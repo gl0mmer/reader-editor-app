@@ -28,7 +28,7 @@ function files_scroll(order, i_utter){                                   console
     if (iter==0){fname_ii='..';}
     else{fname_ii = files.get_fname(); }                                 
     fname_ii = fname_ii.replace('_',' ');                               
-    if (i_utter===undefined){ utter(fname_ii, 1, onend=0); } 
+    if (i_utter===undefined){ utter(fname_ii, 1); } 
     
     var name = files.get_subdir()+files.get_fname();                     //console.log('Opt name: '+name);
     var ifdisable = !(files.items_protected.indexOf(name)==-1 && files.iter!=0);

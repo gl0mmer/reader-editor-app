@@ -9,23 +9,18 @@ use Illuminate\Support\Facades\Auth;
 //use vendor\laravel\framework\src\Illuminate\Http\Request;
 class UserController extends Controller
 {
+
 	
 	// Start here
-	public function getLoginPage()
+	public function getHomePage()
 	{
 		if (!Auth::user()){
 			$user = User::where('first_name','guest')->first();
 			Auth::login($user);
 		}
-		//return view('login');
-		return redirect()->route('home');
-		
-	}
-	public function getHomePage()
-	{
 		$username = User::where('id', Auth::user()->id) -> value('first_name');
-		//return view('test');
 		
+		//return view('test');
 		return view('index', [
 						'in_contacts'=>false, 
 						'in_messages'=>false, 
@@ -106,8 +101,8 @@ class UserController extends Controller
 			//return redirect()->route('dashboard') ->with(['msg'=>$msg]);
 			return redirect()->route('home');
 		}
-		return redirect()->back() ->with(['msg'=>$msg]);
 		//return redirect()->route('login') ->with(['msg'=>$msg]);
+		return redirect()->back() ->with(['msg'=>$msg]);
 	}
 	
 	public function getLogout()

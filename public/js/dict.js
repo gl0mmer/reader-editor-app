@@ -153,7 +153,7 @@ var dict = dict_en;
 
 //-- button oncklick -----------------------------------------------------
 
-var onclick = {
+var dict_onclick = {
 	show_fmenu : 'files_show_menu();',
 	show_rmenu : 'reader_show_menu();',
 	show_opt: 'files_show_options();',
@@ -223,7 +223,7 @@ var onclick = {
 	show_editorfont: 'editor_show_fontsize();',
 	js_editorfont: 'editor_set_fontsize(this.id,0);',
 	
-	js_utternote : 'utter_sentence(0, 1, 0, 1);',
+	js_utternote : 'utter_sentence(0, 1, 1);',
 	js_donotshow : 'welcome_donot();',
 	
 	js_lang: 'common_set_lang(this.id)',
@@ -253,7 +253,7 @@ function button_html(lvl, arr, y_dim, x_dim){
 		
 		if (lvl==0){ var position = common.style.buttonpos(pos[0],pos[1], y_dim, x_dim); }
 		if (lvl==1){ var position = common.style.buttonpos_menu(pos[0],pos[1], y_dim, x_dim); }
-		html += '<div id="'+id+'"onclick="'+onclick[name]+'" '+position+'>'+inner+'</div>' ;
+		html += '<div id="'+id+'"onclick="'+dict_onclick[name]+'" '+position+'>'+inner+'</div>' ;
 	}
 	return html;
 }
