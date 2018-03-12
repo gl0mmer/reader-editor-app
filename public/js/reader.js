@@ -244,45 +244,27 @@ function reader_set_zoomtype(order,id){                                  //conso
     document.getElementById('zoom_box').style.lineHeight = 18*common.style.rmin+'vh'
 }
    
-function reader_play_pause(){                                            consolelog_func(); 
-	//console.log(window.speechSynthesis.speaking, window.speechSynthesis.paused, window.speechSynthesis.pending);                            
-	if ( 'speechSynthesis' in window){
-	    if (common.play_counter==0){                                     console.log('resume: ',window.speechSynthesis.speaking, window.speechSynthesis.paused, window.speechSynthesis.pending);                            
-	        //window.speechSynthesis.speaking = false;
-	        //window.speechSynthesis.cancel(); 
-	        window.speechSynthesis.resume();                             console.log('msg: '+msg.text);                 
-	        //window.speechSynthesis.speak(); 
-	        common_playpause_icon(1);
-	        common.play_counter=1; 
-	        }
-	    else if (window.speechSynthesis.speaking ){   
-			window.speechSynthesis.pause();                                  // works in windows-firefox and any-chrome      
-			//if (common.browser!='Firefox'){
-			//	window.speechSynthesis.pause();       
-			//} else{ window.speechSynthesis.cancel();  }
-	        common_playpause_icon(0);
-	        common.play_counter=0; 
-	    }
-	    else{reader_utter(1, 0); common.play_counter=1;}
+function reader_play_all(){                                              
+	if (common.utter_playall==1 ){
+		common_play_pause();
+	}else{
+		utter_stop();
+		common_playpause_icon(1);
+		common.utter_playall=1;
+		reader_scroll(1,1,0); 
 	}
 }
-function reader_play_all(){                                              //console.log('common.onend: '+common.utter_playall);
-	if (common.utter_playall==1){ reader_play_pause(); }
-	else{ 
-		common.utter_playall=1;
-		reader_scroll(1,1,1); 
-	}	
-}
 function reader_play_single(order){
-	utter_stop('cancel');
+	utter_stop();
 	common.utter_playall=0;
 	reader_scroll(order,1,0); 
+	common_playpause_icon(1);
 }
     
 function reader_navigate(order){                                         consolelog_func(); 
 	var len = reader.paragraph_id.length;
-	var nav = {start:'0.0', mid:'0.5', end:'1.0'};                   //console.log('nav: '+order);
-	order = nav[order];                                              //console.log('nav: '+order);
+	var nav = {start:'0.0', mid:'0.5', end:'1.0'};                   
+	order = nav[order];                                              
 	reader.iter = Math.floor(len*order);
 	
 	if (reader.iter==len){reader.iter = len-1;}                  

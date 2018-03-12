@@ -82,17 +82,19 @@ class LfmExtendController extends LfmController
         $old_path = substr($path, 0,strrpos($path,'/'));
         $old_path = $old_path.'/shares/Welcome.txt';
         $msg = $msg.$old_path;
-        //return $msg;  
+        
         if (!File::copy($old_path, $new_path)) {
 			$msg = $msg.' Error ';
 		}
 		
 		$path = parent::getCurrentPath('trash');
 		if (!File::exists($path)) {
-			parent::createFolderByPath($path);
-			$msg = $msg.' | '.$path.' Created ';
+			if (!parent::createFolderByPath($path)){
+				$msg = $msg.' Error ';
+			}else{ 
+				$msg = $msg.' | '.$path.' Created ';
+			}
 		}
-        //return $msg;  
         return redirect()->route('home') ->with(['msg'=>$msg]);
 	} 
     
@@ -100,28 +102,21 @@ class LfmExtendController extends LfmController
     public function create()
     {
 		$msg = 'Create: ';
-		//return $msg;
         $filename = request()->file_name;
-        //$filename = request('file_name');
+        $filename = $this->getCleanName($filename).'.txt';
         $filetext = request()->file_text;
-        $filename = $filename.'.txt';
         $new_file_path = parent::getCurrentPath($filename);
 
         // single file
         $msg = $msg.$filename.' | '.$new_file_path;
-		//return $msg;
 	
 		if(!File::exists($new_file_path)) {
-			// path does not exist
-
 			if (!$this->proceedSingleUpload($new_file_path, $filetext)) {
-				return $this->errors;
+				//return $this->errors;
+				$msg = $msg.' Error ';
 			}
-			return redirect()->back() ->with(['msg'=>$msg]);
-		}else{
-			return redirect()->back() ->with(['msg'=>$msg]);
 		}
-        
+        return redirect()->back() ->with(['msg'=>$msg]);
 		//return redirect()->back();
          
     }
@@ -132,10 +127,10 @@ class LfmExtendController extends LfmController
         $filetext = request()->file_text;
         $new_file_path = parent::getCurrentPath($filename);
 
-		$this->proceedSingleUpload($new_file_path, $filetext);
-		//if (!$this->proceedSingleUpload($new_file_path, $filetext)) {
-		//	return $this->errors;
-		//}
+		if (!$this->proceedSingleUpload($new_file_path, $filetext)) {
+			//return $this->errors;
+			$msg = $msg.' Error ';
+		}
 		$msg = '';
 		foreach ($this->errors as $err){
 			$msg = $msg. $err;
@@ -148,30 +143,20 @@ class LfmExtendController extends LfmController
     {
 		$msg = 'copy';
         $dir = request()->past_dir;
-        //$dir = request('past_dir');
-        //$dir = $request['past_dir'];
         $filename = request()->copy_shortpath;
-        //$filename = request('copy_shortpath');
-        //$filename = $request['copy_shortpath'];
         
         $path = parent::getCurrentPath("");
         $old_path = $path.'/'.$filename;
         
-        $msg = $msg.' MISC '.request()->copy_shortpath.'  ';
         if ( request()->copy_misc=='sync' ){
 			$guest_id = User::where('first_name','guest')->first()->id;
-			$msg = $msg.' ID '.$guest_id.'  ';
 			$new_path = substr($path,0,strrpos($path,'/')).'/'.$guest_id.'/'.$filename;
 		}else{
 			$filename = $dir.substr($filename, strrpos($filename,'/'));
 			$new_path = $path.'/'.$filename;
 		}
         
-        $path = parent::getCurrentPath("");
-		
-		$path = $path.'/'.request()->copy_shortpath;
-		$msg = $msg.' OLD: '.$path.' - '.$new_path. ' || ';
-		//return $msg;
+		$path = $path.'/'.request()->copy_shortpath;		
 		if (is_dir($path)){
 			$ending = '';
 			$i = strlen($new_path);
@@ -187,16 +172,13 @@ class LfmExtendController extends LfmController
 			$k+=1;
 		}
 		$new_path = $path_final;
-		//$msg = $msg.' DIR: '.$dir.' | '.$new_path.' | '.$old_path.' | '.$filename.' | ';
-		//return $msg;
+		
 		if(!File::exists($new_path)) {
 			if (is_dir($old_path)){
-				//return $msg.' Folder';
 				if (!File::copyDirectory($old_path, $new_path)) {
 					$msg = $msg.' Copy Folder Error ';
 				}
 			}else{
-				//return $msg.' Copy File';
 				if (!File::copy($old_path, $new_path)) {
 					$msg = $msg.' Copy File Error ';
 				}
@@ -212,23 +194,19 @@ class LfmExtendController extends LfmController
 		
 		$filename = request()->delete_name;
 		$path = parent::getCurrentPath("");
-        $msg = $msg.'/'.$filename;
         
         if ( request()->delete_misc=='sync' ){
 			$guest_id = User::where('first_name','guest')->first()->id;
-			$msg = $msg.' ID '.$guest_id.' || ';
 			$new_path = substr($path,0,strrpos($path,'/')).'/'.$guest_id.'/'.$filename;
 		}else{
 			$new_path = parent::getCurrentPath($filename);
 		}
         
         if (is_dir($new_path)){
-			$msg = $msg.' IsDir '.$this-> rrmdir($new_path);
+			$this-> rrmdir($new_path);
         }else{
-			$msg = $msg.' IsFile ';
 			unlink($new_path); 
 		}
-        //$msg = $msg.$new_path;
         return redirect()->back() ->with(['msg'=>$msg]);
 	}
 
@@ -251,10 +229,11 @@ class LfmExtendController extends LfmController
     }
     
 
-    private function getNewName($filename)
+    private function getCleanName($filename)
     {
-		$new_filename = preg_replace('/[^A-Za-z0-9\-\']/', '_', $filename);
-		return $new_filename.'.txt';
+		$new_filename = preg_replace('/[^A-Za-z0-9\-\']/', '', $filename);
+		if ($new_filename==''){ $new_filename='0001'; }
+		return $new_filename;
     }
 	
     private function rrmdir($dir) 

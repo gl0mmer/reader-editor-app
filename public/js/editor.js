@@ -17,9 +17,6 @@ var editor = {
 	pin_letters: 0,
 	
 	spell_type:0,
-	if_spell: 0,
-	i_spell: 0,
-	spell_arr: [],
 };
 
 editor.dict = {
@@ -227,7 +224,8 @@ function editor_exit(){                                                  console
     input.onkeydown = "";
     input.onkeypress = "";
     common.editor_text = editor.text_raw;
-    common.ineditor = false;                                             //console.log(editor.parent);
+    common.ineditor = false;      
+    utter_stop();                                                //console.log(editor.parent);
     if (editor.parent=="reader"){ 
 		if (editor.text_origin!=editor.text_raw){
 			common.ischanged_text = true;
@@ -294,7 +292,7 @@ function editor_delete(){                                                console
     editor_set_cursor(); 
     if (editor.pin_letters===0) { editor_backto_letters(); }
     editor_capital(0,0,1);
-    var text_read = common_textto_read(letter);
+    var text_read = editor_textto_read(letter);
     utter(text_read, 1);
 }
 
@@ -328,17 +326,15 @@ function editor_spell(){                                                 console
         if (i1==-1){i1=0;}
         if (i2==-1){i2=text.length;}
         text_utter = text.substr(i1, i2-i1);
-        text_utter = common_textto_read(text_utter);
+        text_utter = editor_textto_read(text_utter);
         if (text_utter.indexOf('new line')>=0){ editor.spell_type=0; }
         
         if (editor.spell_type===0){
 			utter(text_utter, 1); 
 		}else{ 
-			editor.spell_arr=[];
-			editor.if_spell = 1;
-			text_u = '';
-			for (i=0; i<text_utter.length; i+=1){ text_u+=text_utter[i]+'. '; }   //console.log('text_u: '+text_u);
-			utter(text_u, 1);
+			var arr = [];
+			for (i=0; i<text_utter.length; i+=1){ arr.push(text_utter[i]); }   //console.log('text_u: '+text_u);
+			utter_recursive(arr, 1, 1, 0, 0, 0.8);
 		}
 		editor.spell_type = (editor.spell_type+1)%2;
     }
@@ -375,7 +371,7 @@ function editor_scrollvert(order){                                       console
             iter_prev = iter;
         }editor_scrollword(1);
     }
-    var text_read = common_textto_read( editor.text_raw.substring(iter_save, iter) );
+    var text_read = editor_textto_read( editor.text_raw.substring(iter_save, iter) );
 	if (editor.sound_navigator==1) { utter(text_read, 1); }   
 }
 function editor_scrollword(order){                                       consolelog_func(); 
@@ -406,7 +402,7 @@ function editor_scrollword(order){                                       console
 	}
 	editor.iter = iter;
 	editor_set_cursor();
-	var text_read = common_textto_read( text.substring(i_left, i_right) );
+	var text_read = editor_textto_read( text.substring(i_left, i_right) );
 	if (editor.sound_navigator==1) { utter(text_read, 1); }   
 }
 function editor_scroll(order, if_utter){                                           consolelog_func(); 
@@ -440,7 +436,7 @@ function editor_scroll(order, if_utter){                                        
     if (if_utter==undefined){
 	    i1 = Math.min(iter_prev, iter); i2 = Math.max(iter_prev, iter); 
 	    var letter = text.substr(i1, i2-i1);
-	    var text_read = common_textto_read(letter);
+	    var text_read = editor_textto_read(letter);
 	    if (editor.sound_navigator==1) { utter(text_read, 1); }
 	}
     return (iter);

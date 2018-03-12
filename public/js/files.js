@@ -143,7 +143,7 @@ function files_ajax_enter(path){                                         console
 		files.iter_prev = 0;
 		files.iter = 0;
 	}
-	utter_stop('cancel');
+	utter_stop();
 }  
 
 function files_ajax_contacts(){

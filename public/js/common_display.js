@@ -24,6 +24,7 @@ function common_create_menu(id, lvl, buttons_html, parent, ineditor){    console
     var elem = document.createElement('div');                            //console.log('elem: '+elem+', parent: '+parent);
     elem.innerHTML = inner_e + buttons_html + '</div>';
     document.getElementById(parent).appendChild(elem);                   //console.log(elem.innerHTML);
+    utter_stop();
     return (elem);
 }
 
@@ -37,6 +38,8 @@ function menu_blur(ineditor){                                            console
 	}
 }
 function menu_back(id, foggyoff, ineditor){                              consolelog_func(); 
+	utter_stop();
+	common.repeat_text = '';
 	if (ineditor===undefined) {ineditor=false;}
 	
 	if (common.browser!='Firefox'){
@@ -86,8 +89,8 @@ function common_show_lang(lvl, parent){                                  console
 
 function reader_show_fontsize(){
 	var inner_e = button_html(1, 
-		[['js_rfontsize',    [7,0], 0], ['js_rfontsize',   [6,0],1],
-		 ['js_rfontsize',    [5,0], 2], ['js_rfontsize',   [4,0],3],
+		[['js_rfontsize',    [4,0], 0], ['js_rfontsize',   [5,0],1],
+		 ['js_rfontsize',    [6,0], 2], ['js_rfontsize',   [7,0],3],
 		 ['js_rfontsize',    [3,0], 4], ['js_rfontsize',   [2,0],5],
 		 ['place_fontsize', [0,2]   ],
 		]);
@@ -119,6 +122,14 @@ function common_show_clickdelay(){                                       console
     var delay = common.time_delay/1000;                                 
 	document.getElementById('place_delay').innerHTML = delay+' sec';
 }
+function common_show_utterrate(){                                       consolelog_func(); 
+	var inner_e = button_html(1, 
+		[['js_utterrate',    [7,0], 0], ['js_utterrate',   [6,0], 1],
+		 ['js_utterrate',    [5,0], 2], ['js_utterrate',   [4,0], 3],
+		 ['place_utterrate', [0,2]]
+	    ]);
+    common_create_menu('common_utterrate',1, inner_e);
+}
 
 function common_show_notification(text, welcome, blur){                        consolelog_func();
 	var elem = document.getElementById('menu_back_lvl0');
@@ -129,7 +140,7 @@ function common_show_notification(text, welcome, blur){                        c
 	var parent='created_elements';
 	var id = "notification";
 	var b_top = 90-common.style.b_height;
-	common.repeat_text = replace_all(text,'<br>','');
+	common.repeat_text = common_textto_read(text);
 	menu_blur();
 	
 	inner_e = '<div id="back_lvl" onclick="menu_back(this.id,'+blur+',false);" class="back_area"> </div>';
@@ -137,7 +148,7 @@ function common_show_notification(text, welcome, blur){                        c
 	inner_e+= '<div class="text_scroll_box" style="position:fixed;top:'+15*common.style.ry+'vh;left:12vw;width:76vw;height:'+(b_top-25)*common.style.ry+'vh;font-size:'+4.8*common.style.ry+'vmin;line-height:'+7.5*common.style.ry+'vmin; color: rgba(0,0,0,0.55);">';
 	inner_e+= '<div class="text_scroll" align="left" style="top:0vh;"> <div class="reader_text" style="top:'+(-5*common.style.ry)+'vh;height:'+20*common.style.ry+'vh;">'+text+' &nbsp </div> </div> </div> </div>' ;
       
-    inner_e += button_html(1, [['js_utternote', [11,0]] ], 3,4);
+    inner_e += button_html(1, [ ['js_playpause', [11,0]], ], 3,4);
     //if (welcome){	inner_e += button_html(1, [['js_donotshow', [16,0]] ], 5,4); }                                 
                   
     element = document.createElement('div');
@@ -146,3 +157,4 @@ function common_show_notification(text, welcome, blur){                        c
     document.getElementById(parent).appendChild(element);
     return (element);	
 }
+

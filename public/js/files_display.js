@@ -3,6 +3,8 @@
 
 function files_scroll(order, i_utter){                                   consolelog_func('darkblue');
 
+	if (typeof files.iter != 'number'){ files.iter=0; files.iter_prev=0; } 
+	   
     var iter = files.iter;                                               
     var iter_prev = files.iter_prev;                                     
     if (order==-1){ if (iter<files.entries.length-1) {iter+=1;} }
@@ -27,7 +29,7 @@ function files_scroll(order, i_utter){                                   console
     
     if (iter==0){fname_ii='..';}
     else{fname_ii = files.get_fname(); }                                 
-    fname_ii = fname_ii.replace('_',' ');                               
+    fname_ii = fname_ii.replace(/_/g,' ');                               
     if (i_utter===undefined){ utter(fname_ii, 1); } 
     
     var name = files.get_subdir()+files.get_fname();                     //console.log('Opt name: '+name);

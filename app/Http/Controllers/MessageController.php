@@ -134,6 +134,9 @@ class MessageController extends Controller
 	
 	public function getShowConnections()
 	{
+		if (!Auth::user()){
+			return redirect()->route('home');
+		}
 		$res = array();
 		$names = array();
 		$user_id = Auth::user()->id;
@@ -172,6 +175,9 @@ class MessageController extends Controller
 	}
 	
 	public function getShowMessages($id){
+		if (!Auth::user()){
+			return redirect()->route('home');
+		}
 		$msg = '';
 		$id1 = Auth::user()->id;
 		$username    = User::where('id', $id1) -> value('first_name');

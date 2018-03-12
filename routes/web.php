@@ -13,6 +13,11 @@
 
 //$namespace = '\Unisharp\Laravelfilemanager\controllers';
 
+Route::get('/login', [
+	'uses' => 'UserController@getLoginPage',
+	'as' => 'login' 
+]);
+
 Route::get('/', [
 	'uses' => 'UserController@getHomePage',
 	'as' => 'home' 

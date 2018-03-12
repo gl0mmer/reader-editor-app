@@ -30,6 +30,11 @@ class UserController extends Controller
 		
 	}
 	
+	public function getLoginPage()
+	{
+		return redirect()->route('home');
+	}
+	
 	
 	public function getDashboard()
 	{

@@ -143,8 +143,10 @@ var dict_en = {
 	js_readerzoom  : ['','',  'no', 'word', 'sentence'], 
 	show_editorfont: 'font size', 
 	js_editorfont  : ['','lines', '5', '4', '3','2'],
+	show_utterrate: 'speech rate', 
+	place_utterrate: 'Text example in speech speed menu', 
+	js_utterrate  : ['x','', '0.6', '0.8', '1.0','1.2', '1.4'],
 	
-	js_utternote : 'utter',
 	js_donotshow : "don't show again", 
 
 }
@@ -215,15 +217,16 @@ var dict_onclick = {
 	js_edit: 'reader_editor();',
 	js_readall: 'reader_play_all();',
 	js_selecttype: 'reader_set_selecttype(1,1);',
-	js_playpause: 'reader_play_pause();',
+	js_playpause: 'common_play_pause();',
 	js_navigate: 'reader_navigate(this.id);',
 	js_readerzoom: 'reader_set_zoomtype(0,this.id);',
 	ajax_refresh: 'location.reload();',
 	ajax_sendmail: 'reader_ajax_send();',
 	show_editorfont: 'editor_show_fontsize();',
 	js_editorfont: 'editor_set_fontsize(this.id,0);',
+	show_utterrate: 'common_show_utterrate();',
+	js_utterrate: 'common_set_utterrate(this.id);',
 	
-	js_utternote : 'utter_sentence(0, 1, 1);',
 	js_donotshow : 'welcome_donot();',
 	
 	js_lang: 'common_set_lang(this.id)',
@@ -235,6 +238,9 @@ var dict_onclick = {
 function button_html(lvl, arr, y_dim, x_dim){
 	if (y_dim==undefined){ y_dim = 2; }
 	if (x_dim==undefined){ x_dim = 4; }
+	var class_arr = [[" ", "disabled", "symbol", "symbol disabled", "editor", "editor disabled"],
+	                 ["buttons_menu", "", "", "disabled buttons_menu"]];
+	
 	var html = '';
 	var name = '', tail='', inner='', id='';
 	var pos = [];
@@ -250,10 +256,14 @@ function button_html(lvl, arr, y_dim, x_dim){
 			inner = dict[ arr[i][0] ];
 			id = name;
 		}                                                                //console.log('name: '+name+'|'+tail+'|'+inner);
-		
-		if (lvl==0){ var position = common.style.buttonpos(pos[0],pos[1], y_dim, x_dim); }
-		if (lvl==1){ var position = common.style.buttonpos_menu(pos[0],pos[1], y_dim, x_dim); }
-		html += '<div id="'+id+'"onclick="'+dict_onclick[name]+'" '+position+'>'+inner+'</div>' ;
+		var class_name = class_arr[lvl][pos[1]];
+		if (lvl==0){ var style = common.style.buttonpos(pos[0],pos[1], y_dim, x_dim); }
+		if (lvl==1){ var style = common.style.buttonpos_menu(pos[0],pos[1], y_dim, x_dim); }
+		if (lvl==1 && pos[1]==2){
+			html += '<div id="'+id+'_box" class="button_zoom_box " onclick="'+dict_onclick[name]+'" style="'+style+'"><div id="'+id+'" class="text_zoom">'+inner+'</div></div>';
+		}else{
+			html += '<div id="'+id+'" onclick="'+dict_onclick[name]+'" class="buttons '+class_name+'" style="'+style+'">'+inner+'</div>' ;
+		}
 	}
 	return html;
 }

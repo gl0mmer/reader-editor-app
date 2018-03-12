@@ -40,7 +40,7 @@ function reader_scroll(order,stop,onend){                                console
             reader.latest_s = id+"s0";
             reader.latest_p = id;
             }
-    }
+    }                                                                    //console.log('scroll: ', iter, common.play_counter, common.utter_recursive_done);
    
     reader_utter(stop_i=stop); 
     reader_highlite(); 
@@ -49,7 +49,7 @@ function reader_scroll(order,stop,onend){                                console
     
     var mail_noedit = false;
     if(reader.in_messages && $('#'+id).parents('#mail_editable').length === 0) { mail_noedit=true; } 
-                                                                         console.log('scroll iter: '+iter+'  '+mail_noedit+' '+reader.in_messages);
+                                                                         
     var ifdisable = (iter==-1 || mail_noedit===true); 
     common_disable_button("js_edit", ifdisable, function(){ reader_editor();});
     
@@ -58,9 +58,12 @@ function reader_utter(stop_i) {                                   consolelog_fun
     id = reader.get_id();                                                //console.log('reader onend: '+onend);
     iter = reader.iter;
     n_select_type = reader.selecttype;
-    if (n_select_type==0 || iter==-1 ){ utter(document.getElementById(id).innerText, stop=stop_i); }
-    else {
-        if (n_select_type==2){ 
+    
+		if (n_select_type!=2 || iter==-1 ){
+			var text = document.getElementById(id).innerText;
+			utter_sentence(text, stop_i); 
+		}
+        else { 
             first_iter = reader.sentence_id.indexOf(id+'s0');                  
             if ( iter==reader.paragraph_id.length-1 ){ last_iter=reader.sentence_id.length; }
             else { last_iter = reader.sentence_id.indexOf(reader.paragraph_id[iter+1]+'s0'); }  
@@ -68,11 +71,7 @@ function reader_utter(stop_i) {                                   consolelog_fun
             utter_paragraph(id, sentence_id_part, stop_i); 
              
         }
-        if (n_select_type==1){ 
-			var text = document.getElementById(id).innerText;
-			utter_sentence(text, stop_i); 
-		}
-    }
+       
 }
 function reader_fill_zoom(){                                             consolelog_func(); 
     var n_zoom_type = reader.zoomtype;
@@ -125,7 +124,7 @@ function reader_show_menu(){                                             console
     var inner_e = button_html(1, 
 		[['show_rfontsize',  [4,0]],   ['show_sound',      [0,3]],
 		 ['show_lang',       [2,0]],   ['ajax_readerexit', [7,0]],
-		 ['show_readerzoom', [6,0]],
+		 ['show_readerzoom', [3,0]],   ['show_utterrate', [6,0]],
 		]);
     common_create_menu('reader_menu', 0, inner_e);
 }

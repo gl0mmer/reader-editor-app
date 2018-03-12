@@ -44,8 +44,6 @@ body{
   top:0vh; left:100vw;
   height:100vh; width:100vw;
  }
-.buttons_area_image{ background-color: rgba(0, 0, 0, 0);  }
-.buttons_image{ color: red; background-color: rgba(0, 0, 0, 0); }
 .buttons{
   width:12vw; height:17vh;     
   position:fixed; box-sizing:border-box;
@@ -64,7 +62,7 @@ body{
    
 }
 .buttons_menu{
-  background-color: rgba(110, 152, 27, 0.7);
+  background-color: rgba(110, 152, 27, 0.7); 
 }
 
 .buttons_text{
@@ -169,7 +167,7 @@ height:50%;
 .editor_scroll_box{
   position:fixed; text-align:center; 
   color:rgba(0,0,0,0.8);
-  width:98vw; left:2vw; 
+  width:98vw; left:1vw; 
 }.editor_text{
   position:relative; left:0%;top:0; direction:ltr; white-space:pre-wrap;
   line-height:115%; color:rgba(0,0,0,0.55); align:left; width:98vw; height:100vh;
@@ -185,9 +183,8 @@ height:50%;
   font-size: 11vmin; line-height: 18vmin;
   display:flex; justify-content:center; align-items:center; color: rgba(0,0,0,0.5);
 }.text_zoom{
-  border-radius: 0.25vmin; top:0;
-  position:relative;  
-  color: rgba(0,0,0,0.5);
+  position:relative; height:100%;
+  border-radius: 0.25vmin;
   overflow-x: scroll; overflow-y: hidden; white-space:nowrap; 
 }.text_zoom::-webkit-scrollbar {
   position:relative;  height: 1.6vmin;
@@ -195,7 +192,14 @@ height:50%;
 }.text_zoom::-webkit-scrollbar-thumb { 
   background-color: rgba(0,0,0,0.15);
 }
-.menu_zoom{top:-2vh;}
+.button_zoom_box{ 
+  position:fixed; 
+  border-radius: 0.25vmin; 
+  background-color: rgba(0, 0, 0, 0.05); color: rgba(0,0,0,0.65);
+  box-sizing:border-box; opacity: 0.8;
+  display:flex; justify-content:center; align-items:center; 
+}
+
 /*-- menu ----------------------------------------------------------------*/
 .button_app{
   border-radius: 1%;

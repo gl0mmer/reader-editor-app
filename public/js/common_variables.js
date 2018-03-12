@@ -40,12 +40,14 @@ var common = {
 	editor_text: '',
 	ineditor: false,
 	ischanged_text: false,
+	utter_rate: 1,
 	
-	cookie_number: 14,
+	cookie_number: 15,
 	browser: "",
 	cookie_suffix: "_",
 	name: "common",
-	play_counter: 1,           
+	play_counter: 0,           
+	utter_recursive_done: 1,           
 	utter_playall: 0,          // in reader, play-all button
 	repeat_text: '',           // used in common_show_notification() only
 	in_messages: false,	
@@ -76,9 +78,6 @@ var common = {
 }
 
 common.style = {
-	base_class: "buttons ",
-	last_class: " buttons_image",
-	class_arr: ["", "disabled", "symbol", "symbol disabled", "editor", "editor disabled"],
     yn:4, btop:3.5, bbot:96.5, 
     xn:2, bright:98, xspace:4, dx_side:1,
     dy: 16.5, xy_ratio: 1.1,
@@ -125,7 +124,6 @@ common.style = {
     buttonpos: function(i, class_n){                                     //consolelog_func('brown');
 		var wratio = window.innerWidth/window.innerHeight;
 		if (class_n===undefined) {class_n=0;}
-		var class_name = this.base_class+this.class_arr[class_n]+ this.last_class; //console.log(class_name);
 	    var bright = wratio*this.bright;           
 	    var n_x = (i-i%this.yn)/this.yn;
 	    
@@ -137,17 +135,16 @@ common.style = {
 	    var fontsize = this.b_fontsize*common.b_fontsize_scale;  //console.log('fontsize: '+this.b_fontsize+' | '+common.b_fontsize_scale+' | '+this.vmin+' | '+fontsize);
 	    var style = 'left:'+x/wratio*this.rx+'vw; top:'+y*this.ry+'vh;'
 				  + 'width:'+dx/wratio*this.rx+'vw; height:'+this.dy*this.ry+'vh;'
-				  + 'border-width:'+fontsize*this.rmin*0.5+'vmin;'
-				  + 'border-bottom-width:'+this.dy*0.13+'vmin;'
-				  + 'font-size:'+fontsize*this.rmin+'vmin; line-height:'+fontsize*1.2*this.rmin+'vmin;';
-	    return('class="'+class_name+'" style="'+style+'"'); 
+				  + 'border-width:'+fontsize*this.rmin*0.+'vmin;'
+				  + 'border-bottom-width:'+this.dy*0+'vmin;'
+				  + 'border-top-width:'+this.dy*0+'vmin;'
+				  + 'font-size:'+fontsize*this.rmin+'vmin; line-height:'+fontsize*1.1*this.rmin+'vmin;';
+	    return(style); 
 	},
 	
 	buttonpos_menu: function(i, class_n, y_dim, x_dim){  //consolelog_func('brown'); 
 		if (y_dim==undefined){ y_dim = 2; x_dim = 4; }
 		if (class_n===undefined) {class_n=0;}
-		var class_arr = ["buttons", "buttons_text", "text_zoom_box", "buttons disabled"];
-		var class_name = class_arr[class_n];
 				
 		var b_height = 17;
 		var b_left = 10;  var b_right = 90; 
@@ -172,16 +169,19 @@ common.style = {
 		var y = b_top +  (b_bot-b_top)/(y_dim+add) *(ny+1-(1-add)/2) - this.dy/2.;       //console.log(dx,this.dy,x,y);
 		
 		var fontsize = this.b_fontsize*common.b_fontsize_scale;   
-		var lineheight = fontsize*1.2;
+		var lineheight = fontsize*1.2;                                   
+		var borderwidth = fontsize*0.5;
 		if (class_n===2) { 
-			lineheight = b_height*this.vmin+lineheight/2.0; 
+			lineheight = lineheight+this.dy*this.ry/1.6; 
 			dx = dx + (b_right-b_left)/(x_dim+add);
+			borderwidth = 0;
 		}        
 		var style = 'left:'+x*this.rx+'vw; top:'+y*this.ry+'vh;'
 				  + 'width:'+dx*this.rx+'vw; height:'+this.dy*this.ry+'vmin;'
-				  + 'border-width:'+fontsize*this.rmin*0.5+'vmin;'
-				  + 'font-size:'+fontsize*this.rmin+'vmin; line-height:'+lineheight*this.rmin+'vmin;';  
-		return('class="'+class_name+' buttons_menu" style="'+style+'"');
+				  + 'border-width:'+borderwidth*this.rmin+'vmin;'
+				  + 'font-size:'+fontsize*this.rmin+'vmin; line-height:'+lineheight*this.rmin+'vmin;';  //console.log(style);
+		 
+		return(style);
 	},
 	
 	resize: function(){                                                  consolelog_func('brown');

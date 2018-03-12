@@ -48,8 +48,16 @@ function utter_paragraph(id, id_all, stop){                              console
 	var txt_arr = [];
     for (var i=0; i<id_all.length; i++){
         var txt = document.getElementById(id_all[i]).innerText;
-        txt_arr.push(txt);
-    }                                                                    console.log('P-Arr: ',txt_arr);
+        
+	    if (txt.length>200){ 
+			var arr = utter_split_sentence(txt);
+			txt_arr = txt_arr.concat(arr); 
+		}else{
+			txt_arr.push(txt);
+		}
+		
+    }                                                                    
+    if (txt_arr.length<2){ txt_arr.push(" "); }                          //console.log('P-Arr: ',txt_arr);
     utter_recursive(txt_arr, 1, 0, 0);
 }    
 function utter_split_sentence(txt){
@@ -72,7 +80,7 @@ function utter_split_sentence(txt){
 			proceed=false;                                               
             txt_arr.push(txt);
         }
-    }                                                                    //console.log('S-Arr: ',txt_arr);
+    } 
     return txt_arr;
 }
 function utter_sentence(txt, stop, repeat){                              consolelog_func();  
@@ -80,12 +88,16 @@ function utter_sentence(txt, stop, repeat){                              console
     
     if (txt.length>200){ 
 		var txt_arr = utter_split_sentence(txt);
-		utter_recursive(txt_arr, 1, 0, 0); 
-	}else{ utter(txt, stop); }
+	}else{ 
+		var txt_arr = [txt,''];
+	}                                                                    //console.log('S-Arr: ',txt_arr);
+	utter_recursive(txt_arr, 1, 0, 0);
+	
 }
-function utter(txt, stop){                                               consolelog_func(); 
-	if ( !('speechSynthesis' in window)) { return true; }  
+function utter(txt, stop, rate, onend){                                  consolelog_func();  
+	if ( !('speechSynthesis' in window)) { return true; }                //console.log('U: |'+stop+'|'+rate+'|'+onend); 
     
+    txt = common_textto_read(txt);                                       //console.log('T:'+txt.replace(/ /g,'')+'|');
     var ru = /[а-яА-ЯЁё]/.test(txt); var en = /[a-zA-Z]/.test(txt); 
     if (common.lang=='auto'){ 
 		if (en && en+ru==1){ msg.lang='en'; } 
@@ -93,61 +105,81 @@ function utter(txt, stop){                                               console
 		if (ru==en){ msg.lang=common.langbase; }	
 	}
     else { msg.lang=common.lang; }                                       //console.log(common.lang, common.langbase,  msg.lang, en+'-'+ru);
-    //msg.rate = rate;                                                     //console.log('rate: '+msg.rate+', lang: '+msg.lang+', txt: '+msg.text+', stop: '+stop);
-    //msg.rate = 0.9;                                                     //console.log('rate: '+msg.rate+', lang: '+msg.lang+', txt: '+msg.text+', stop: '+stop);
+    
+    if (typeof rate != 'number'){ msg.rate=common.utter_rate; }
+    else{ msg.rate=rate; }
+    
     if (stop==1){ window.speechSynthesis.cancel(); }   
-      
-    var elem = document.getElementById('js_playpause');
-    if (elem){                                                           //
-	    msg.onstart=function(event){ 
-			common.play_counter=1; 
-			common_playpause_icon(1); 
-			console.log('--START-- '+event.utterance.text);
+    
+    msg.onstart = function(event){ console.log('--START-- '); };
+
+	if (onend==1){     
+		msg.onend=function(event){                                       //console.log('--END-- scroll');
+			reader_scroll(1,0,0); 
 		};
 	}
 	msg.text = txt;  
     window.speechSynthesis.speak(msg);  
 }    
-var utter_recursive = function(text_arr, stop, onend, i, play_all) {
-	if ( !('speechSynthesis' in window)) { return true; }
-    var txt = text_arr[i];
-    if (txt.length>200){ 
-		var arr = utter_split_sentence(txt);
-		var a = text_arr.slice(0,i); 
-		var b = text_arr.slice(i+1);                                     //console.log('Concat: ',i,a,b,arr,' | ');
-		text_arr = a.concat(arr).concat(b); 
-		txt = text_arr[i]; 
-	}
-   
+var utter_recursive = function(text_arr, stop, onend, i, rate) {         //console.log('recursive: |'+stop+'|'+onend+'|-'+i+'-|'+rate);
+	if ( !('speechSynthesis' in window)) { return true; }                
+    
+    if (i==0){ common.utter_recursive_done=0; }
     if (i>0){ stop=0; 
 	}else if(i>text_arr.length-2){ onend = 0; }
 	
+	var utter_onend = 0;
+	if (rate==undefined){rate=common.utter_rate;}
+	
 	if (i<text_arr.length-1){
-		msg.onend=function(event){                                       //console.log('Rec '+i+': '+text_arr[i]+' - '+stop);
-			common_playpause_icon(0);
-			utter_recursive(text_arr, stop, onend, i+1);
+		msg.onend=function(event){                                       //console.log('--end-- '+i+'-'+text_arr.length);
+			utter_recursive(text_arr, stop, onend, i+1, rate);           
 		};
-	}else if (common.utter_playall==1){
-		msg.onend=function(event){                                
-			common_playpause_icon(0);      
-			reader_scroll(1,0,1); };
+	}else if (common.utter_playall==1){                                  
+		utter_onend = 1;
 	}else{ 
-		msg.onend=function(event){
+		msg.onend=function(event){                                       //console.log('--END-- '+i+'-'+text_arr.length);
+			common.utter_recursive_done=1;
 			common_playpause_icon(0);
 			return true;
 		}
 	}
-	utter(txt, stop); 
+	utter(text_arr[i], stop, rate, utter_onend); 
 };
+
+function common_play_pause(){                                            consolelog_func(); 
+	// 0 - to speak/resume, 1 - to pause, 
+
+	if ( 'speechSynthesis' in window){                                   //console.log('play: ', common.play_counter,common.utter_recursive_done);
+		if (common.play_counter==1 ){   
+			window.speechSynthesis.pause();                                 
+	        common_playpause_icon(0);
+	    }
+		else if (common.utter_recursive_done==1){
+			common_playpause_icon(1);
+			
+			if( localStorage.getItem("in_reader")=="yes")	{
+				reader_utter(1, 0); 
+			}else if (common.repeat_text!=''){
+				utter_sentence(common.repeat_text, 1, 0); 
+			}
+		}
+	    else if (common.play_counter==0){                                                            
+	        window.speechSynthesis.resume();                                             
+	        common_playpause_icon(1);
+	    }
+	}
+}
 
 function utter_stop(order){
 	if ( 'speechSynthesis' in window) {
-		if (window.speechSynthesis.speaking ){                        
-				window.speechSynthesis.pause();       
-		}
-		if (order=='cancel'){
-			window.speechSynthesis.cancel(); 
-		}
+		common.utter_playall = 0; 
+		common.utter_recursive_done = 1;                                 //console.log('STOP!!!'); 
+		
+		msg.onend = function(event){ console.log('STOP!!'); };
+		window.speechSynthesis.cancel();
+		common_playpause_icon(0);
+		msg = new SpeechSynthesisUtterance();
 	}
 }
 
@@ -155,8 +187,7 @@ function common_playpause_icon(i){
 	var elem = document.getElementById('js_playpause');
     if (elem){          
 		elem.innerHTML=symbols_play_pause[i];                            //console.log(i);
-	}else{
-		console.log('No elem "playpause"!');
+		common.play_counter=i; 
 	}
 }
 
@@ -203,10 +234,19 @@ function common_set_clickdelay(delay){                                      cons
 	document.getElementById('place_delay').innerHTML = delay+' sec';
 }
 
-function common_set_lang(lang){                                   consolelog_func(); 
+function common_set_lang(lang){                                          consolelog_func(); 
 	common.langbase = lang; 
-	document.getElementById('place_lang').innerHTML = lang;
-	        
+	document.getElementById('place_lang').innerHTML = lang;	        
+}
+function common_set_utterrate(rate){                                     consolelog_func();
+	console.log('rate: '+rate);
+	common.utter_rate = rate; 
+	utter_stop();
+	if ('speechSynthesis' in window) {
+		msg.rate = rate;
+		msg.text = dict.place_utterrate;
+		window.speechSynthesis.speak(msg); 
+	}       
 }
 
 function common_set_fontsize(id, obj){                                   consolelog_func(); //console.log('scale: '+id+'|'+obj);
@@ -360,9 +400,14 @@ function concatenate_arr(arr1, arr2){                                    console
 
 //-- not used ------------------------------------------------------------
 
-function common_textto_read(text){                                       consolelog_func(); 
-	text = text.replace('<br>', ' new line ');
-	text = text.replace('<abbr>', '');
+function editor_textto_read(text){                                       consolelog_func(); 
+	text = text.replace(/<br>/g, ' new line ');
+	text = text.replace(/<abbr>/g, '');
 	text = text.replace('</abbr>', '');
+	return(text);
+}
+function common_textto_read(text){                                       consolelog_func(); 
+	text = text.replace(/<br>/g, ' ');                                   
+	text = text.replace(/\n/g,' ');   
 	return(text);
 }
