@@ -8,7 +8,8 @@ common.style.init_font(0.9,1.1);
 document.addEventListener("click",handler,true);
 if ('speechSynthesis' in window) {
 	var msg = new SpeechSynthesisUtterance();
-}
+	console.log('Browser supports speech synthesis');
+}else {console.log('Browser does not support speech synthesis!'); }
 
 //-- init functions ------------------------------------------------------
 
@@ -107,11 +108,12 @@ function utter(txt, stop, rate, onend){                                  console
     else { msg.lang=common.lang; }                                       //console.log(common.lang, common.langbase,  msg.lang, en+'-'+ru);
     
     if (typeof rate != 'number'){ msg.rate=common.utter_rate; }
-    else{ msg.rate=rate; }
+    else{ msg.rate=rate; }                                               //console.log(rate, msg.rate, common.utter_rate);
+    if (localStorage.getItem("in_reader")!='yes'){ msg.rate=1; };
     
     if (stop==1){ window.speechSynthesis.cancel(); }   
     
-    msg.onstart = function(event){ console.log('--START-- '); };
+    msg.onstart = function(event){ };
 
 	if (onend==1){     
 		msg.onend=function(event){                                       //console.log('--END-- scroll');
@@ -176,7 +178,7 @@ function utter_stop(order){
 		common.utter_playall = 0; 
 		common.utter_recursive_done = 1;                                 //console.log('STOP!!!'); 
 		
-		msg.onend = function(event){ console.log('STOP!!'); };
+		msg.onend = function(event){ };
 		window.speechSynthesis.cancel();
 		common_playpause_icon(0);
 		msg = new SpeechSynthesisUtterance();
@@ -280,48 +282,6 @@ function common_set_fontsize(id, obj){                                   console
 		elem.style.lineHeight = lineheight*fontsize+'px'; 
 	}  
 	
-    //common.style.resize();                    
-}
-
-
-//-- path functions ------------------------------------------------------
-
-function get_subdir(name){                                               consolelog_func(); 
-	var i1 = name.indexOf('/');
-    var i2 = name.indexOf('/',i1+1);
-    var dir = "";
-    if (i2==-1) {dir='';}
-    else{ dir=name.substr(i1+1,i2-i1-1); }                               //console.log(dir);     
-    
-    i1 = name.indexOf('/',name.indexOf('/')+1);
-    i2 = name.indexOf('/',i1+1);
-    if (dir==="guests"){
-		i1 = i2*1;
-		i2 = name.indexOf('/',i1+1);
-	}
-    if (i2==-1) {dir='';}
-    else{ dir=name.substr(i1+1,i2-i1-1); }                               //console.log(dir);     
-    return(dir);
-}
-function get_usrname(fname_i){                                           //consolelog_func(); 
-    var i1 = fname_i.indexOf('/');
-    var i2 = fname_i.indexOf('/',i1+1);
-    var dir = "";
-    if (i2==-1) {dir='';}
-    else{ dir=fname_i.substr(i1+1,i2-i1-1); }                            //console.log(fname_i+" | "+dir);     
-    return(dir);
-}
-
-function common_get_dir(fname){
-	var dir = localStorage.getItem("working_dir");                       //console.log('dir2: '+dir);
-	dir = dir.substring(dir.indexOf('/')+1);
-	return dir;
-}
-function common_make_fname(fname){	  
-    var i = fname.lastIndexOf('/');
-    var name = fname.substring(i+1);
-    var dir = user.name +'/'+ fname.substring(0,i+1);                    //console.log('Path: '+files.dir);
-    return([dir, name]);
 }
 
 //-- misc functions ------------------------------------------------------
@@ -380,25 +340,6 @@ function consolelog(text, lvl, color){
 	for (i=0; i<lvl; i+=1) { text = shift+text; }
 	console.log('%c'+text, 'color:'+color); 
 }
-
-
-function welcome_donot(){                                                consolelog_func();
-	common.welcome="donot";
-	cookie_set("welcome_", "donot");
-}
-
-function merge_options(obj1,obj2){                                       consolelog_func(); 
-    obj3 = {};
-    for (attrname in obj1) { obj3[attrname] = obj1[attrname]; }
-    for (attrname in obj2) { obj3[attrname] = obj2[attrname]; }
-    return obj3;
-}
-function concatenate_arr(arr1, arr2){                                    consolelog_func(); 
-	for (i=0; i<arr2.length; i++){ arr1.push(arr2[i]); } 
-	return(arr1);
-}
-
-//-- not used ------------------------------------------------------------
 
 function editor_textto_read(text){                                       consolelog_func(); 
 	text = text.replace(/<br>/g, ' new line ');

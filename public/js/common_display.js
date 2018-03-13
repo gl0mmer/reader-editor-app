@@ -1,14 +1,4 @@
 
-function create_element(id, cl, parent, style, inner){                   //consolelog_func(); 
-    if (parent===undefined){ parent = 'created_elements'; }
-    var element = document.createElement('div');
-    element.setAttribute('id', id);
-    element.setAttribute('class', cl);
-    if (style!=undefined) { element.setAttribute('style', style); }
-    if (inner!=undefined) { element.innerHTML=inner; }
-    document.getElementById(parent).appendChild(element);
-    return (element);
-}
 
 function common_create_menu(id, lvl, buttons_html, parent, ineditor){    consolelog_func(); 
 	if (parent==undefined) { parent='created_elements'; }
@@ -136,7 +126,6 @@ function common_show_notification(text, welcome, blur){                        c
 	if (elem){ menu_back('menu_back_lvl0',1, 0); }
 	
 	if (blur==undefined){blur=0;}
-	if (welcome===undefined){ welcome = false; }
 	var parent='created_elements';
 	var id = "notification";
 	var b_top = 90-common.style.b_height;
@@ -149,7 +138,6 @@ function common_show_notification(text, welcome, blur){                        c
 	inner_e+= '<div class="text_scroll" align="left" style="top:0vh;"> <div class="reader_text" style="top:'+(-5*common.style.ry)+'vh;height:'+20*common.style.ry+'vh;">'+text+' &nbsp </div> </div> </div> </div>' ;
       
     inner_e += button_html(1, [ ['js_playpause', [11,0]], ], 3,4);
-    //if (welcome){	inner_e += button_html(1, [['js_donotshow', [16,0]] ], 5,4); }                                 
                   
     element = document.createElement('div');
     element.setAttribute('id', id);

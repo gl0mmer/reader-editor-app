@@ -148,10 +148,8 @@ editor.style = {
 
 //-- run/save/exit -------------------------------------------------------
 
-//editor_run();
-if (typeof reader!=='undefined' && common.ineditor===true) { reader_editor();}
 
-function editor_run(parent, text_raw, destination, iter){                consolelog_func("darkblue"); 
+function editor_start(parent, text_raw, destination, iter){                consolelog_func("darkblue"); 
 	editor.style.nlines_lvl0 = common.editor_nlines_lvl0;
 	editor.style.nlines_lvl1 = common.editor_nlines_lvl1;
 	if (text_raw==undefined) { text_raw=""; }
@@ -186,18 +184,12 @@ function editor_run(parent, text_raw, destination, iter){                console
 			
 	    input.onkeydown = function(event) {
 		    var key = event.keyCode;                                     //console.log('keydown: '+key);
-		    if( key == 8 || key == 46 ){                                 //console.log('delete');
-		        editor_delete();
-			}
-		    if( key == 13 ){                                             //console.log('enter');
-		        editor_set_letter(92);
-			}
-		    if( key == 37 ){                                    
-		        editor_scroll(0);
-			}
-		    if( key == 39 ){                                    
-		        editor_scroll(1);
-			}
+		    if( key == 8 || key == 46 ){ editor_delete(); }
+		    if( key == 13 ){ editor_set_letter(92); }
+		    if( key == 37 ){ editor_scroll(0); }
+		    if( key == 39 ){ editor_scroll(1); }
+		    if( key == 38 ){ editor_scrollvert(0); }
+		    if( key == 40 ){ editor_scrollvert(1); }
 		};
 	}
 	

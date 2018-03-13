@@ -116,7 +116,9 @@ function reader_update(start) {                                          console
 		var fname = [user.name+'/', reader.fname.replace('/','/ ')];
 		reader_messages_tohtml();
 	}else{
-		var fname = common_make_fname(localStorage.getItem("reader_savepath"));     //console.log('NAME: '+fname[0]+' | '+fname[1]);
+		var name = localStorage.getItem("reader_savepath");
+		var i = name.lastIndexOf('/');
+	    var fname = [ user.name +'/'+ name.substring(0,i+1),  name.substring(i+1) ];
 	}
 	document.getElementById('file_title').innerHTML = '<em><span style="color:black;opacity:0.3;direction:ltr;">'+fname[0]+' </span>'+fname[1]+'</em>';
         
@@ -133,13 +135,12 @@ function reader_update(start) {                                          console
     reader_show_buttons();    
     reader_set_selecttype(order=0);                                  
     reader_set_zoomtype(reader.zoomtype);                                       
-    common_set_fontsize(common.r_fontsize_scale, 1);                console.log('ReaderIter: '+reader.iter+' '+reader.iter_prev);
+    common_set_fontsize(common.r_fontsize_scale, 1);                     console.log('ReaderIter: '+reader.iter+' '+reader.iter_prev);
     if (reader.in_messages){
         reader.iter = reader.get_id_array().length-1;                  
         reader_highlite(); 
         scroll_to(reader.get_id(),'content_box', title=0);
 	}                                                                    //console.log('Save_inprocess: '+reader.save_inprocess);
-	//if (reader.save_inprocess){ reader.save_inprocess = false; }
     
 }
 
@@ -309,32 +310,9 @@ function reader_messages_tohtml(){
 	document.getElementById('hidden_text').innerHTML=text;       
 }    
 
-function reader_if_editable(){                                           consolelog_func(); 
-    id = reader.latest_p;
-    title = document.getElementById(id).getAttribute('title');          
-    if (parse_words(title).indexOf('editable')!=-1){editable=true;}
-    else {editable=false;}
-    return(editable);
-}
-
-function reader_show_mail(){                                             consolelog_func(); 
-	var inner_e = button_html(1, 
-		[['ajax_refresh',  [4,0]],   ['ajax_sendmail', [7,0]]
-		]);
-    common_create_menu('reader_mail', 0, inner_e);
-}
-
 
 //-- misc ----------------------------------------------------------------
 
-function is_inlist(list){                                                //consolelog_func(); 
-    inlist = false;
-    fname_i = document.getElementById('file_title').innerText; 
-    for (i=0; i<list.length; i++){ 
-		if (fname_i.indexOf(list[i])==fname_i.indexOf('/')){inlist = true;} 
-    }
-    return(inlist);
-}
 
 function reader_editor(){                                                consolelog_func("darkblue"); 
 	utter_stop();
@@ -344,7 +322,7 @@ function reader_editor(){                                                console
     text = document.getElementById(id).innerHTML;
     text_plane = merge_text(text); 
     common.ineditor = true;                                    
-    editor_run('reader', text_plane);
+    editor_start('reader', text_plane);
 }
 
 function reader_beforunload() {                                          consolelog_func(); 

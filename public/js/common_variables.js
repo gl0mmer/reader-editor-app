@@ -17,7 +17,6 @@ if (localStorage.getItem("isset")!="true"){
 }else{
 	localStorage.setItem("show_welcome", "no");
 }
-//localStorage.setItem("in_reader", "no");
 
 var user = {
 	id: 0,

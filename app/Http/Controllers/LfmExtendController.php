@@ -102,8 +102,7 @@ class LfmExtendController extends LfmController
     public function create()
     {
 		$msg = 'Create: ';
-        $filename = request()->file_name;
-        $filename = $this->getCleanName($filename).'.txt';
+        $filename = request()->file_name.'.txt';
         $filetext = request()->file_text;
         $new_file_path = parent::getCurrentPath($filename);
 

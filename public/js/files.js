@@ -24,7 +24,6 @@ var files = {
 	contacts: [],
 	messages: [],
 	url: '',
-	alert_guest: 'You need registration to proceed',
 	items_protected: ['..','trash'],
 	
 	get_fname: function(i){                                              //consolelog_func('brown');
@@ -68,7 +67,7 @@ var files = {
 	},
 }                                                        
 
-//-- start/update/scroll -----------------------------------------------------------
+//-- start/update --------------------------------------------------------
 function files_start(){                                                  consolelog_func('darkblue');  
 	
 	if (cookie_get('isset_files_')!='isset'){                            
@@ -89,6 +88,8 @@ function files_start(){                                                  console
 	window.onresize = function(){ 
 		files_resize();
 	};	
+	
+	if (typeof common.utter_rate != 'number'){ common.utter_rate=1; }
 }
 
 function files_update(){                                                 consolelog_func('darkblue');                                                                              
@@ -108,7 +109,7 @@ function files_update(){                                                 console
 			files_set_zoom('no');    
 		}                                                                //console.log('files.dir: '+files.dir+',  get_subdir(): '+files.get_subdir());
 		if (common.welcome=='do' && localStorage.getItem("show_welcome")==="yes" ){ 
-			files_welcome();
+			common_show_notification(dict.alert_welcome, false, 1);
 			localStorage.setItem("show_welcome",'no');
 		} 
 	}
@@ -130,7 +131,7 @@ function files_ajax_enter(path){                                         console
 		}else{
 			localStorage.setItem("reader_savepath", files.get_savepath(files.iter));  
 			localStorage.setItem("reader_fname", files.get_savepath(files.iter));
-			useFile( path );                                             console.log('EnterPath: '+path); console.log('SavePath: '+files.get_savepath(files.iter));
+			useFile( path );                                             //console.log('EnterPath: '+path); console.log('SavePath: '+files.get_savepath(files.iter));
 		}
 	}else{                                                               // open folder
 		if (files.iter==0){
@@ -150,32 +151,32 @@ function files_ajax_contacts(){
 	var url = files.url;
 	url = url.substring(0, url.indexOf('/', url.indexOf('://')+3)+1);
 	
-	localStorage.setItem("folder_path", 'mail');                     //console.log('Url: '+files.get_url());
+	localStorage.setItem("folder_path", 'mail');                         //console.log('Url: '+files.get_url());
 	localStorage.setItem("url", url);
 	window.location.href=url+'contacts';
 }
 
 function files_ajax_create(type){
-	var new_name = files.get_subdir()+common.editor_text;                console.log('New fname: '+new_name);
-	var i = files.entries.indexOf(new_name);
+	if ( !common_ajax_permit() ){ return true; }
 	
-	var alert = 'Error';
-	if ( !common_ajax_permit() ){
-		alert = files.alert_guest;
-	}else if (new_name==''){
-		alert = 'Name is empty';
-	}else if(i>-1 && (files.entrytype[i]=='folder' && type==0  || files.entrytype[i]=='file' && type==1 )){
-		alert = 'Name exists';
+	var new_name = files.get_subdir()+common.editor_text;                console.log('New fname: '+new_name);
+	
+	var types = ['folder','file'];
+	var alert = dict.alert_error;
+	if (new_name==''){
+		alert = dict.alert_nameempty;
+	}else if( files_exists(common.editor_text, types[type]) ){
+		alert = dict.alert_nameexists;
 	}else{
 		if (type == 0){
 			new_name = common.editor_text;
 			performLfmRequest('newfolder', {name: new_name})
 			.done(refreshFoldersAndItems);                               //console.log('New folder');
-			alert = 'New folder was created';
+			alert = dict.alert_newfolder;
 		}else if (type == 1){
 			$.ajax( {type: 'GET', dataType: 'text', url: 'create', cache: false, data: {file_name: new_name, file_text:''}} )
 			.done( refreshFoldersAndItems('OK') );  
-			alert = 'New text file was created';	
+			alert = dict.alert_newtxt;	
 		}
 	}
 	common_show_notification(alert,0,1);
@@ -183,65 +184,61 @@ function files_ajax_create(type){
 }
 
 function files_ajax_addcontact(){
-	if ( !common_ajax_permit() ){
-		alert = files.alert_guest;
-	}else{
-		var new_contact = document.getElementById('edit_contactname').innerHTML; 
-		document.getElementById('addcontact_name').value = new_contact;
-		document.getElementById('addcontact_submit').click(); 
-		//$.ajax( {type: 'POST', dataType: 'text', url: 'connection_add', cache: false, data: {addcontact_name:new_contact, '_token': $('meta[name=csrf-token]').attr('content')}} )
-		//.done( location.reload() ); 
-	}
+	if ( !common_ajax_permit() ){ return true; }
+	
+	var new_contact = document.getElementById('edit_contactname').innerHTML; 
+	document.getElementById('addcontact_name').value = new_contact;
+	document.getElementById('addcontact_submit').click(); 
 }
 
 function files_ajax_rename(){
-	var alert = 'Error';
+	if ( !common_ajax_permit() ){ return true; }
+	
+	var alert = dict.alert_error;
 	var item_name = files.get_fname(); 
-	if ( !common_ajax_permit() ){
-		alert = files.alert_guest;
-	}else if ( files.get_savepath(files.iter)!='' && files.items_protected.indexOf(item_name)==-1){
+	if ( files.items_protected.indexOf(item_name)==-1){
 		
 		var item_name = files.get_fname();
 		var new_name = common.editor_text;
 		var i = files.entries.indexOf(new_name);
 		
-		if (i>-1){
-			alert = 'Name exists';
+		if (files_exists(common.editor_text, files.get_ftype()) ){
+			alert = dict.alert_nameexists;
 		}else{
 			performLfmRequest('rename', {file: item_name, new_name: new_name})
 			.done(refreshFoldersAndItems);
 		    common.editor_text = '';
-		    alert = 'Item was renamed'
+		    alert = dict.alert_wasrenamed;
 		}
 	}
 	common_show_notification(alert,0,1);
 }
 
 function files_ajax_delete(sync, fname){
+	if ( !common_ajax_permit() ){ return true; }
+	
 	var item_name = files.get_subdir()+files.get_fname();
 	var i = files.iter;
-	if (fname!=undefined){                                               console.log('delete to trash: '+fname);
+	if (fname!=undefined){                                               
 		item_name = fname;
 		i = 'something';
 	}
-	var alert = 'Error';                                          console.log('delete item: '+item_name);
 	
-	if ( !common_ajax_permit() ){
-		alert = files.alert_guest;
-	}else if ( i!=0 && files.items_protected.indexOf(item_name)==-1){
+	var alert = dict.alert_error;                                     
+	if ( i!=0 && files.items_protected.indexOf(item_name)==-1){
 		var misc = 'empty';
 		if (sync==1){ misc = 'sync';}
 		$.ajax( {type: 'GET', dataType: 'text', url: 'delete_dir', cache: false, data: {delete_name: item_name, delete_misc: misc}} )
 		.done( refreshFoldersAndItems('OK') );
-	    alert = 'Item was deleted';
+	    alert = dict.alert_wasdeleted;
 	}
 	common_show_notification(alert,0,1);
 }      
 function files_ajax_totrash(){
-	var alert = 'Error';
-	if ( !common_ajax_permit() ){
-		alert = files.alert_guest;
-	}else if ( files.get_savepath(files.iter)!='' ){
+	if ( !common_ajax_permit() ){ return true; }
+	
+	var alert = dict.alert_error;
+	if ( files.get_savepath(files.iter)!='' ){
 		var short_path = files.get_savepath(files.iter); 
 		var fname = files.get_subdir()+files.get_fname();
 		localStorage.setItem("delete_fname", fname);  
@@ -253,15 +250,12 @@ function files_ajax_totrash(){
 	}
 }      
 function files_ajax_upload(id){
-	if ( !common_ajax_permit() ){
-		alert = files.alert_guest;
-	}else{
-		document.getElementById('upload-button').click();
-		loadFolders(true);
-		menu_back('menu_back_lvl0',1, 0);
-		//location.reload();
-		
-	}
+	if ( !common_ajax_permit() ){ return true; }
+	
+	document.getElementById('upload-button').click();
+	loadFolders(true);
+	menu_back('menu_back_lvl0',1, 0);
+	//location.reload();
 }
 function files_ajax_download(){                                          consolelog_func();
 	if (files.get_ftype()=='file' && files.get_savepath(files.iter)!=''){
@@ -270,33 +264,32 @@ function files_ajax_download(){                                          console
 	} 
 }
 
-function files_ajax_past(sync){                                              consolelog_func();
-	var alert = 'Error';
-	if ( !common_ajax_permit() ){
-		alert = files.alert_guest;
-	}else {
-		var misc = 'empty';
-		if (sync==1){ misc = 'sync'; }
-		$.ajax( {type: 'GET', dataType: 'text', url: 'copyitem', cache: false, 
-			data: {copy_shortpath: localStorage.getItem("copy_shortpath"), past_dir:files.get_subdir(), copy_misc:misc}} )
-		.done(refreshFoldersAndItems('OK'));
-		alert = 'Item was pasted';
-	}
+function files_ajax_past(sync){                                          consolelog_func();
+	if ( !common_ajax_permit() ){ return true; }
+	
+	var alert = dict.alert_error;
+	
+	var misc = 'empty';
+	if (sync==1){ misc = 'sync'; }
+	$.ajax( {type: 'GET', dataType: 'text', url: 'copyitem', cache: false, 
+		data: {copy_shortpath: localStorage.getItem("copy_shortpath"), past_dir:files.get_subdir(), copy_misc:misc}} )
+	.done(refreshFoldersAndItems('OK'));
+	alert = dict.alert_waspasted;
+		
 	common_show_notification(alert,0,1);
 }    
-
 function files_copy(){                                                   consolelog_func();
-	var alert = 'Error';
+	var alert = dict.alert_error;
 	if (files.get_savepath(files.iter)!='' ){
 		var short_path = files.get_savepath(files.iter);
 		localStorage.setItem("copy_shortpath", short_path);              //console.log('Copy short_path: '+short_path);
-		alert='Item was copied';
-		//menu_back('menu_back_lvl0',1, 0);
+		alert = dict.alert_wascopied;
 	}
 	common_show_notification(alert, 0,1);
 }
 
 function files_ajax_createinit(){
+	if ( !common_ajax_permit() ){ return true; }
 	$.ajax( {type: 'GET', dataType: 'text', url: 'create_init', cache: false} )
 	.done(refreshFoldersAndItems('OK'));     
 }
@@ -306,6 +299,7 @@ function common_ajax_permit(){
 	if (user.name=='guest'){                                             console.log('Permittion denied: '+user.name);
 		permit = false;
 		permit = true;
+		//common_show_notification(dict.alert_guest, 0,1);
 	}
 	return permit;
 }
@@ -317,7 +311,6 @@ function files_signin(){                                                 console
     document.getElementById('signin_username').value = name;
     document.getElementById('signin_password').value = pass;
     document.getElementById('signin_submit').click();  
-    //utter(login_messages_en[user_access],0,0,0);
 }
 function files_signup(){                                                 consolelog_func();
     var name = document.getElementById('edit_username').innerHTML;
@@ -340,10 +333,18 @@ function files_login_remember(){                                         console
     files.userremember = true;
 }
 
+
 //-- misc ----------------------------------------------------------------
+
+function files_exists(fname, type){
+	if (type=='file') { fname += '.txt'; }
+	var i = files.entries.indexOf(fname);   
+	return (i>-1 && files.entrytype[i]==type);
+}
+
 function files_edittext(id){                                             consolelog_func('darkblue');
-	var text = "";                                                       
-	if (id=="edit_filename"){
+	var text = "";                                                    
+	if (id=="edit_filename_box"){
 		var fname = files.get_fname();                                   //console.log('Edit: '+id+' '+text+' '+files.get_ftype());
 		if (files.get_ftype()!='folder'){
 			text = fname.substring(0,fname.lastIndexOf('.'));
@@ -351,7 +352,7 @@ function files_edittext(id){                                             console
 			text = fname;
 		}
 	}
-    editor_run('files', text, id);                                       //console.log('Edit: '+id+' '+text+' '+files.entrytype);
+    editor_start('files', text, id.substring(0,id.lastIndexOf('_')) );                                       //console.log('Edit: '+id+' '+text+' '+files.entrytype);
 }
 
 function files_beforunload() {                                           consolelog_func();

@@ -147,3 +147,9 @@ function reader_show_zoomtype(){                                         console
     document.getElementById('place_readerzoom').innerHTML = reader.zoomtype_arr[n_zoom];
 }
 
+function reader_show_mail(){                                             consolelog_func(); 
+	var inner_e = button_html(1, 
+		[['ajax_refresh',  [4,0]],   ['ajax_sendmail', [7,0]]
+		]);
+    common_create_menu('reader_mail', 0, inner_e);
+}
