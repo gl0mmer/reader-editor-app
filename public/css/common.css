@@ -47,7 +47,8 @@ body{
 .buttons{
   width:12vw; height:17vh;     
   position:fixed; box-sizing:border-box;
-  word-break: normal; white-space: normal;
+  word-wrap: break-word; word-break: normal;
+  white-space: normal;
   border-radius: 0.5vmin;
   color: rgba(0,0,0,0.5);
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08), 0 4px 13px 0 rgba(0,0,0,0.2);

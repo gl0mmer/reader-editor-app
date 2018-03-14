@@ -5,6 +5,8 @@ common.browser = check_browser();
 common.style.vmin = Math.min(window.innerWidth, window.innerHeight)/100;
 common.style.init_font(0.9,1.1);
 
+var dict = {};                                    
+
 document.addEventListener("click",handler,true);
 if ('speechSynthesis' in window) {
 	var msg = new SpeechSynthesisUtterance();
@@ -238,7 +240,9 @@ function common_set_clickdelay(delay){                                      cons
 
 function common_set_lang(lang){                                          consolelog_func(); 
 	common.langbase = lang; 
-	document.getElementById('place_lang').innerHTML = lang;	        
+	document.getElementById('place_lang').innerHTML = lang;	  
+	dict = lang[common.langbase];        
+	location.reload();
 }
 function common_set_utterrate(rate){                                     consolelog_func();
 	console.log('rate: '+rate);

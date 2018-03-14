@@ -78,6 +78,7 @@ function files_start(){                                                  console
 		common.cookie_load.call(files); 
 		common.cookie_load();
 	}
+	dict = reader_lang[common.langbase];                                 
 	
 	var inner_e = "";
 	inner_e += "<div id='files_scroll' class='text_scroll' style='top:0vh;left:0vw;' align='left' > ";

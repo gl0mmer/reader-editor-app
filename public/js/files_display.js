@@ -186,7 +186,7 @@ function files_set_zoom(order){                                          console
 
 //-- show items ----------------------------------------------------------
 
-function files_show_files(){                                             consolelog_func();
+function files_show_files(){                                             consolelog_func();  
 	var files_arr = files.entries;                                       //console.log(files.entries);
 	
 	var wratio = window.innerWidth/window.innerHeight;                   //console.log('wratio: '+wratio+' '+window.innerWidth+' '+window.innerHeight);              

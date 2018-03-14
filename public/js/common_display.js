@@ -1,23 +1,5 @@
 
 
-function common_create_menu(id, lvl, buttons_html, parent, ineditor){    consolelog_func(); 
-	if (parent==undefined) { parent='created_elements'; }
-    if (lvl==0){                                                         
-        menu_blur(ineditor);
-        inner_e = '<div id="menu_back_lvl0"  onclick="menu_back(this.id,1,'+ineditor+');" class="back_area"></div>';
-        inner_e+= '<div id="menu_area"  class="menu_area">';
-    }else{                                                               
-        inner_e = '<div id="menu_back_lvl2"  onclick="menu_back(this.id,0,'+ineditor+');" class="back_area" style="opacity:0;"></div>';
-        inner_e+= '<div id="menu_area1"  class="menu_area" style="background-color:rgba(100,100,100,0.2);"></div>';
-        inner_e+= '<div id="menu_area2"  class="menu_area_lvl2">';
-        }                                                                
-    var elem = document.createElement('div');                            //console.log('elem: '+elem+', parent: '+parent);
-    elem.innerHTML = inner_e + buttons_html + '</div>';
-    document.getElementById(parent).appendChild(elem);                   //console.log(elem.innerHTML);
-    utter_stop();
-    return (elem);
-}
-
 function menu_blur(ineditor){                                            consolelog_func(); 
 	
 	if (ineditor===undefined) {ineditor=false;}
@@ -64,7 +46,89 @@ function common_disable_button(id, disable, todo){
 	}
 }
 
+
+//-- create html ---------------------------------------------------------
+
+
+function button_html(lvl, arr, y_dim, x_dim){
+	if (y_dim==undefined){ y_dim = 2; }
+	if (x_dim==undefined){ x_dim = 4; }
+	var class_arr = [[" ", "disabled", "symbol", "symbol disabled", "editor", "editor disabled"],
+	                 ["buttons_menu", "", "", "disabled buttons_menu"]];
+	
+	var html = '';
+	var name = '', tail='', inner='', id='';
+	var pos = [];
+	for (var i=0; i<arr.length; i++){
+		pos = arr[i][1];                                                 //console.log(arr[i]);
+		name = arr[i][0]; 
+		inner = dict[name];
+		if (arr[i].length>2){                                            //console.log('inner: '+inner);           
+			tail = inner[ 2+ arr[i][2] ];
+			id = tail;
+			inner = inner[0] +' '+ tail +' '+ inner[1];
+		}else{
+			inner = dict[ arr[i][0] ];
+			id = name;
+		}                                                                //console.log('name: '+name+'|'+tail+'|'+inner);
+		var class_name = class_arr[lvl][pos[1]];
+		if (lvl==0){ var style = common.style.buttonpos(pos[0],pos[1], y_dim, x_dim); }
+		if (lvl==1){ var style = common.style.buttonpos_menu(pos[0],pos[1], y_dim, x_dim); }
+		if (lvl==1 && pos[1]==2){
+			html += '<div id="'+id+'_box" class="button_zoom_box " onclick="'+dict_onclick[name]+'" style="'+style+'"><div id="'+id+'" class="text_zoom">'+inner+'</div></div>';
+		}else{
+			html += '<div id="'+id+'" onclick="'+dict_onclick[name]+'" class="buttons '+class_name+'" style="'+style+'">'+inner+'</div>' ;
+		}
+	}
+	return html;
+}
+
+function common_create_menu(id, lvl, buttons_html, parent, ineditor){    consolelog_func(); 
+	if (parent==undefined) { parent='created_elements'; }
+    if (lvl==0){                                                         
+        menu_blur(ineditor);
+        inner_e = '<div id="menu_back_lvl0"  onclick="menu_back(this.id,1,'+ineditor+');" class="back_area"></div>';
+        inner_e+= '<div id="menu_area"  class="menu_area">';
+    }else{                                                               
+        inner_e = '<div id="menu_back_lvl2"  onclick="menu_back(this.id,0,'+ineditor+');" class="back_area" style="opacity:0;"></div>';
+        inner_e+= '<div id="menu_area1"  class="menu_area" style="background-color:rgba(100,100,100,0.2);"></div>';
+        inner_e+= '<div id="menu_area2"  class="menu_area_lvl2">';
+        }                                                                
+    var elem = document.createElement('div');                            //console.log('elem: '+elem+', parent: '+parent);
+    elem.innerHTML = inner_e + buttons_html + '</div>';
+    document.getElementById(parent).appendChild(elem);                   //console.log(elem.innerHTML);
+    utter_stop();
+    return (elem);
+}
+
+function common_show_notification(text, welcome, blur){                        consolelog_func();
+	var elem = document.getElementById('menu_back_lvl0');
+	if (elem){ menu_back('menu_back_lvl0',1, 0); }
+	
+	if (blur==undefined){blur=0;}
+	var parent='created_elements';
+	var id = "notification";
+	var b_top = 90-common.style.b_height;
+	common.repeat_text = common_textto_read(text);
+	menu_blur();
+	
+	inner_e = '<div id="back_lvl" onclick="menu_back(this.id,'+blur+',false);" class="back_area"> </div>';
+	inner_e+= '<div class="menu_area" >';
+	inner_e+= '<div class="text_scroll_box" style="position:fixed;top:'+15*common.style.ry+'vh;left:12vw;width:76vw;height:'+(b_top-25)*common.style.ry+'vh;font-size:'+4.8*common.style.ry+'vmin;line-height:'+7.5*common.style.ry+'vmin; color: rgba(0,0,0,0.55);">';
+	inner_e+= '<div class="text_scroll" align="left" style="top:0vh;"> <div class="reader_text" style="top:'+(-5*common.style.ry)+'vh;height:'+20*common.style.ry+'vh;">'+text+' &nbsp </div> </div> </div> </div>' ;
+      
+    inner_e += button_html(1, [ ['js_playpause', [11,0]], ], 3,4);
+                  
+    element = document.createElement('div');
+    element.setAttribute('id', id);
+    element.innerHTML=inner_e;
+    document.getElementById(parent).appendChild(element);
+    return (element);	
+}
+
+
 //-- show menu -----------------------------------------------------------
+
 
 function common_show_lang(lvl, parent){                                  consolelog_func(); 
     var inner_e = ''; var lang='';
@@ -121,28 +185,4 @@ function common_show_utterrate(){                                       consolel
     common_create_menu('common_utterrate',1, inner_e);
 }
 
-function common_show_notification(text, welcome, blur){                        consolelog_func();
-	var elem = document.getElementById('menu_back_lvl0');
-	if (elem){ menu_back('menu_back_lvl0',1, 0); }
-	
-	if (blur==undefined){blur=0;}
-	var parent='created_elements';
-	var id = "notification";
-	var b_top = 90-common.style.b_height;
-	common.repeat_text = common_textto_read(text);
-	menu_blur();
-	
-	inner_e = '<div id="back_lvl" onclick="menu_back(this.id,'+blur+',false);" class="back_area"> </div>';
-	inner_e+= '<div class="menu_area" >';
-	inner_e+= '<div class="text_scroll_box" style="position:fixed;top:'+15*common.style.ry+'vh;left:12vw;width:76vw;height:'+(b_top-25)*common.style.ry+'vh;font-size:'+4.8*common.style.ry+'vmin;line-height:'+7.5*common.style.ry+'vmin; color: rgba(0,0,0,0.55);">';
-	inner_e+= '<div class="text_scroll" align="left" style="top:0vh;"> <div class="reader_text" style="top:'+(-5*common.style.ry)+'vh;height:'+20*common.style.ry+'vh;">'+text+' &nbsp </div> </div> </div> </div>' ;
-      
-    inner_e += button_html(1, [ ['js_playpause', [11,0]], ], 3,4);
-                  
-    element = document.createElement('div');
-    element.setAttribute('id', id);
-    element.innerHTML=inner_e;
-    document.getElementById(parent).appendChild(element);
-    return (element);	
-}
 

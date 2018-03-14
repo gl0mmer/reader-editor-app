@@ -287,6 +287,9 @@ function reader_messages_tohtml(){
 		var time = date.substring(date.lastIndexOf(' ')+1, date.lastIndexOf(':')); 
 		var day = date.substring(date.lastIndexOf('-')+1, date.indexOf(' ')); 
 		var month = date.substring(date.indexOf('-')+1, date.lastIndexOf('-')); 
+		
+		var month_names = ["January", "February", "March", "April", "May", "June",
+							"July", "August", "September", "October", "November", "December"];
 		month = month_names[parseInt(month)-1];    
 		
 		var title = time;
