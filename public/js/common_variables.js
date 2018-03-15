@@ -81,6 +81,7 @@ common.style = {
     yn:4, btop:3.5, bbot:96.5, 
     xn:2, bright:98, xspace:4, dx_side:1,
     dy: 16.5, xy_ratio: 1.1,
+    zoomheight: 20,
     textheight_zoom: 77,
     textheight: 97,
     b_shape: 1.1,
@@ -102,7 +103,6 @@ common.style = {
     f_lineheight: 0,
     b_lineheight: 0,
     r_lineheight: 0,
-    vmin: 10,
     rx: 1.0, ry:1.0, rmin:1,
     cursorshift:0.25,
     
@@ -117,9 +117,15 @@ common.style = {
     get_content_width: function(){                                       consolelog_func('brown');
 		var wratio = window.innerWidth/window.innerHeight;
 		var bright = wratio*this.bright;
-		var dx = this.xy_ratio*this.dy;
-		var content_width = (bright - 2*dx -this.xspace-1*wratio);
-		return(content_width);
+		var dx = this.dy*this.b_shape; 
+		var x =  (bright - 2*dx - 2*this.xspace) ; 
+		return(x);
+	},
+    get_content_height: function(){                                       consolelog_func('brown');
+		var wratio = window.innerWidth/window.innerHeight;
+		var dy = this.dy/this.b_shape*wratio;                                        
+	    var y =  this.bright - 2*dy - 2*this.xspace ; 
+		return(y);
 	},
     buttonpos: function(i, class_n){                                     //consolelog_func('brown');
 		var wratio = window.innerWidth/window.innerHeight;
@@ -127,18 +133,31 @@ common.style = {
 	    var bright = wratio*this.bright;           
 	    var n_x = (i-i%this.yn)/this.yn;
 	    
-	    var dx = this.dy*this.b_shape;
-	    var yspace = (this.bbot-this.btop-(this.yn)*this.dy ) / (this.yn-1); 
+	    var dy = this.dy;
+	    var dx = this.dy*this.b_shape; 
+	    var yspace = (this.bbot-this.btop- this.yn*this.dy ) / (this.yn-1); 
 	    var y =  this.btop + (i%this.yn)*(yspace+this.dy*1) ;
 	    var x =  bright - (this.xn-n_x)*dx - (this.xn-n_x-1)*this.xspace ; 
+	    dx = dx/wratio;  x=x/wratio;
 	    
-	    var fontsize = this.b_fontsize*common.b_fontsize_scale;  //console.log('fontsize: '+this.b_fontsize+' | '+common.b_fontsize_scale+' | '+this.vmin+' | '+fontsize);
-	    var style = 'left:'+x/wratio*this.rx+'vw; top:'+y*this.ry+'vh;'
-				  + 'width:'+dx/wratio*this.rx+'vw; height:'+this.dy*this.ry+'vh;'
+	    if (wratio<1){ 
+			n_x = (n_x+1)%2;
+			var bleft = (100-this.bbot);
+			var dx = this.dy; 
+			var dy = dx/this.b_shape*wratio;                                        
+		    var xspace = (100-2*bleft - this.yn*this.dy ) / (this.yn-1); 
+		    var x =  bleft + (i%this.yn)*(xspace+dx*1) ;
+		    var y =  this.bright - (this.xn-n_x)*dy - (this.xn-n_x-1)*this.xspace ; 
+		}
+	    
+	    var fontsize = this.b_fontsize*common.b_fontsize_scale;   
+	    var style = 'left:'+x*this.rx+'vw; top:'+y*this.ry+'vh;'
+				  + 'width:'+dx*this.rx+'vw; height:'+dy*this.ry+'vh;'
 				  + 'border-width:'+fontsize*this.rmin*0.+'vmin;'
 				  + 'border-bottom-width:'+this.dy*0+'vmin;'
 				  + 'border-top-width:'+this.dy*0+'vmin;'
 				  + 'font-size:'+fontsize*this.rmin+'vmin; line-height:'+fontsize*1.1*this.rmin+'vmin;';
+		
 	    return(style); 
 	},
 	
@@ -162,7 +181,7 @@ common.style = {
 		}                                                                //console.log('wratio: '+wratio+' '+x_dim+' '+y_dim);
 		var nx = i%(x_dim); var ny = (i-i%(x_dim))/x_dim;
 		if (wratio<1){wratio = 1;}
-			var dx = this.dy*this.b_shape/wratio;
+		var dx = this.dy*this.b_shape/wratio;
 		
 		var add = 0.6;
 		var x = b_left + (b_right-b_left)/(x_dim+add) *(nx+1-(1-add)/2) - dx/2.;
@@ -185,7 +204,6 @@ common.style = {
 	},
 	
 	resize: function(){                                                  consolelog_func('brown');
-		this.vmin = Math.min(window.innerWidth, window.innerHeight)/100;
 		this.rx = window.innerWidth/document.body.clientWidth;   
 	    this.ry = window.innerHeight/document.body.clientHeight; 
 	    common.style.init_font(0.9,1.1);
@@ -193,13 +211,39 @@ common.style = {
 		if (wratio>1){ this.rmin = this.ry; }
 		else{ this.rmin = this.rx; }
 		
-		var content_width = this.get_content_width();
+		var z_height = this.zoomheight;
+		if (wratio>1){
+			var c_width = this.get_content_width();
+			var b_left = c_width/wratio;
+			c_width = b_left*0.96;
+			var c_height = 100; 
+			var b_top = 0; 
+		}else{
+			var c_height = this.get_content_height();
+			var c_width = 100;
+			var b_top= c_height;
+			var b_left = 0; 
+			z_height = z_height*wratio;
+		}
+
 		var elem = document.getElementById('content_box');
-	    if (elem){ elem.style.width= (content_width-3.4*wratio)/wratio*this.rx+'vw'; }
+	    if (elem){ 
+			elem.style.width= c_width*this.rx+'vw';                      
+			elem.style.height= c_height*this.ry+'vh'; 
+		}
 	    var elem = document.getElementById('zoom_box');
-	    if (elem){ elem.style.width= (content_width-3.4*wratio)/wratio*this.rx+'vw'; }  
+	    if (elem){ 
+			elem.style.width= c_width*this.rx+'vw'; 
+			elem.style.height= z_height*this.ry+'vh'; 
+			elem.style.top= (c_height-z_height)*this.ry+'vh';             
+			elem.style.fontSize = 11*common.style.rmin+'vmin';
+			elem.style.lineHeight = 18*common.style.rmin+'vmin';
+		}
 	    var elem = document.getElementById('buttons_area');
-	    if (elem){ elem.style.left= (content_width-0.5*wratio)/wratio*this.rx+'vw'; } 
+	    if (elem){ 
+			elem.style.left= b_left*this.rx+'vw'; 
+			elem.style.top= b_top*this.ry+'vh'; 
+		} 
 	    
 	}	
 }

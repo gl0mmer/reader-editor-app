@@ -2,10 +2,10 @@
 
 function files_resize(){                                                 consolelog_func("darkblue"); 
 	common.style.resize();
+	files_set_zoom('no');
 	common_set_fontsize(common.f_fontsize_scale, 0);
 	files_show_buttons();
-	files_show_files();
-	files_set_zoom('no'); 
+	files_show_files(); 
 }
 
 //-- files scroll functions ----------------------------------------------
@@ -163,25 +163,25 @@ function files_show_addcontact(){                                        console
 
 function files_set_zoom(order){                                          consolelog_func();
 	if (order===undefined){ files.zoom = (files.zoom+1)%2; }             
-    var bodyStyles = window.getComputedStyle(document.body);
-    var elem = document.getElementById("zoom_box");               
+    var elem = document.getElementById("zoom_box");     
+    
+    var wratio = window.innerWidth/window.innerHeight;
+    var zh = common.style.zoomheight;
+    if (wratio<1){ var height = common.style.get_content_height(); zh=zh*wratio; }
+	else{ var height = 100; }
+    
     if (files.zoom===1){ 
         elem.style.visibility='hidden';
-        document.getElementById('content_box').style.height = 105*common.style.ry+'vh';  
     }else{
         elem.style.visibility='visible';
-        document.getElementById('content_box').style.height = common.style.textheight_zoom*common.style.ry+'vh'; 
+        height -= zh;                                                    
     }                                                                    
+    
+    document.getElementById('content_box').style.height = height*common.style.ry+'vh';
     var name = files.zoom_arr[files.zoom];                               
-    document.getElementById('zoom_box').style.height = (100 - common.style.textheight_zoom -2.5)*common.style.ry+'vh';
-    document.getElementById('zoom_box').style.top = (common.style.textheight_zoom +2.8)*common.style.ry+'vh';
-    document.getElementById('zoom_box').style.fontSize = 11*common.style.rmin+'vh';
-    document.getElementById('zoom_box').style.lineHeight = 18*common.style.rmin+'vh';
     
     var elem = document.getElementById('js_zoom'); 
-    if (elem) { 
-		elem.innerHTML = files.zoom_arr[files.zoom]; 
-		}
+    if (elem) { elem.innerHTML = files.zoom_arr[files.zoom]; }
 }
 
 //-- show items ----------------------------------------------------------
@@ -195,14 +195,18 @@ function files_show_files(){                                             console
 	var top_pc=-5.4; 
     var ywidth_pc=22; var yspace_pc=3.7;
     
+    var elem = document.getElementById('content_box');
     var area = document.getElementById('files_scroll').getBoundingClientRect(); 
-    //if (wratio>0){
-	var content_width = common.style.get_content_width()/wratio/100*window.innerWidth;  
-	//console.log('width: '+content_width+' '+window.innerWidth+' '+window.innerHeight+' | '+(area.right-area.left));
-	//}else{ content_width = 1; }
-    var ywidth = ywidth_pc*window.innerHeight/100; 
-    var yspace = yspace_pc*window.innerHeight/100;
-    var top  = top_pc*window.innerHeight/100;
+    var r = 1;
+    if (wratio>1){
+		var c_width = common.style.get_content_width()/wratio;            //console.log('c1: ',c_width);
+	}else{var c_width = 100; r=1*wratio; } 
+	var content_width = c_width/100*window.innerWidth;                   //console.log('c2: ',content_width);
+	
+	
+    var ywidth = r*ywidth_pc*window.innerHeight/100; 
+    var yspace = r*yspace_pc*window.innerHeight/100;
+    var top  = r*top_pc*window.innerHeight/100;
     var left = left_pc*window.innerWidth/100;
     
     var xwidth = ywidth*1;
@@ -223,13 +227,11 @@ function files_show_files(){                                             console
 	    
 	    if (files.entrytype[i]=="folder") { 
 			symbol = symbol_folder; 
-			title = "dir";
 		} else { 
 			symbol = symbol_file; 
-			title = "txt";
 		}
 		var style = 'position:absolute;top:'+y+'px; left:'+x+'px; height:'+ywidth+'px; width:'+xwidth+'px;';
-		inner_e+= '<div id="fileid_'+i+'" onclick="files_scroll('+i+');"  class="files" style="'+style+'" title="'+title+'" >';
+		inner_e+= '<div id="fileid_'+i+'" onclick="files_scroll('+i+');"  class="files" style="'+style+'">';
 		inner_e+= '<div id="fileid_'+i+'_pic"  class="files_symbol" >'+symbol+'</div>';
 		inner_e+= '<div id="fileid_'+i+'_name"  class="files_name" >'+files.entries[i]+'</div> </div>' ;
 	}

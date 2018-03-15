@@ -34,6 +34,7 @@ reader_lang['en'] = {
 	ajax_rm         : 'delete',
 	ajax_totrash    : 'delete',
 	ajax_download   : 'down- load',
+	//ajax_download   : symbol_download,
 	ajax_upload     : 'upload',
 	ajax_newdir     : 'create dir',
 	ajax_newtxt     : 'create txt',

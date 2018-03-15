@@ -2,7 +2,6 @@
 //-- init ----------------------------------------------------------------
 
 common.browser = check_browser();
-common.style.vmin = Math.min(window.innerWidth, window.innerHeight)/100;
 common.style.init_font(0.9,1.1);
 
 var dict = {};                                    
@@ -261,29 +260,29 @@ function common_set_fontsize(id, obj){                                   console
 	var s = common.style;
 	var classname = ''; var lineheight = 1.1; 
 	var alpha_def=s.fontalpha_def; 
-	var font_default = 3;
+	var font_default = 30;
 	if (obj==0){ classname = 'files_name';  lineheight = s.f_lineheight; font_default = s.f_fontsize; }
 	if (obj==1){ classname = 'text_scroll'; lineheight = s.r_lineheight; font_default = s.r_fontsize; }                         
 	var scale = parseFloat(id);                                          //console.log('scale: '+id);
     var alpha = alpha_def-(0.11-0.05*(scale-1)/2.0)*(scale-1);                                 
-    var fontsize = font_default*scale*s.vmin;                            //console.log('Fontsize: '+fontsize+' | '+alpha);
+    var fontsize = font_default*scale*s.rmin;                            //console.log('Fontsize: '+fontsize+' | '+alpha);
     common.style.f_fontalpha = alpha;
     
     var elem = document.getElementById('place_fontsize');
     if (elem) {
-		elem.style.fontSize = fontsize+'px'; 
+		elem.style.fontSize = fontsize+'vmin'; 
 		elem.style.color = 'rgba(0,0,0,'+alpha+')';
 	}
-    $('.'+classname).css('font-size', fontsize+'px');
-    $('.'+classname).css('line-height', lineheight*fontsize+'px');
+    $('.'+classname).css('font-size', fontsize+'vmin');
+    $('.'+classname).css('line-height', lineheight*fontsize+'vmin');
     $('.'+classname).css('color', 'rgba(0,0,0,'+alpha+')');
     if (obj==0){ common.f_fontsize_scale = scale;   common.style.f_fontalpha = alpha; }
     if (obj==1){                                            //console.log('READER');
 		common.r_fontsize_scale = scale;   common.style.r_fontalpha = alpha; 
 		var elem = document.getElementById('text_scroll_area');
-	    elem.style.fontSize = fontsize+'px';                             //console.log(elem.style.fontSize);
+	    elem.style.fontSize = fontsize+'vmin';                             //console.log(elem.style.fontSize);
 		elem.style.color = 'rgba(0,0,0,'+common.style.r_fontalpha+');'; 
-		elem.style.lineHeight = lineheight*fontsize+'px'; 
+		elem.style.lineHeight = lineheight*fontsize+'vmin'; 
 	}  
 	
 }

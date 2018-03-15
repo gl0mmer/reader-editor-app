@@ -114,8 +114,14 @@ function common_show_notification(text, welcome, blur){                        c
 	
 	inner_e = '<div id="back_lvl" onclick="menu_back(this.id,'+blur+',false);" class="back_area"> </div>';
 	inner_e+= '<div class="menu_area" >';
-	inner_e+= '<div class="text_scroll_box" style="position:fixed;top:'+15*common.style.ry+'vh;left:12vw;width:76vw;height:'+(b_top-25)*common.style.ry+'vh;font-size:'+4.8*common.style.ry+'vmin;line-height:'+7.5*common.style.ry+'vmin; color: rgba(0,0,0,0.55);">';
-	inner_e+= '<div class="text_scroll" align="left" style="top:0vh;"> <div class="reader_text" style="top:'+(-5*common.style.ry)+'vh;height:'+20*common.style.ry+'vh;">'+text+' &nbsp </div> </div> </div> </div>' ;
+	inner_e+= '<div class="text_scroll_box" style="position:fixed;'
+			+ 'top:'+15*common.style.ry+'vh; left:12vw;'
+			+ 'width:76vw; height:'+(b_top-25)*common.style.ry+'vh;'
+			+ 'font-size:'+4.8*common.style.ry+'vmin;line-height:'+7.5*common.style.ry+'vmin;'
+			+ 'color: rgba(0,0,0,0.55);">';
+	inner_e+= '<div class="text_scroll" align="left" style="top:0vh;"> <div class="reader_text" style="'
+			+ 'top:'+(-5*common.style.ry)+'vh;height:'+20*common.style.ry+'vh;'
+			+ '">'+text+' &nbsp </div> </div> </div> </div>' ;
       
     inner_e += button_html(1, [ ['js_playpause', [11,0]], ], 3,4);
                   
@@ -149,7 +155,7 @@ function reader_show_fontsize(){
 		 ['place_fontsize', [0,2]   ],
 		]);
 	var alpha=common.style.r_fontalpha, font_def = common.style.r_fontsize, scale = common.r_fontsize_scale;
-	var style='"color:rgba(0,0,0,'+alpha+'); font-size:'+font_def*scale*common.style.vmin+'px;"';
+	var style='"color:rgba(0,0,0,'+alpha+'); font-size:'+font_def*scale*common.style.rmin+'vmin;"';
 	
     common_create_menu('common_fontsize',1, inner_e);
 }  
@@ -160,7 +166,7 @@ function files_show_fontsize(){
 		 ['place_fontsize', [0,2]   ],
 		]);
 	var alpha=common.style.f_fontalpha, font_def = common.style.f_fontsize, scale = common.f_fontsize_scale;
-	var style='"color:rgba(0,0,0,'+alpha+'); font-size:'+font_def*scale*common.style.vmin+'px;"';
+	var style='"color:rgba(0,0,0,'+alpha+'); font-size:'+font_def*scale*common.style.rmin+'vmin;"';
 	
     common_create_menu('common_fontsize',1, inner_e);
 }  

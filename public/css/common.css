@@ -50,6 +50,7 @@ body{
   word-wrap: break-word; word-break: normal;
   white-space: normal;
   border-radius: 0.5vmin;
+  /*border-radius: 50%; */
   color: rgba(0,0,0,0.5);
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08), 0 4px 13px 0 rgba(0,0,0,0.2);
   border-style: solid; border-width:2vmin;
@@ -66,15 +67,6 @@ body{
   background-color: rgba(110, 152, 27, 0.7); 
 }
 
-.buttons_text{
-  width:12vw; height:17vh;     
-  position:fixed; box-sizing:border-box;
-  word-break: normal; white-space: normal;
-  background-color: white;  color: rgba(0,0,0,0.52);
-  border-radius: 0.25vmin; 
-  border: dashed 0.3vh #8a8a5c;  box-sizing:border-box;
-  display:flex; justify-content:center; align-items:center;
-}
 .disabled{ opacity:0.25; }
 .disabled:hover{ opacity:0.2; border-top-width: 0vmin; }
 
@@ -90,23 +82,6 @@ body{
   border: solid 0vh rgba(0,0,0,0);
   border-top-width: 1vh;
 }
-.files_pic{ 
-  position:relative;
-  height:45%; width:100%;
-  -webkit-filter: drop-shadow(4px 5px 4px rgba(0,0,0,0.1)); 
-}
-.files_dir{ 
-  background-image: url("pics/reader8_buttons_07-01_dir.png");
-  background-size: auto 70%;
-  background-position: center;
-  background-repeat: no-repeat;
- }
-.files_txt{ 
-  background-image: url("pics/reader8_buttons_06-01_txt.png");
-  background-size: auto 90%;
-  background-position: center;
-  background-repeat: no-repeat;
-}
 .attention{       border-color: #a6ce7e; background-color: #a6ce7e; }
 
 .nobkg{ background-color: rgba(0,0,0,0); border-color:rgba(0,0,0,0); box-shadow: 0 5px 8px 0 rgba(0,0,0,0); 
@@ -121,22 +96,13 @@ body{
 opacity: 0.45;
 width: 60%;
 }
-.ion_symbol_larger{
-height:50%; 
-}
-.ion_symbol_smaller{
-height:50%; 
-}
 .files_symbol{ opacity: 1;
   display:flex; justify-content:center; align-items:center;
-  /*background-color: #eee;*/
   position:relative;
   height:45%; width:100%;
-  /*filter:url(#shadow);*/ 
 }
 .ion_symbol_dir{ top:0%; width:105%; stroke: rgba(110,152,27,0.7); fill:rgba(110,152,27,0.7); }
 .ion_symbol_txt{ top:3%; width:105%; stroke: rgba(19,105,134,0.3); fill:rgba(19,105,134,0.3); }
-/*.fsymbol_txt_hover{ opacity: 0.4; } */
 .svg{
  width: 50%;
  margin: 0 auto;
@@ -202,13 +168,6 @@ height:50%;
 }
 
 /*-- menu ----------------------------------------------------------------*/
-.button_app{
-  border-radius: 1%;
-  width: 10%; height: 10%; left:10%;
-  border-color: rgba(255,255,255,0.3);
-  background-color: rgba(255,255,200,0.7); 
-  border: solid 2px green;
-}
 
 .back_area{
   position:fixed; left:0%;top:0%; width:100%;height:100%; 

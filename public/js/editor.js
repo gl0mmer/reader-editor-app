@@ -105,8 +105,12 @@ editor.style = {
 	    if ( ny===this.b_ny-1 && this.b_botheight!=1 ) { b_height = b_height*this.b_botheight;
 		}
 	    
-	    var fontsize = common.style.b_fontsize*common.b_fontsize_scale*common.style.vmin; 
-	    style+= 'left:'+x+'vw; top:'+y*common.style.ry+'vh; width:'+b_width+'vw; height:'+b_height*common.style.ry+'vh; border-bottom-width:'+b_height*common.style.ry*0.07+'vh; font-size:'+fontsize+'px;'  ;  
+	    var fontsize = common.style.b_fontsize*common.b_fontsize_scale*common.style.rmin; 
+	    style += 'left:'+x+'vw; top:'+y*common.style.ry+'vh; ' 
+			   + 'width:'+b_width+'vw; height:'+b_height*common.style.ry+'vh;'
+			   + 'border-width:'+0+'vh;'
+			   + 'border-bottom-width:'+b_height*common.style.rmin*0.04+'vmin;'
+			   + 'font-size:'+fontsize+'vmin; line-height:'+fontsize*1.2+'vmin'  ;  
 	    return('class="'+class_name+'" style="'+style+'"');
 	},
 	
