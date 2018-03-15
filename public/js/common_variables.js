@@ -31,7 +31,6 @@ var common = {
 	lang: "auto",
 	editor_nlines_lvl0: 3,
 	editor_nlines_lvl1: 2,
-	b_fontsize_scale: 1,
 	f_fontsize_scale: 1,
 	r_fontsize_scale: 1,
 	time_delay: 10,
@@ -42,7 +41,7 @@ var common = {
 	ischanged_text: false,
 	utter_rate: 1,
 	
-	cookie_number: 15,
+	cookie_number: 14,
 	browser: "",
 	cookie_suffix: "_",
 	name: "common",
@@ -87,30 +86,27 @@ common.style = {
     b_shape: 1.1,
     b_width: 12, 
     b_height: 17,
-    b_fontsize_base: 5,
+    
     f_fontsize_base: 3.4,
     r_fontsize_base: 3.4,
-    b_fontsize: 0,
     f_fontsize: 0,
     r_fontsize: 0,
+    b_fontsize_ratio: 1.25,
+    
     f_fontalpha: 1,
     r_fontalpha: 1,
     fontalpha_def: 0.58,
     fontalpha_def_b: 0.58,
     f_lineheight_base: 1.05,
-    b_lineheight_base: 1.05,
     r_lineheight_base: 1.45,
     f_lineheight: 0,
-    b_lineheight: 0,
     r_lineheight: 0,
     rx: 1.0, ry:1.0, rmin:1,
     cursorshift:0.25,
     
     init_font: function(scale, hscale){
-		this.b_fontsize = scale*this.b_fontsize_base;
 		this.f_fontsize = scale*this.f_fontsize_base;
 		this.r_fontsize = scale*this.r_fontsize_base;
-		this.b_lineheight = hscale*this.b_lineheight_base;
 		this.f_lineheight = hscale*this.f_lineheight_base;
 		this.r_lineheight = hscale*this.r_lineheight_base;
 	},
@@ -150,13 +146,14 @@ common.style = {
 		    var y =  this.bright - (this.xn-n_x)*dy - (this.xn-n_x-1)*this.xspace ; 
 		}
 	    
-	    var fontsize = this.b_fontsize*common.b_fontsize_scale;   
+	    var fontsize = this.f_fontsize*common.f_fontsize_scale*this.b_fontsize_ratio;   
 	    var style = 'left:'+x*this.rx+'vw; top:'+y*this.ry+'vh;'
 				  + 'width:'+dx*this.rx+'vw; height:'+dy*this.ry+'vh;'
 				  + 'border-width:'+fontsize*this.rmin*0.+'vmin;'
 				  + 'border-bottom-width:'+this.dy*0+'vmin;'
 				  + 'border-top-width:'+this.dy*0+'vmin;'
 				  + 'font-size:'+fontsize*this.rmin+'vmin; line-height:'+fontsize*1.1*this.rmin+'vmin;';
+				  //+ 'font-size:'+fontsize*this.rmin*0.8+'vmin;';
 		
 	    return(style); 
 	},
@@ -187,7 +184,7 @@ common.style = {
 		var x = b_left + (b_right-b_left)/(x_dim+add) *(nx+1-(1-add)/2) - dx/2.;
 		var y = b_top +  (b_bot-b_top)/(y_dim+add) *(ny+1-(1-add)/2) - this.dy/2.;       //console.log(dx,this.dy,x,y);
 		
-		var fontsize = this.b_fontsize*common.b_fontsize_scale;   
+		var fontsize = this.f_fontsize*common.f_fontsize_scale*this.b_fontsize_ratio;   
 		var lineheight = fontsize*1.2;                                   
 		var borderwidth = fontsize*0.5;
 		if (class_n===2) { 

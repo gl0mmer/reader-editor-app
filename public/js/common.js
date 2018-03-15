@@ -273,6 +273,7 @@ function common_set_fontsize(id, obj){                                   console
 		elem.style.fontSize = fontsize+'vmin'; 
 		elem.style.color = 'rgba(0,0,0,'+alpha+')';
 	}
+    $('.buttons').css('font-size', fontsize*s.b_fontsize_ratio+'vmin');
     $('.'+classname).css('font-size', fontsize+'vmin');
     $('.'+classname).css('line-height', lineheight*fontsize+'vmin');
     $('.'+classname).css('color', 'rgba(0,0,0,'+alpha+')');

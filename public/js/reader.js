@@ -222,27 +222,25 @@ function reader_set_zoomtype(order,id){                                  //conso
 		var n_zoomtype = order;
 	}
 	reader.zoomtype = n_zoomtype;
+	
+	var elem = document.getElementById("zoom_box");     
+	var wratio = window.innerWidth/window.innerHeight;
+    var zh = common.style.zoomheight;
+    if (wratio<1){ var height = common.style.get_content_height(); zh=zh*wratio; }
+	else{ var height = 100; }
     
-    var bodyStyles = window.getComputedStyle(document.body);
-    textheight_zoom = bodyStyles.getPropertyValue('--reader-textheight-zoom'); 
-    var elem = document.getElementById("zoom_box");              
     if (n_zoomtype==0){ 
         elem.style.visibility='hidden';
-        document.getElementById('content_box').style.height = 100*common.style.ry+'vh'; 
     }else{
         elem.style.visibility='visible';
-        document.getElementById('content_box').style.height = (common.style.textheight_zoom+3)*common.style.ry+'vh'; 
+        height -= zh;                                                    
     }                                                                    
-    reader_fill_zoom();                                                   
-    elem = document.getElementById('place_readerzoom');
+    
+    reader_fill_zoom(); 
+    document.getElementById('content_box').style.height = height*common.style.ry+'vh';
+	elem = document.getElementById('place_readerzoom');
     if (elem){ elem.innerHTML=reader.zoomtype_arr[n_zoomtype]; }
-    elem = document.getElementById('reader_menu_zoomtype_text');
-    if (elem){ elem.innerHTML=reader.zoomtype_arr[n_zoomtype]; }          
-    common.style.resize();
-    document.getElementById('zoom_box').style.height = (100 - common.style.textheight_zoom -2.5)*common.style.ry+'vh';
-    document.getElementById('zoom_box').style.top = (common.style.textheight_zoom +2.9)*common.style.ry+'vh';
-    document.getElementById('zoom_box').style.fontSize = 11*common.style.rmin+'vh';
-    document.getElementById('zoom_box').style.lineHeight = 18*common.style.rmin+'vh'
+    
 }
    
 function reader_play_all(){                                              

@@ -103,16 +103,16 @@ function reader_highlite(){                                              console
 
 function reader_show_buttons(){                                          consolelog_func(); 
     var inner_e = button_html(0, 
-		[['show_rmenu',    [0,4]],   ['js_edit',   [1,2]],
-		 ['js_rprev',      [3,4]],   ['js_rnext',   [7,4]],
-		 ['js_selecttype', [5,4]],   ['js_playpause', [6,4]],
-		 ['show_navigate', [2,4]],   
+		[['show_rmenu',    [0,1]],   ['js_edit',   [1,0]],
+		 ['js_rprev',      [3,1]],   ['js_rnext',   [7,1]],
+		 ['js_selecttype', [5,1]],   ['js_playpause', [6,1]],
+		 ['show_navigate', [2,1]],   
 		]);
 		
 	if (reader.in_messages){
-		inner_e+= button_html(0,    [['show_mail',    [4,2]], ]);
+		inner_e+= button_html(0,    [['show_mail',    [4,0]], ]);
 	}else{
-		inner_e+= button_html(0,    [['js_readall',   [4,2]], ]);
+		inner_e+= button_html(0,    [['js_readall',   [4,0]], ]);
 	}
     var elem = document.getElementById('buttons_area');
     elem.innerHTML=inner_e;

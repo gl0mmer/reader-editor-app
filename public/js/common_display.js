@@ -53,7 +53,7 @@ function common_disable_button(id, disable, todo){
 function button_html(lvl, arr, y_dim, x_dim){
 	if (y_dim==undefined){ y_dim = 2; }
 	if (x_dim==undefined){ x_dim = 4; }
-	var class_arr = [[" ", "disabled", "symbol", "symbol disabled", "editor", "editor disabled"],
+	var class_arr = [["symbol", "editor"],
 	                 ["buttons_menu", "", "", "disabled buttons_menu"]];
 	
 	var html = '';

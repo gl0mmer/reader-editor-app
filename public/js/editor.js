@@ -105,7 +105,7 @@ editor.style = {
 	    if ( ny===this.b_ny-1 && this.b_botheight!=1 ) { b_height = b_height*this.b_botheight;
 		}
 	    
-	    var fontsize = common.style.b_fontsize*common.b_fontsize_scale*common.style.rmin; 
+	    var fontsize = common.style.f_fontsize*common.f_fontsize_scale*common.style.b_fontsize_ratio; 
 	    style += 'left:'+x+'vw; top:'+y*common.style.ry+'vh; ' 
 			   + 'width:'+b_width+'vw; height:'+b_height*common.style.ry+'vh;'
 			   + 'border-width:'+0+'vh;'

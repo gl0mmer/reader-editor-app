@@ -52,7 +52,7 @@ reader_lang['en'] = {
 	show_mail       : symbol_mail,  
 	show_navigate   : symbol_up_down,  
 	js_edit         : 'edit',
-	js_readall      : 'read all',
+	js_readall      : 'read<br> all',
 	js_playpause    : symbol_play,
 	ajax_readerexit : 'exit',
 	ajax_mailexit   : 'exit',

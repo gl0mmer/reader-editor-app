@@ -59,17 +59,17 @@ function files_fill_zoom(){                                              console
 function files_show_buttons(){                                           consolelog_func();  
     var elem = document.getElementById('buttons_area');                      
     var inner_e = button_html(0, 
-		[['show_fmenu',   [0,4]],   ['show_login',   [4,2]],
-		 ['ajax_enter',   [2,2]],   ['js_fprev',     [3,4]],
-		 ['js_fnext',     [7,4]]
+		[['show_fmenu',   [0,1]],   ['show_login',   [4,0]],
+		 ['ajax_enter',   [2,0]],   ['js_fprev',     [3,1]],
+		 ['js_fnext',     [7,1]]
 		]);
     if (files.in_contacts){
-		inner_e+= button_html(0,   [['show_addcontact',[5,2]] ] );
+		inner_e+= button_html(0,   [['show_addcontact',[5,0]] ] );
 	}else{
-		inner_e+= button_html(0,   [['show_opt',     [1,4]], 
-		                            ['show_create',  [5,2]]] );
+		inner_e+= button_html(0,   [['show_opt',     [1,1]], 
+		                            ['show_create',  [5,0]]] );
         if (user.name=='admin'){
-			inner_e+=button_html(0,[['show_sync',[6,2]] ] );
+			inner_e+=button_html(0,[['show_sync',[6,0]] ] );
 		}
 	}
     elem.innerHTML=inner_e;       
