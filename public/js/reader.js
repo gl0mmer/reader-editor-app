@@ -71,8 +71,9 @@ function reader_start(){                                                 console
 	
 	reader.fname = localStorage.getItem("reader_fname");                 // !!
 	window.onresize = function(){ 
-		common.style.resize();
+		style_resize();
 		reader_show_buttons();
+		reader_set_zoomtype(reader.zoomtype);
 	};
 	reader.cookie_suffix = "_"+reader.fname;                             //console.log('cookie_suffix: '+reader.cookie_suffix);
 	                 
@@ -237,7 +238,7 @@ function reader_set_zoomtype(order,id){                                  //conso
     }                                                                    
     
     reader_fill_zoom(); 
-    document.getElementById('content_box').style.height = height*common.style.ry+'vh';
+    document.getElementById('content_box').style.height = style_content_pars()[0]*common.style.ry+'vh';    
 	elem = document.getElementById('place_readerzoom');
     if (elem){ elem.innerHTML=reader.zoomtype_arr[n_zoomtype]; }
     

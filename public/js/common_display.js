@@ -53,7 +53,7 @@ function common_disable_button(id, disable, todo){
 function button_html(lvl, arr, y_dim, x_dim){
 	if (y_dim==undefined){ y_dim = 2; }
 	if (x_dim==undefined){ x_dim = 4; }
-	var class_arr = [["symbol", "editor"],
+	var class_arr = [["symbol", "menu2"],
 	                 ["buttons_menu", "", "", "disabled buttons_menu"]];
 	
 	var html = '';
@@ -72,8 +72,8 @@ function button_html(lvl, arr, y_dim, x_dim){
 			id = name;
 		}                                                                //console.log('name: '+name+'|'+tail+'|'+inner);
 		var class_name = class_arr[lvl][pos[1]];
-		if (lvl==0){ var style = common.style.buttonpos(pos[0],pos[1], y_dim, x_dim); }
-		if (lvl==1){ var style = common.style.buttonpos_menu(pos[0],pos[1], y_dim, x_dim); }
+		if (lvl==0){ var style = style_buttonpos(pos[0],pos[1], y_dim, x_dim); }
+		if (lvl==1){ var style = style_buttonpos_menu(pos[0],pos[1], y_dim, x_dim); }
 		if (lvl==1 && pos[1]==2){
 			html += '<div id="'+id+'_box" class="button_zoom_box " onclick="'+dict_onclick[name]+'" style="'+style+'"><div id="'+id+'" class="text_zoom">'+inner+'</div></div>';
 		}else{
@@ -192,3 +192,142 @@ function common_show_utterrate(){                                       consolel
 }
 
 
+//-- buttons positions ---------------------------------------------------
+
+
+function style_content_pars(){
+	var s = common.style;
+	var wratio = window.innerWidth/window.innerHeight;
+	var bright = wratio*s.bright;
+	var dx = s.dy*s.b_shape; 
+	var x =  (bright - 2*dx - 1.5*s.xspace) ;
+	var dy = s.dy/s.b_shape*wratio;                                        
+	var y =  s.bright - 2*dy - 1.5*s.xspace ; 
+	var z_height = s.zoomheight;
+	if (wratio>1){
+		var c_width = x;
+		var b_left = c_width/wratio;
+		c_width = b_left*0.96;
+		var c_height = 100; 
+		var b_top = 0; 
+	}else{
+		var c_height = y;
+		var c_width = 100;
+		var b_top= c_height;
+		var b_left = 0; 
+		z_height = z_height*wratio;
+	}
+	return ([c_height, c_width, z_height, b_top, b_left]);
+	
+}
+	
+function style_buttonpos(i, class_n){                                     //consolelog_func('brown');
+	var s = common.style;
+	
+	var wratio = window.innerWidth/window.innerHeight;
+	if (class_n===undefined) {class_n=0;}
+    var bright = wratio*s.bright;           
+    var n_x = (i-i%s.yn)/s.yn;
+    
+    var dy = s.dy;
+    var dx = s.dy * s.b_shape; 
+    var yspace = (s.bbot - s.btop - s.yn*s.dy ) / (s.yn-1); 
+    var y =  s.btop + (i% s.yn) * (yspace + s.dy*1) ;
+    var x =  bright - (s.xn - n_x) * dx - (s.xn - n_x - 1) * s.xspace ; 
+    dx = dx/wratio;  x=x/wratio;
+    
+    if (wratio<1){ 
+		n_x = (n_x+1)%2;
+		var bleft = (100-s.bbot);
+		var dx = s.dy; 
+		var dy = dx/s.b_shape*wratio;                                        
+	    var xspace = (100-2*bleft - s.yn*s.dy ) / (s.yn-1); 
+	    var x =  bleft + (i%s.yn)*(xspace+dx*1) ;
+	    var y =  s.bright - (s.xn-n_x)*dy - (s.xn-n_x-1)*s.xspace ; 
+	}
+    
+    var fontsize = s.f_fontsize*common.f_fontsize_scale*s.b_fontsize_ratio;   
+    var style = 'left:'+x*s.rx+'vw; top:'+y*s.ry+'vh;'
+			  + 'width:'+dx*s.rx+'vw; height:'+dy*s.ry+'vh;'
+			  + 'border-width:'+fontsize*s.rmin*0.+'vmin;'
+			  + 'border-bottom-width:'+s.dy*0+'vmin;'
+			  + 'border-top-width:'+s.dy*0+'vmin;'
+			  + 'font-size:'+fontsize*s.rmin+'vmin; line-height:'+fontsize*1.1*s.rmin+'vmin;';	
+    return(style); 
+}
+
+function style_buttonpos_menu(i, class_n, y_dim, x_dim){                 //consolelog_func('brown'); 
+	if (y_dim==undefined){ y_dim = 2; x_dim = 4; }
+	if (class_n===undefined) {class_n=0;}
+	var s = common.style;
+			
+	var b_height = 17;
+	var b_left = 10;  var b_right = 90; 
+	var b_top = 10; var b_bot = 90;
+	var wratio = window.innerWidth/window.innerHeight; 
+	if (x_dim*y_dim==8){              
+		if (wratio<1.3 && wratio>0.8){ x_dim=3; y_dim=3; }
+		if (wratio>1.3 ){ x_dim=4; y_dim=2; }
+		if (wratio<0.8 ){ x_dim=2; y_dim=4; }                           
+	}else if (x_dim*y_dim==12){
+		if (wratio<2.3 && wratio>1){ x_dim=4; y_dim=3; }
+		if (wratio<1 && wratio>0.67){ x_dim=3; y_dim=4; }
+		if (wratio>2.3 ){ x_dim=6; y_dim=2; }
+		if (wratio<0.67 ){ x_dim=2; y_dim=6; } 
+	}                                                                
+	var nx = i%(x_dim); var ny = (i-i%(x_dim))/x_dim;
+	if (wratio<1){wratio = 1;}
+	var dx = s.dy*s.b_shape/wratio;
+	
+	var add = 0.6;
+	var x = b_left + (b_right-b_left)/(x_dim+add) *(nx+1-(1-add)/2) - dx/2.;
+	var y = b_top +  (b_bot-b_top)/(y_dim+add) *(ny+1-(1-add)/2) - s.dy/2.;       //console.log(dx,s.dy,x,y);
+	
+	var fontsize = s.f_fontsize*common.f_fontsize_scale*s.b_fontsize_ratio;   
+	var lineheight = fontsize*1.2;                                   
+	var borderwidth = fontsize*0.5;
+	if (class_n===2) { 
+		lineheight = lineheight+s.dy*s.ry/1.6; 
+		dx = dx + (b_right-b_left)/(x_dim+add);
+		borderwidth = 0;
+	}        
+	var style = 'left:'+x*s.rx+'vw; top:'+y*s.ry+'vh;'
+			  + 'width:'+dx*s.rx+'vw; height:'+s.dy*s.ry+'vmin;'
+			  + 'border-width:'+borderwidth*s.rmin+'vmin;'
+			  + 'font-size:'+fontsize*s.rmin+'vmin; line-height:'+lineheight*s.rmin+'vmin;';  
+	 
+	return(style);
+}
+
+function style_resize(){                                                 consolelog_func('brown');
+	var s = common.style;
+	
+	s.rx = window.innerWidth/document.body.clientWidth;   
+    s.ry = window.innerHeight/document.body.clientHeight; 
+	var wratio = window.innerWidth/window.innerHeight;
+	if (wratio>1){ s.rmin = s.ry; }
+	else{ s.rmin = s.rx; }
+
+	var pars = style_content_pars();
+	var elem = document.getElementById('content_box');
+    if (elem){ 
+		elem.style.width= pars[1]*s.rx+'vw';                      
+		elem.style.height= pars[0]*s.ry+'vh'; 
+	}
+    var elem = document.getElementById('zoom_box');
+    if (elem){ 
+		elem.style.width= pars[1]*s.rx+'vw'; 
+		elem.style.height= pars[2]*s.ry+'vh'; 
+		elem.style.top= (pars[0]-pars[2])*s.ry+'vh';             
+		elem.style.fontSize = 11*common.style.rmin+'vmin';
+		elem.style.lineHeight = 18*common.style.rmin+'vmin';
+	}
+    var elem = document.getElementById('buttons_area');
+    if (elem){ 
+		elem.style.left= pars[4]*s.rx+'vw'; 
+		elem.style.top= pars[3]*s.ry+'vh'; 
+	} 
+    
+}	
+
+//------------------------------------------------------------------------

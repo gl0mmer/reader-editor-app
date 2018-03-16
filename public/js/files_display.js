@@ -1,10 +1,10 @@
 
 
 function files_resize(){                                                 consolelog_func("darkblue"); 
-	common.style.resize();
-	files_set_zoom('no');
+	style_resize();
 	common_set_fontsize(common.f_fontsize_scale, 0);
 	files_show_buttons();
+	files_set_zoom('no');
 	files_show_files(); 
 }
 
@@ -59,15 +59,15 @@ function files_fill_zoom(){                                              console
 function files_show_buttons(){                                           consolelog_func();  
     var elem = document.getElementById('buttons_area');                      
     var inner_e = button_html(0, 
-		[['show_fmenu',   [0,1]],   ['show_login',   [4,0]],
-		 ['ajax_enter',   [2,0]],   ['js_fprev',     [3,1]],
-		 ['js_fnext',     [7,1]]
+		[['show_fmenu',   [0,1]],   ['show_login',   [4,1]],
+		 ['ajax_enter',   [2,0]],   ['js_fprev',     [3,0]],
+		 ['js_fnext',     [7,0]]
 		]);
     if (files.in_contacts){
-		inner_e+= button_html(0,   [['show_addcontact',[5,0]] ] );
+		inner_e+= button_html(0,   [['show_addcontact',[5,1]] ] );
 	}else{
 		inner_e+= button_html(0,   [['show_opt',     [1,1]], 
-		                            ['show_create',  [5,0]]] );
+		                            ['show_create',  [5,1]]] );
         if (user.name=='admin'){
 			inner_e+=button_html(0,[['show_sync',[6,0]] ] );
 		}
@@ -135,12 +135,15 @@ function files_show_options(){                                           console
     document.getElementById('edit_filename').innerHTML = text;
 }
 function files_show_login(){                                             consolelog_func();
+	var pos = [0,4,2,11,9,10,8,6,7];
+	var wratio = window.innerWidth/window.innerHeight;
+	if (wratio<1 && wratio>0.67){ pos=[0,3,6,11,9,10,8,2,5]; }
 	var inner_e = button_html(1, 
-		[['edit_username',  [0,2]], ['edit_userpass',   [4,2]],
-		 ['edit_usermail',  [2,2]], ['ajax_signin',     [11,0]],
-		 ['ajax_signup',    [9,0]], ['ajax_logout',     [10,0]],
-		 ['js_rememberme',  [8,0]], ['ajax_deleteuser', [6,3]],
-		 ['ajax_maildata',  [7,3]]
+		[['edit_username',  [pos[0],2]], ['edit_userpass',   [pos[1],2]],
+		 ['edit_usermail',  [pos[2],2]], ['ajax_signin',     [pos[3],0]],
+		 ['ajax_signup',    [pos[4],0]], ['ajax_logout',     [pos[5],0]],
+		 ['js_rememberme',  [pos[6],0]], ['ajax_deleteuser', [pos[7],3]],
+		 ['ajax_maildata',  [pos[8],3]]
 		], 3,4);
     common_create_menu('files_lodin', 0, inner_e);
     
@@ -151,7 +154,7 @@ function files_show_login(){                                             console
 }
 function files_show_addcontact(){                                        consolelog_func(); console.log('Show_add_contact');
 	if (user.name=="guest"){
-		common_show_notification('You need to log in to add contact.', 0,1);
+		common_show_notification(dict.alert_guest, 0,1);
 	}else{
 		var inner_e = button_html(1, [['edit_contactname', [0,2]], ['ajax_addcontact', [4,0]] ]);
 		common_create_menu('files_addcontact', 0, inner_e);
@@ -165,16 +168,13 @@ function files_set_zoom(order){                                          console
 	if (order===undefined){ files.zoom = (files.zoom+1)%2; }             
     var elem = document.getElementById("zoom_box");     
     
-    var wratio = window.innerWidth/window.innerHeight;
-    var zh = common.style.zoomheight;
-    if (wratio<1){ var height = common.style.get_content_height(); zh=zh*wratio; }
-	else{ var height = 100; }
-    
+    var pars = style_content_pars();
+    var height = pars[0];
     if (files.zoom===1){ 
         elem.style.visibility='hidden';
     }else{
         elem.style.visibility='visible';
-        height -= zh;                                                    
+        height -= pars[2];                                                    
     }                                                                    
     
     document.getElementById('content_box').style.height = height*common.style.ry+'vh';
@@ -195,13 +195,9 @@ function files_show_files(){                                             console
 	var top_pc=-5.4; 
     var ywidth_pc=22; var yspace_pc=3.7;
     
-    var elem = document.getElementById('content_box');
-    var area = document.getElementById('files_scroll').getBoundingClientRect(); 
     var r = 1;
-    if (wratio>1){
-		var c_width = common.style.get_content_width()/wratio;            //console.log('c1: ',c_width);
-	}else{var c_width = 100; r=1*wratio; } 
-	var content_width = c_width/100*window.innerWidth;                   //console.log('c2: ',content_width);
+    if (wratio<1){ r=1*wratio; }
+	var content_width = style_content_pars()[1]/100* window.innerWidth;                 //console.log('c2: ',content_width);
 	
 	
     var ywidth = r*ywidth_pc*window.innerHeight/100; 

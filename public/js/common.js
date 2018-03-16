@@ -2,7 +2,6 @@
 //-- init ----------------------------------------------------------------
 
 common.browser = check_browser();
-common.style.init_font(0.9,1.1);
 
 var dict = {};                                    
 

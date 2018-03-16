@@ -2,18 +2,15 @@
 
 if (localStorage.getItem("isset")!="true"){
 	localStorage.setItem("isset", "true");
-	localStorage.setItem("copy_path", "");
-	localStorage.setItem("copy_working_dir", "");
 	localStorage.setItem("copy_shortpath", "");
 	localStorage.setItem("show_welcome", "yes");
-	localStorage.setItem("working_dir", "");
-	localStorage.setItem("delete_fname", "");
-	localStorage.setItem("folder_path", "");
-	localStorage.setItem("url", "");
+	localStorage.setItem("delete_fname", "");       // remember fname after copying to trash
+	localStorage.setItem("folder_path", "");        // to remember folder after reload
+	localStorage.setItem("url", "");                // base url, for window.href
 	
 	localStorage.setItem("in_reader", "no");
 	localStorage.setItem("reader_fname", "");
-	localStorage.setItem("reader_url", "");
+	localStorage.setItem("reader_url", "");         // to stay in reader after reload
 	localStorage.setItem("reader_savepath", "");
 }else{
 	localStorage.setItem("show_welcome", "no");
@@ -86,163 +83,20 @@ common.style = {
     b_shape: 1.1,
     b_width: 12, 
     b_height: 17,
-    
-    f_fontsize_base: 3.4,
-    r_fontsize_base: 3.4,
-    f_fontsize: 0,
-    r_fontsize: 0,
-    b_fontsize_ratio: 1.25,
-    
+ 
     f_fontalpha: 1,
     r_fontalpha: 1,
     fontalpha_def: 0.58,
     fontalpha_def_b: 0.58,
-    f_lineheight_base: 1.05,
-    r_lineheight_base: 1.45,
-    f_lineheight: 0,
-    r_lineheight: 0,
+    
+    f_fontsize: 3.06,
+    r_fontsize: 3.06,
+    f_lineheight: 1.16,
+    r_lineheight: 1.56,
+    b_fontsize_ratio: 1.25,
     rx: 1.0, ry:1.0, rmin:1,
     cursorshift:0.25,
     
-    init_font: function(scale, hscale){
-		this.f_fontsize = scale*this.f_fontsize_base;
-		this.r_fontsize = scale*this.r_fontsize_base;
-		this.f_lineheight = hscale*this.f_lineheight_base;
-		this.r_lineheight = hscale*this.r_lineheight_base;
-	},
-    get_content_width: function(){                                       consolelog_func('brown');
-		var wratio = window.innerWidth/window.innerHeight;
-		var bright = wratio*this.bright;
-		var dx = this.dy*this.b_shape; 
-		var x =  (bright - 2*dx - 2*this.xspace) ; 
-		return(x);
-	},
-    get_content_height: function(){                                       consolelog_func('brown');
-		var wratio = window.innerWidth/window.innerHeight;
-		var dy = this.dy/this.b_shape*wratio;                                        
-	    var y =  this.bright - 2*dy - 2*this.xspace ; 
-		return(y);
-	},
-    buttonpos: function(i, class_n){                                     //consolelog_func('brown');
-		var wratio = window.innerWidth/window.innerHeight;
-		if (class_n===undefined) {class_n=0;}
-	    var bright = wratio*this.bright;           
-	    var n_x = (i-i%this.yn)/this.yn;
-	    
-	    var dy = this.dy;
-	    var dx = this.dy*this.b_shape; 
-	    var yspace = (this.bbot-this.btop- this.yn*this.dy ) / (this.yn-1); 
-	    var y =  this.btop + (i%this.yn)*(yspace+this.dy*1) ;
-	    var x =  bright - (this.xn-n_x)*dx - (this.xn-n_x-1)*this.xspace ; 
-	    dx = dx/wratio;  x=x/wratio;
-	    
-	    if (wratio<1){ 
-			n_x = (n_x+1)%2;
-			var bleft = (100-this.bbot);
-			var dx = this.dy; 
-			var dy = dx/this.b_shape*wratio;                                        
-		    var xspace = (100-2*bleft - this.yn*this.dy ) / (this.yn-1); 
-		    var x =  bleft + (i%this.yn)*(xspace+dx*1) ;
-		    var y =  this.bright - (this.xn-n_x)*dy - (this.xn-n_x-1)*this.xspace ; 
-		}
-	    
-	    var fontsize = this.f_fontsize*common.f_fontsize_scale*this.b_fontsize_ratio;   
-	    var style = 'left:'+x*this.rx+'vw; top:'+y*this.ry+'vh;'
-				  + 'width:'+dx*this.rx+'vw; height:'+dy*this.ry+'vh;'
-				  + 'border-width:'+fontsize*this.rmin*0.+'vmin;'
-				  + 'border-bottom-width:'+this.dy*0+'vmin;'
-				  + 'border-top-width:'+this.dy*0+'vmin;'
-				  + 'font-size:'+fontsize*this.rmin+'vmin; line-height:'+fontsize*1.1*this.rmin+'vmin;';
-				  //+ 'font-size:'+fontsize*this.rmin*0.8+'vmin;';
-		
-	    return(style); 
-	},
-	
-	buttonpos_menu: function(i, class_n, y_dim, x_dim){  //consolelog_func('brown'); 
-		if (y_dim==undefined){ y_dim = 2; x_dim = 4; }
-		if (class_n===undefined) {class_n=0;}
-				
-		var b_height = 17;
-		var b_left = 10;  var b_right = 90; 
-		var b_top = 10; var b_bot = 90;
-		var wratio = window.innerWidth/window.innerHeight; 
-		if (x_dim*y_dim==8){              
-			if (wratio<1.3 && wratio>0.8){ x_dim=3; y_dim=3; }
-			if (wratio>1.3 ){ x_dim=4; y_dim=2; }
-			if (wratio<0.8 ){ x_dim=2; y_dim=4; }                           
-		}else if (x_dim*y_dim==12){
-			if (wratio<2.3 && wratio>1){ x_dim=4; y_dim=3; }
-			if (wratio<1 && wratio>0.67){ x_dim=3; y_dim=4; }
-			if (wratio>2.3 ){ x_dim=6; y_dim=2; }
-			if (wratio<0.67 ){ x_dim=2; y_dim=6; } 
-		}                                                                //console.log('wratio: '+wratio+' '+x_dim+' '+y_dim);
-		var nx = i%(x_dim); var ny = (i-i%(x_dim))/x_dim;
-		if (wratio<1){wratio = 1;}
-		var dx = this.dy*this.b_shape/wratio;
-		
-		var add = 0.6;
-		var x = b_left + (b_right-b_left)/(x_dim+add) *(nx+1-(1-add)/2) - dx/2.;
-		var y = b_top +  (b_bot-b_top)/(y_dim+add) *(ny+1-(1-add)/2) - this.dy/2.;       //console.log(dx,this.dy,x,y);
-		
-		var fontsize = this.f_fontsize*common.f_fontsize_scale*this.b_fontsize_ratio;   
-		var lineheight = fontsize*1.2;                                   
-		var borderwidth = fontsize*0.5;
-		if (class_n===2) { 
-			lineheight = lineheight+this.dy*this.ry/1.6; 
-			dx = dx + (b_right-b_left)/(x_dim+add);
-			borderwidth = 0;
-		}        
-		var style = 'left:'+x*this.rx+'vw; top:'+y*this.ry+'vh;'
-				  + 'width:'+dx*this.rx+'vw; height:'+this.dy*this.ry+'vmin;'
-				  + 'border-width:'+borderwidth*this.rmin+'vmin;'
-				  + 'font-size:'+fontsize*this.rmin+'vmin; line-height:'+lineheight*this.rmin+'vmin;';  //console.log(style);
-		 
-		return(style);
-	},
-	
-	resize: function(){                                                  consolelog_func('brown');
-		this.rx = window.innerWidth/document.body.clientWidth;   
-	    this.ry = window.innerHeight/document.body.clientHeight; 
-	    common.style.init_font(0.9,1.1);
-		var wratio = window.innerWidth/window.innerHeight;
-		if (wratio>1){ this.rmin = this.ry; }
-		else{ this.rmin = this.rx; }
-		
-		var z_height = this.zoomheight;
-		if (wratio>1){
-			var c_width = this.get_content_width();
-			var b_left = c_width/wratio;
-			c_width = b_left*0.96;
-			var c_height = 100; 
-			var b_top = 0; 
-		}else{
-			var c_height = this.get_content_height();
-			var c_width = 100;
-			var b_top= c_height;
-			var b_left = 0; 
-			z_height = z_height*wratio;
-		}
-
-		var elem = document.getElementById('content_box');
-	    if (elem){ 
-			elem.style.width= c_width*this.rx+'vw';                      
-			elem.style.height= c_height*this.ry+'vh'; 
-		}
-	    var elem = document.getElementById('zoom_box');
-	    if (elem){ 
-			elem.style.width= c_width*this.rx+'vw'; 
-			elem.style.height= z_height*this.ry+'vh'; 
-			elem.style.top= (c_height-z_height)*this.ry+'vh';             
-			elem.style.fontSize = 11*common.style.rmin+'vmin';
-			elem.style.lineHeight = 18*common.style.rmin+'vmin';
-		}
-	    var elem = document.getElementById('buttons_area');
-	    if (elem){ 
-			elem.style.left= b_left*this.rx+'vw'; 
-			elem.style.top= b_top*this.ry+'vh'; 
-		} 
-	    
-	}	
 }
 
 //-- oncklick dict -------------------------------------------------------

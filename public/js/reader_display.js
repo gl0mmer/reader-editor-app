@@ -1,10 +1,5 @@
 
 
-function reader_resize(){                                                consolelog_func('darkblue'); 
-	common.style.resize();
-	reader_show_buttons();
-}
-
 //-- reader scroll functions -------------------------------------------------------------------
  
 function reader_scroll(order,stop,onend){                                consolelog_func('darkblue'); 
@@ -103,14 +98,14 @@ function reader_highlite(){                                              console
 
 function reader_show_buttons(){                                          consolelog_func(); 
     var inner_e = button_html(0, 
-		[['show_rmenu',    [0,1]],   ['js_edit',   [1,0]],
-		 ['js_rprev',      [3,1]],   ['js_rnext',   [7,1]],
-		 ['js_selecttype', [5,1]],   ['js_playpause', [6,1]],
+		[['show_rmenu',    [0,1]],   ['js_edit',   [1,1]],
+		 ['js_rprev',      [3,0]],   ['js_rnext',   [7,0]],
+		 ['js_selecttype', [5,0]],   ['js_playpause', [6,0]],
 		 ['show_navigate', [2,1]],   
 		]);
 		
 	if (reader.in_messages){
-		inner_e+= button_html(0,    [['show_mail',    [4,0]], ]);
+		inner_e+= button_html(0,    [['show_mail',    [4,1]], ]);
 	}else{
 		inner_e+= button_html(0,    [['js_readall',   [4,0]], ]);
 	}
