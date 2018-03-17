@@ -253,18 +253,16 @@ function common_set_utterrate(rate){                                     console
 	}       
 }
 
-function common_set_fontsize(id, obj){                                   consolelog_func(); //console.log('scale: '+id+'|'+obj);
+function common_set_fontsize(id, obj){                                   //consolelog_func(); console.log('scale: '+id+'|'+obj);
 	obj = parseInt(obj); 
 	
 	var s = common.style;
 	var classname = ''; var lineheight = 1.1; 
-	var alpha_def=s.fontalpha_def; 
-	var font_default = 30;
 	if (obj==0){ classname = 'files_name';  lineheight = s.f_lineheight; font_default = s.f_fontsize; }
 	if (obj==1){ classname = 'text_scroll'; lineheight = s.r_lineheight; font_default = s.r_fontsize; }                         
 	var scale = parseFloat(id);                                          //console.log('scale: '+id);
-    var alpha = alpha_def-(0.11-0.05*(scale-1)/2.0)*(scale-1);                                 
-    var fontsize = font_default*scale*s.rmin;                            //console.log('Fontsize: '+fontsize+' | '+alpha);
+    var alpha = 0.58-(0.11-0.042*(scale-1)/2.0)*(scale-1);                                 
+    var fontsize = font_default*scale*s.rmin;                            //console.log('Fontsize: '+fontsize+' | '+alpha, s.rmin);
     common.style.f_fontalpha = alpha;
     
     var elem = document.getElementById('place_fontsize');
@@ -279,7 +277,7 @@ function common_set_fontsize(id, obj){                                   console
     if (obj==0){ 
 		common.f_fontsize_scale = scale;   
 		common.style.f_fontalpha = alpha; 
-		$('.buttons').css('font-size', fontsize*s.b_fontsize_ratio+'vmin');
+		$('.buttons').css('font-size', fontsize*s.get_bfontsize_ratio()+'vmin');
 	}
     if (obj==1){                                            //console.log('READER');
 		common.r_fontsize_scale = scale;   common.style.r_fontalpha = alpha; 

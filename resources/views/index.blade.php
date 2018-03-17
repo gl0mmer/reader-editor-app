@@ -30,7 +30,6 @@
 	<div hidden id='tmp' > </div>
 	<div hidden id='hidden_text' > </div>
 	
-	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/lang/symbols.js') }}"></script> 
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/lang/en.js') }}"></script> 
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/lang/ru.js') }}"></script> 
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/common_variables.js') }}"></script> 

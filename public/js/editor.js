@@ -26,84 +26,27 @@ var editor = {
 //-- editor style object --------------------------------------------------------------
 editor.style = {
 	window_height: window.innerHeight,
-	b_nx: 5, b_ny: 2, 
-	b_height: 15, b_width:12,
-	b_xratio: 0.4, b_yratio: 0.5,
-	b_left: 3, b_right: 97, b_top: 38, b_bottom: 95,
-	b_leftwidth: 1, b_rightwidth: 1, b_botheight: 1,
-	font_size : '900%',
-	text_zoom : '900%',
-	box_class : 'text_zoom',
-	zoomspace : 5,
+	b_nx: 7, b_ny: 2, 
+	
 	nlines_lvl0: 3,
 	nlines_lvl1: 2,
 	fontsize: 0,
-	cursorshift: common.style.cursorshift,
-	class_arr: ["buttons editor", "buttons symbol", "buttons nobkg", "buttons disabled"],
+	cursorshift: 0.25,
 	
-	get_button: function (i, class_n){                                   //consolelog_func("brown"); 
-		if (class_n===undefined) {class_n=0;}
-		var class_name = this.class_arr[class_n];
-		var style="";
-	    var ny = (i-i%this.b_nx)/this.b_nx;                           
-	    var nx = i % this.b_nx;
-	   
-	    var b_yspace = (this.b_bottom - this.b_top) / ( this.b_ny-1 + (this.b_ny-1+this.b_botheight) / this.b_yratio ); 
-	    var b_xspace = (this.b_right - this.b_left) / ( this.b_nx-1 + (this.b_nx-2+this.b_leftwidth+this.b_rightwidth) / this.b_xratio ); 
-	    var b_height = b_yspace/this.b_yratio;
-	    var b_width  = b_xspace/this.b_xratio;
-	    
-	    var y = this.b_top + (b_height+b_yspace)* ny;
-	    var x = this.b_left + (b_width+b_xspace)* nx;
-	    
-	    if ( nx>0 )   { x -= b_width*(1-this.b_leftwidth); }
-	    if ( nx===0 )           { b_width = b_width*this.b_leftwidth; }
-	    if ( nx===this.b_nx-1 ) { b_width = b_width*this.b_rightwidth; }
-	    if ( ny===this.b_ny-1 && this.b_botheight!=1 ) { b_height = b_height*this.b_botheight;
-		}
-	    
-	    var fontsize = common.style.f_fontsize*common.f_fontsize_scale*common.style.b_fontsize_ratio; 
-	    style += 'left:'+x+'vw; top:'+y*common.style.ry+'vh; ' 
-			   + 'width:'+b_width+'vw; height:'+b_height*common.style.ry+'vh;'
-			   + 'border-width:'+0+'vh;'
-			   + 'border-bottom-width:'+b_height*common.style.rmin*0.04+'vmin;'
-			   + 'font-size:'+fontsize+'vmin; line-height:'+fontsize*1.2+'vmin'  ;  
-	    return('class="'+class_name+'" style="'+style+'"');
-	},
+	state: ['start',0],         // remember panel to reopen when resize
 	
-	set_style: function (stylename, ncol){                               consolelog_func("brown"); 
-		if (stylename==='bottom_3rows') {                               
-			if (ncol===undefined) {ncol=7;}
-		    this.b_nx=ncol; this.b_ny=3; 
-		    this.b_yratio=0.5; this.b_xratio=0.5;
-		    this.b_left=2; this.b_right=98; this.b_top=42.5; this.b_bottom=97; this.b_botheight=1;
-		    this.b_leftwidth=1; this.b_rightwidth=1; this.zoomspace = 6;
-		    var zoomheight = this.b_top - 2 - this.zoomspace;            //console.log(this.zoomspace, this.b_top);
-		    document.getElementById('editor_text_box').style.height=zoomheight*common.style.ry+'vh';
-		    document.getElementById('editor_buttons_area').style.top=(this.b_top-this.zoomspace/2)*common.style.ry+'vh';
-		    editor_set_fontsize(this.nlines_lvl1,1); 
-		    editor_set_cursor(); 
-		     
-		}else if (stylename==='bottom_2rows') {                          
-			if (ncol===undefined) {ncol=6;}
-		    this.b_nx=ncol; this.b_ny=2; 
-		    this.b_yratio=0.5; this.b_xratio=0.5;
-		    this.b_left=2; this.b_right=98; this.b_top=64; this.b_bottom=97; this.b_botheight=1;
-		    this.b_leftwidth=1; this.b_rightwidth=1; this.zoomspace = 5;
-		    var zoomheight = this.b_top - 2.4 ;            //console.log('2rows:',this.zoomspace, this.b_top);
-		    document.getElementById('editor_text_box').style.height = zoomheight*common.style.ry+'vh';  
-		    document.getElementById('editor_buttons_area').style.top=(this.b_top-this.zoomspace/2)*common.style.ry+'vh';
-		    editor_set_fontsize(this.nlines_lvl0,0);                     
-		    editor_set_cursor();
-		}
+	set_nrow: function(nrow, lvl){
+		this.b_ny=nrow;
+		editor_resize();
 	},
-	button_exit:   function(i) { return '<div id="editor_exit"    onclick="editor_exit();" '    +this.get_button(i) +'> exit </div>'; },
-	button_delete: function(i) { return '<div id="editor_delete"  onclick="editor_delete();" '  +this.get_button(i) +'>'+symbol_delete+'</div>'; },
-	button_prev:   function(i) { return '<div id="editor_prev"    onclick="editor_scroll(0);" ' +this.get_button(i) +'>'+symbol_prev+'</div>' },
-	button_next:   function(i) { return '<div id="editor_next"    onclick="editor_scroll(1);" ' +this.get_button(i) +'>'+symbol_next+'</div>' },
-	button_backto_start:   function(i)    { return '<div id="editor_backto_start"   onclick="editor_backto_start();" '        +this.get_button(i) +'> back </div>' },
-	button_backto_letters: function(i, s) { return '<div id="editor_backto_letters" onclick="editor_backto_letters('+s+');" ' +this.get_button(i) +'> back </div>' },
-		
+	get_bsize: function(){
+		var wratio = window.innerWidth/window.innerHeight; 
+		return 9.5 - 3*(wratio-1.5);   
+	},	
+	get_bspace: function(){
+		var wratio = window.innerWidth/window.innerHeight; 
+		return 7.5 - 2*Math.abs(wratio-1.5);  
+	},	
 };
 
 
@@ -127,7 +70,8 @@ function editor_start(parent, text_raw, destination, iter){                conso
     
 	var elem=create_element('editor_text_box','editor_scroll_box', 'editor_area'); 
 	elem.innerHTML = '<div class="text_scroll" id="editor_text_scroll"><div id="editor_text_area"  class="editor_text" >zoom word</div></div>'; 
-	elem = create_element('editor_buttons_area', 'editor_buttons_area', 'editor_area'); 
+	elem = create_element('editor_buttons_area', 'buttons_area', 'editor_area'); 
+	window.onresize = function(){ editor_resize(); };
 	
 	var input = document.getElementsByTagName('body')[0];
     if (common.browser=="Firefox"){ 
@@ -154,10 +98,7 @@ function editor_start(parent, text_raw, destination, iter){                conso
 		};
 	}
 	
-	
-	editor_type = 'bottom_2rows';
-	editor.style.set_style(editor_type);
-	
+	editor.style.set_nrow(2,0);
 	document.getElementById('editor_text_area').innerHTML=editor.text_raw;  
     if (editor.text_raw.length>1){
 		editor.iter = editor.text_raw.length;
@@ -183,12 +124,15 @@ function editor_exit(){                                                  console
 		if (editor.text_origin!=editor.text_raw){
 			common.ischanged_text = true;
 		}
+		window.onresize = function(){ reader_resize(); };
 		reader_update(); 
-	}else if (editor.parent=="files"){                                  
+	}else if (editor.parent=="files"){             
+		window.onresize = function(){ files_resize(); };                     
 		elem = document.getElementById(editor.destination);
 		if (elem) { elem.innerHTML = editor.text_raw; }               
 		elem = document.getElementById("ffiles_edit_text" );
-		if (elem) { elem.value = editor.text_raw; }                      
+		if (elem) { elem.value = editor.text_raw; }   
+		files_resize();                   
 	}  
 }function editor_save(){                                                 consolelog_func("darkblue"); 
     if (editor.parent=='reader'){
@@ -202,7 +146,6 @@ function editor_exit(){                                                  console
 
 function editor_delete(){                                                consolelog_func(); 
     if (editor.iter>0) { 
-		//var rtag = "</abbr>"; var ltag = "<abbr>";    
 		var ltag = editor.symbol_ltag, rtag = editor.symbol_rtag;              
         var iter = editor.iter;
 		var text = editor.text_raw;                                      
@@ -254,7 +197,7 @@ function editor_delete(){                                                console
 
 function editor_sound(){                                                 consolelog_func(); 
     editor.sound_navigator = (editor.sound_navigator+1)%2;             
-    document.getElementById('editor_sound').innerHTML = symbols_sound[editor.sound_navigator];
+    document.getElementById('js_sound').innerHTML = symbols_sound[editor.sound_navigator];
 }
 function editor_set_fontsize(id, lvl){                                   consolelog_func(); 
 	id = parseInt(id);
@@ -266,7 +209,7 @@ function editor_set_fontsize(id, lvl){                                   console
 		editor.style.nlines_lvl1 = id;                                            
 		common.editor_nlines_lvl1 = id;         
 	}            
-    var fontsize = (area.bottom-area.top) / (id+0.3);                    //console.log('area: '+area.top+' - '+area.bottom+' - '+fontsize+' - '+id);
+    var fontsize = (area.bottom-area.top) / (id+0.5);                    //console.log('area: '+area.top+' - '+area.bottom+' - '+fontsize+' - '+id);
 	document.getElementById('editor_text_area').style.fontSize = fontsize.toString()+'px';
 	editor.style.fontsize = fontsize;    
 }
@@ -288,7 +231,7 @@ function editor_spell(){                                                 console
 		}else{ 
 			var arr = [];
 			for (i=0; i<text_utter.length; i+=1){ arr.push(text_utter[i]); }   //console.log('text_u: '+text_u);
-			utter_recursive(arr, 1, 1, 0, 0, 0.8);
+			utter_recursive(arr, 1, 0, 0, 0.8);
 		}
 		editor.spell_type = (editor.spell_type+1)%2;
     }
@@ -392,6 +335,9 @@ function editor_scroll(order, if_utter){                                        
 	    var letter = text.substr(i1, i2-i1);
 	    var text_read = editor_textto_read(letter);
 	    if (editor.sound_navigator==1) { utter(text_read, 1); }
+	    
+	    //var elem = document.getElementById('editor_nav_symbol');
+	    //if (elem && text_read.length<2){ elem.innerHTML = text_read; }
 	}
     return (iter);
 }

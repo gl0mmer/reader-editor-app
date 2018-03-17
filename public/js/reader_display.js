@@ -102,39 +102,40 @@ function reader_highlite(){                                              console
 //-- show buttons --------------------------------------------------------
 
 function reader_show_buttons(){                                          consolelog_func(); 
-    var inner_e = button_html(0, 
-		[['show_rmenu', 'reader_show_menu();',    [0,1]],   
-		 ['js_edit',    'reader_editor();',       [1,0]],
-		 ['js_rprev',   'reader_play_single(0);', [3,0]],   
-		 ['js_rnext',   'reader_play_single(1);', [7,0]],
+    var buttons_arr = [ 
+		 ['show_menu', 'reader_show_menu();',    [0,1]],   
+		 ['js_edit',    'reader_editor();',       [1,0, symbol_edit1]],
+		 ['js_rprev',   'reader_play_single(0);', [3,0,symbol_prev]],   
+		 ['js_rnext',   'reader_play_single(1);', [7,0,symbol_next]],
 		 ['js_selecttype', 'reader_set_selecttype(1,1);', [2,0]],   
-		 ['js_playpause',  'common_play_pause();',        [6,0]],
-		 ['show_navigate', 'reader_show_navigate();',     [5,1]],   
-		]);
-		
+		 ['js_playpause',  'common_play_pause();',        [6,0,symbol_play]],
+		 ['show_navigate', 'reader_show_navigate();',     [5,1,symbol_up_down]],   
+		 ];
 	if (reader.in_messages){
-		inner_e+= button_html(0,    [['show_mail', 'reader_show_mail();',  [4,1]], ]);
+		buttons_arr.push( ['show_mail', 'reader_show_mail();',  [4,1]] );
 	}else{
-		inner_e+= button_html(0,    [['js_readall', 'reader_play_all();',  [4,0]], ]);
+		buttons_arr.push( ['js_readall', 'reader_play_all();',  [4,0]] );
 	}
+    
     var elem = document.getElementById('buttons_area');
-    elem.innerHTML=inner_e;
-    document.getElementById('js_selecttype').innerHTML=reader.selecttext[reader.selecttype];
+    elem.innerHTML = button_html(0, buttons_arr, 4,2);
+    document.getElementById('js_selecttype').innerHTML = dict.js_selecttype[reader.selecttype];
 }
 
 function reader_show_menu(){                                             consolelog_func(); 
     var n_zoom = reader.zoomtype; var obj='reader';
     var inner_e = button_html(1, 
-		[['show_rfontsize',  'reader_show_fontsize();',  [5,0]],   
+		[['show_fontsize',   'reader_show_fontsize();',  [5,0]],   
 		 ['show_sound',      '',                         [1,3]],
-		 ['show_lang',       'common_show_lang(1);',     [2,0]],   
-		 ['ajax_readerexit', 'reader_exit();',           [7,0]],
+		 ['show_lang',       'common_show_lang(1);',     [3,0]],   
 		 ['show_readerzoom', 'reader_show_zoomtype();',  [6,0]],   
 		 ['show_utterrate',  'common_show_utterrate();', [0,0]],
 		 ['show_clickdelay', 'common_show_clickdelay();', [4,0]], 
 		]);
 	if (reader.in_messages){ 
-		inner_e+= button_html(1,    [['ajax_mailexit', 'reader_exit(-1);',   [3,0]] ]);   
+		inner_e+= button_html(1, [['ajax_readerexit', 'reader_exit();',   [7,0,symbol_people]] ]);   
+	}else{
+		inner_e+= button_html(1, [['ajax_readerexit', 'reader_exit();',   [7,0,symbol_home]] ]); 
 	}
     common_create_menu('reader_menu', 0, inner_e);
     if (reader.in_messages){ 
@@ -161,13 +162,14 @@ function reader_show_zoomtype(){                                         console
     common_create_menu('reader_zoomtype', 1, inner_e);
     
     var n_zoom = reader.zoomtype;
-    document.getElementById('place_readerzoom').innerHTML = reader.zoomtype_arr[n_zoom];
+    document.getElementById('place_readerzoom').innerHTML = dict.place_readerzoom[n_zoom];
 }
 
 function reader_show_mail(){                                             consolelog_func(); 
 	var inner_e = button_html(1, 
 		[['ajax_refresh', 'location.reload();',   [4,0]],   
-		 ['ajax_sendmail', 'reader_ajax_send();', [7,0]]
+		 ['ajax_sendmail', 'reader_ajax_send();', [7,0]],
+		 ['ajax_mailexit',   'reader_exit(-1);', [3,0,symbol_home]]
 		]);
     common_create_menu('reader_mail', 0, inner_e);
 }
@@ -183,8 +185,7 @@ function reader_show_fontsize(){
 		 ['js_rfontsize', onclick,  [2,0], 5],
 		 ['place_fontsize', '',     [0,2]   ],
 		]);
-	var alpha=common.style.r_fontalpha, font_def = common.style.r_fontsize, scale = common.r_fontsize_scale;
-	var style='"color:rgba(0,0,0,'+alpha+'); font-size:'+font_def*scale*common.style.rmin+'vmin;"';
 	
     common_create_menu('common_fontsize',1, inner_e);
+    common_set_fontsize(common.r_fontsize_scale,1);
 }  

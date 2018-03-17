@@ -21,12 +21,8 @@ var reader = {
     messages_arr: [],
     draft: '',
     save_inprocess: false,
-    
     in_messages: false,
-    
-    selecttext: ['select <br> -','select <br> - -','select <br> - - -'],
-    zoomtype_arr: ['no zoom', 'by word', 'by sentence'],
-    
+        
     get_id_array: function(){                                            //consolelog_func('brown'); 
         var id_arr = [];
         if (this.selecttype == 1){ id_arr=this.sentence_id; }    
@@ -211,7 +207,7 @@ function reader_set_selecttype(order, settype){                          console
     reader_fill_zoom();                           
     id=reader.get_id(); 
     reader.id_curr = id;                                              
-    document.getElementById('js_selecttype').innerHTML=reader.selecttext[n_select_type];
+    document.getElementById('js_selecttype').innerHTML=dict.js_selecttype[n_select_type];
 }
 
 function reader_set_zoomtype(order){                                     //consolelog_func(); 
@@ -231,7 +227,7 @@ function reader_set_zoomtype(order){                                     //conso
     reader_fill_zoom(); 
     document.getElementById('content_box').style.height = height*common.style.ry+'vh';    
 	elem = document.getElementById('place_readerzoom');
-    if (elem){ elem.innerHTML=reader.zoomtype_arr[n_zoomtype]; }
+    if (elem){ elem.innerHTML=dict.place_readerzoom[n_zoomtype]; }
     
 }
    
@@ -319,6 +315,7 @@ function reader_editor(){                                                console
 }
 
 function reader_beforunload() {                                          consolelog_func(); 
+	common.ineditor = false;
 	common.cookie_save.call(reader); 
 	common.cookie_save(); 
 	//if (reader.save_inprocess==false){

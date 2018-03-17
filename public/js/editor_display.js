@@ -1,18 +1,27 @@
 
+function editor_resize(){
+	style_resize();
+	var state = editor.style.state;
+	if (state[0]=='start'){ editor_show_start(); editor_set_fontsize(editor.style.nlines_lvl0, 0);  }
+	else { editor_show_symbols(state[1], state[2]); editor_set_fontsize(editor.style.nlines_lvl1, 1); }
+	editor_set_cursor();
+}
 
 function editor_backto_start(){                                          consolelog_func(); 
-    editor.style.set_style('bottom_2rows');
+	editor.style.state = ['start',0,0];
+    editor.style.set_nrow(2,0);
     document.getElementById('editor_buttons_area_0').style.visibility='visible';
     document.getElementById('editor_buttons_area_1').style.visibility='hidden';
 }
 function editor_backto_letters(change_style){                            consolelog_func(); 
-    if (change_style==1){ editor.style.set_style('bottom_3rows'); }
+    if (change_style==1){ 
+		editor.style.set_nrow(3,1);
+	}
     document.getElementById('editor_buttons_area_1').style.visibility='visible';
     document.getElementById('editor_buttons_area_2').style.visibility='hidden';
     document.getElementById('editor_buttons_area_3').style.visibility='hidden';
     document.getElementById('editor_text_box').style.width='96%';
     editor.pin_letters = 0;
-    //editor_capital(0,0,1);
 }
 
 function editor_capital(setcaps, lock, reset){                           consolelog_func(); 
@@ -40,47 +49,35 @@ function editor_capital(setcaps, lock, reset){                           console
 //-- show buttons ---------------------------------------------------------------
 
 function editor_show_start(){                                            consolelog_func(); 
-    elem = document.getElementById('editor_buttons_area');
-    inner_e0 = "<div id='editor_buttons_area_0'>";
-    //inner_e0+= '<div id="editor_numbers"    onclick="editor_show_symbols(1,0);" '+editor.style.get_button(3,1) +'> xyz </div>';
-    inner_e0+= '<div id="editor_numbers"    onclick="editor_show_symbols(0,0);" '+editor.style.get_button(3,1) +'> 123 </div>';
-    inner_e0+= '<div id="editor_letters_en" onclick="editor_show_symbols(4,0);" '+editor.style.get_button(9,1) +'> abc </div>';
-    inner_e0+= '<div id="editor_letters_ru" onclick="editor_show_symbols(5,0);" '+editor.style.get_button(10,1)+'> абв </div>';
-    //inner_e0+= '<div id="editor_letters_ru" onclick="editor_show_symbols(2,0);" '+editor.style.get_button(11,1)+'>'+symbol_nextpage3+'</div>';
-    inner_e0+= '<div id="editor_letters_ru" onclick="" '                         +editor.style.get_button(4,3)+'>'+symbol_nextpage3+'</div>';
-    inner_e0+= '<div id="editor_navigate"   onclick="editor_show_navigate(0);" ' +editor.style.get_button(5)   +'>'+symbol_prev_next+'</div>';
-    inner_e0+= '<div id="editor_exit"       onclick="editor_exit();" '           +editor.style.get_button(6)  +'> exit </div>';
-    inner_e0+= '<div id="editor_menu"       onclick="editor_show_menu();" '      +editor.style.get_button(2)   +'> menu </div>';
-    inner_e0+= '<div id="editor_save"       onclick="editor_save();" '           +editor.style.get_button(8)   +'> save </div>';
-    //inner_e0+= '<div id="editor_copy"       onclick="" ' +editor.style.get_button(7,3) +'> copy </div>';
-    inner_e0+= '<div id="editor_past"       onclick="" ' +editor.style.get_button(1,3) +'> copy past </div>';
-    //inner_e0+= '<div id="editor_go"         onclick="" ' +editor.style.get_button(0,3) +'> go </div>';
-    inner_e0+= "</div>"
+	editor.style.state = ['start',0,0];
+	var buttons_arr = [ 
+		 ['ajax_editorexit', 'editor_exit();',  [5,1]], 
+		 ['ajax_editorsave', 'editor_save();',  [1,1]], 
+		 ['show_menu', 'editor_show_menu();',   [4,1]], 
+		 ['', 'editor_show_symbols(0,0);',   [2,2,'123']], 
+		 ['', 'editor_show_symbols(4,0);',   [7,2,'abc']], 
+		 ['', 'editor_show_symbols(5,0);',   [8,2,'абв']], 
+		 ['', 'editor_show_navigate(0);',    [9,1,symbol_prev_next]], 
+		 ['', '',                            [0,6,'copy past']], 
+		 ['', '',                            [3,5,symbol_nextpage3]], 
+		 ]; 
+	var inner_e0 = "<div id='editor_buttons_area_0'>" + button_html(0, buttons_arr, 2,5, true) + "</div>";
+    
+    var elem = document.getElementById('editor_buttons_area');
     inner_e1 = "<div id='editor_buttons_area_1'></div>";
     inner_e2 = "<div id='editor_buttons_area_2'></div>";
     inner_e3 = "<div id='editor_buttons_area_3'></div>";
     inner_e4 = "<div id='editor_buttons_area_4'></div>";
     elem.innerHTML = inner_e0+inner_e1+inner_e2 + inner_e3 + inner_e4;
 }
-function editor_show_menu(){                                             consolelog_func(); 
-	var inner_e = button_html(1, 
-		[['show_lang',       'common_show_lang(1);',   [3,0]],
-		 ['show_editorfont', 'editor_show_fontsize();',   [5,0]],
-		 ['show_clickdelay', 'common_show_clickdelay();', [4,0]] 
-		]);
-    common_create_menu('editor_menu', 0, inner_e,'editor_created_elements', true);
-}
-function editor_show_fontsize(){                                         consolelog_func(); 
-	var inner_e = button_html(1, 
-		[['js_editorfont',  [4,0],0], ['js_editorfont',   [5,0],1],
-		 ['js_editorfont',  [6,0],2], ['js_editorfont',   [7,0],3]
-		]);
-    common_create_menu('editor_fontsize', 1, inner_e, 'editor_created_elements', true);
-}
     
 function editor_show_symbols(lang, lvl){                                 consolelog_func(); 
-    editor.style.set_style('bottom_3rows');
-    editor.style.b_nx=7;
+    var state = editor.style.state;
+    if (state[0]!='letters' || state[1]!=lang || state[2]!=lvl){         //console.log('State');
+		editor.style.state = ['letters',lang,lvl];
+		editor.style.set_nrow(3,1);
+	}
+    var b_nx=7;
     
     var symbol1, symbol2;
 	if (lang===0)      { symbol1 = symbol_nextpage3; symbol2 = symbol_nextpage1; }
@@ -89,43 +86,53 @@ function editor_show_symbols(lang, lvl){                                 console
 	if (lang===5) { symbol1 = 'эюя'; }
     
     key_arr = editor_get_symbolset()[lang][lvl];                 
-    inner_e = ''; i=0; 
-    if (lvl==0){                                                      
-        inner_e+= editor.style.button_delete(6);
-        inner_e+= editor.style.button_prev(19);
-        inner_e+= editor.style.button_next(20);
-        inner_e+= '<div id="editor_spell"    onclick="editor_spell();" '       +editor.style.get_button(0) +'> spell </div>' ;
-        inner_e+= '<div id="editor_letters_p1" onclick="editor_show_symbols('+lang+',1);" ' +editor.style.get_button(13) +'>'+symbol1+'</div>';
-        inner_e+= '<div id="editor_letters_p2" onclick="editor_show_symbols('+lang+',2);" ' +editor.style.get_button(7)  +'>'+symbol2+'</div>';
-        if (editor.parent==="files"){ inner_e+= editor.style.button_exit(14); }
-		else {                        inner_e+= editor.style.button_backto_start(14); }
-        reserved=[5,6, 13,14,20];                                     
-        reserved=[0,6,7, 13,14,20,19];                                    
+    i=0; 
+    
+    var buttons_arr = [ ];
+    if (lvl==0){                                                         // first panel of symbols
+		reserved=[5,6, 13,14,20];                                     
+        reserved=[0,6,7, 13,14,20,19]; 
+        
+        if (editor.parent==="files"){ buttons_arr.push( ['ajax_editorexit', 'editor_exit();',       [14,1]]  );
+		}else{                        buttons_arr.push( ['js_editorback', 'editor_backto_start();', [14,1]]  ); }                    
+		buttons_arr.push(
+			['js_spell', 'editor_spell();',   [0,1]],                             
+			['', 'editor_show_symbols('+lang+',1);',   [13,3,symbol1]],                             
+			['', 'editor_show_symbols('+lang+',2);',   [7,3,symbol2]],                             
+			['', 'editor_delete();',   [6,1,symbol_delete]], 
+			['', 'editor_scroll(0);',   [19,1,symbol_prev]], 
+			['', 'editor_scroll(1);',   [20,1,symbol_next]], 
+			);           
+			                            
     }else {
-        inner_e+= editor.style.button_backto_letters(14,1);
+        buttons_arr.push( ['js_editorback', 'editor_backto_letters(0);', [14,1]]  );
         if (lvl===2)  { 
-			inner_e+= '<div id="editor_letters_p1" onclick="editor_show_symbols('+lang+',1);" ' +editor.style.get_button(13) +'>'+symbol1+'</div>'; 
-			inner_e+= '<div id="editor_capslock" onclick="editor_capital(1,1,0);" ' +editor.style.get_button(6)  +'> caps lock </div>';
-			inner_e+= '<div id="editor_caps" onclick="editor.pin_letters=1;" ' +editor.style.get_button(7) +'> pin tab </div>';
-			reserved=[14,6,7,13];
+			reserved=[14,0,7,13];
+			buttons_arr.push( 
+				['', 'editor_show_symbols('+lang+',1);', [13,3,symbol1]],   
+				['js_capslock', 'editor_capital(1,1,0);',       [0,1]],   
+				['js_pintab',   'editor.pin_letters=1;',        [7,1]],  
+				); 
 		}else if (lvl===1)  { 
-			inner_e+= '<div id="editor_caps"     onclick="editor_capital(1,0,0);" ' +editor.style.get_button(20) +'> caps </div>';
-			inner_e+= '<div id="editor_letters_p1" onclick="editor_show_symbols('+lang+',2);" ' +editor.style.get_button(7) +'>'+symbol2+'</div>'; 
-			inner_e+= '<div id="editor_caps" onclick="editor.pin_letters=1;" ' +editor.style.get_button(13) +'> pin tab </div>';
 			reserved=[14,7,20,13];
+			buttons_arr.push(
+				['', 'editor_show_symbols('+lang+',2);', [7,3,symbol2]],   
+				['js_caps', 'editor_capital(1,0,0);',            [20,1]],   
+				['js_pintab',   'editor.pin_letters=1;',        [13,1]],  
+				); 
 		}
     }                                                    
     var allchar = editor_get_allchar();              
-    for (ii=0; ii<editor.style.b_nx*editor.style.b_ny; ii++){
+    for (ii=0; ii<b_nx*editor.style.b_ny; ii++){
         if (reserved.indexOf(ii)==-1 && i<key_arr.length){
             i_name = key_arr[i];
             i_name_button = allchar[1][key_arr[i]];  
-            style = editor.style.get_button(ii, 1);                    
             keys = Object.keys(allchar[0] ); nn=keys.indexOf(i_name).toString();
-            inner_e += '<div id="editor_letter_'+i_name+'" onclick="editor_set_letter('+nn+');"  '+style+'>'+i_name_button+'</div>';
+            buttons_arr.push( ['',  'editor_set_letter('+nn+');',   [ii,2, i_name_button]] );
             i+=1;
         } 
-    }
+    }    
+    
     if (lvl==0){
         document.getElementById('editor_buttons_area_0').style.visibility='hidden';
         elem = document.getElementById('editor_buttons_area_1');
@@ -133,36 +140,39 @@ function editor_show_symbols(lang, lvl){                                 console
         document.getElementById('editor_buttons_area_1').style.visibility='hidden';
         elem = document.getElementById('editor_buttons_area_2');
     }elem.style.visibility='visible';
-    elem.innerHTML = inner_e;                                      
+    elem.innerHTML = button_html(0, buttons_arr, 3,b_nx, true);                                     
     editor_capital(0,1);
+    
 }
 
 function editor_show_navigate(lvl){                                      consolelog_func(); 
-	var elem; var inner_e = "";
-	editor.style.set_style('bottom_2rows',7);
-    inner_e+= editor.style.button_delete(6);
-    inner_e+= editor.style.button_prev(10);
-    inner_e+= editor.style.button_next(12);
-    inner_e+= '<div id="editor_prevword" onclick="editor_scrollword(0);" ' +editor.style.get_button(9) +'>' +symbol_prev_prev  +'</div>' ;
-	inner_e+= '<div id="editor_nextword" onclick="editor_scrollword(1);" ' +editor.style.get_button(13)+'>' +symbol_next_next +'</div>' ;
-    inner_e+= '<div id="editor_up"       onclick="editor_scrollvert(0);" ' +editor.style.get_button(4) +'>' +symbol_up        +'</div>' ;
-	inner_e+= '<div id="editor_down"     onclick="editor_scrollvert(1);" ' +editor.style.get_button(11) +'>' +symbol_down      +'</div>' ;
-	inner_e+= '<div id="editor_sound"    onclick="editor_sound();" '       +editor.style.get_button(2) +'>' +symbols_sound[editor.sound_navigator] +'</div>' ;
-	inner_e+= '<div id="editor_spell"    onclick="editor_spell();" '       +editor.style.get_button(8) +'> spell </div>' ;
-	inner_e+= '<div id="editor_ctrlz"    onclick="editor_ctrlz();"  '      +editor.style.get_button(0,3) +'>' +symbol_undo +'</div>' ;
-	inner_e+= '<div id="editor_ctrly"    onclick="editor_ctrly();"  '      +editor.style.get_button(1,3) +'>' +symbol_redo +'</div>' ;
-    inner_e+= '<div id="editor_show_letter" '+editor.style.get_button(5,2)+'>_</div>';
+	editor.style.set_nrow(2,0);
+	var buttons_arr = [
+		['', 'editor_delete();',       [6, 0, symbol_delete] ], 
+		['', 'editor_scroll(0);',      [10,1, symbol_prev] ], 
+		['', 'editor_scroll(1);',      [12,1, symbol_next] ], 
+		['', 'editor_scrollword(0);',  [9, 1, symbol_prev_prev] ], 
+		['', 'editor_scrollword(1);',  [13,1, symbol_next_next] ], 
+		['', 'editor_scrollvert(0);',  [4, 1, symbol_up] ], 
+		['', 'editor_scrollvert(1);',  [11,1, symbol_down] ], 
+		['js_sound', 'editor_sound();',[2, 0, symbols_sound[editor.sound_navigator]] ], 
+		['', '',                       [0, 5, symbol_undo] ], 
+		['', '',                       [1, 5, symbol_redo] ], 
+		['js_spell', 'editor_spell();', [8,0]], 
+		//['editor_nav_symbol', '',      [5,4,'_']], 
+		];
+
     if (lvl===0){ 
-		inner_e+= editor.style.button_backto_start(7);
+		buttons_arr.push( ['js_editorback', 'editor_backto_start();', [7,1]] ); 
 		document.getElementById('editor_buttons_area_0').style.visibility='hidden';
-		elem = document.getElementById('editor_buttons_area_1');
+		var elem = document.getElementById('editor_buttons_area_1');
 	}else{ 
-		inner_e+= editor.style.button_backto_letters(7,1);
+		buttons_arr.push( ['js_editorback', 'editor_backto_letters(0);', [7,1]]  );
 		document.getElementById('editor_buttons_area_1').style.visibility='hidden';
-		elem = document.getElementById('editor_buttons_area_2');
+		var elem = document.getElementById('editor_buttons_area_2');
 	}
     elem.style.visibility='visible';
-    elem.innerHTML = inner_e;
+    elem.innerHTML = button_html(0, buttons_arr, 2,7); 
 }
 
 
@@ -176,3 +186,21 @@ function create_element(id, cl, parent, style, inner){                   //conso
     document.getElementById(parent).appendChild(element);
     return (element);
 }
+
+function editor_show_menu(){                                             consolelog_func(); 
+	var inner_e = button_html(1, 
+		[['show_lang',       'common_show_lang(1);',      [3,0]],
+		 ['show_editorfont', 'editor_show_fontsize();',   [5,0]],
+		 ['show_clickdelay', 'common_show_clickdelay();', [4,0]] 
+		]);
+    common_create_menu('editor_menu', 0, inner_e,'editor_created_elements', true);
+}
+function editor_show_fontsize(){                                         consolelog_func(); 
+	var onclick = 'editor_set_fontsize(this.id,0);';
+	var inner_e = button_html(1, 
+		[['js_editorfont', onclick, [4,0],0], ['js_editorfont', onclick,  [5,0],1],
+		 ['js_editorfont', onclick, [6,0],2], ['js_editorfont', onclick,  [7,0],3]
+		]);
+    common_create_menu('editor_fontsize', 1, inner_e, 'editor_created_elements', true);
+}
+

@@ -18,7 +18,6 @@ var files = {
 	paths: [],
 	entrytype: [],
 	dir: "",
-	zoom_arr: ['no zoom', 'add zoom'],
 	home: '',
 	in_contacts: false,
 	contacts: [],
@@ -97,7 +96,7 @@ function files_update(){                                                 console
 		useFile( localStorage.getItem("reader_url") ); 
 		reader_resize(); 		
 	}else{		
-		var path = localStorage.getItem("folder_path");                  console.log(path);        
+		var path = localStorage.getItem("folder_path");                  //console.log(path);        
 		if ( [files.dir,"", undefined, null, 'mail'].indexOf(path)==-1 ){
 			goTo( path );
 		}
@@ -342,7 +341,8 @@ function files_exists(fname, type){
 }
 
 function files_edittext(id){                                             consolelog_func('darkblue');
-	var text = "";                                                    
+	var text = "";                
+	common.ineditor = true;                                    
 	if (id=="edit_filename_box"){
 		var fname = files.get_fname();                                   //console.log('Edit: '+id+' '+text+' '+files.get_ftype());
 		if (files.get_ftype()!='folder'){

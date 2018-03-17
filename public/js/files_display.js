@@ -59,40 +59,40 @@ function files_fill_zoom(){                                              console
 
 function files_show_buttons(){                                           consolelog_func();  
     var elem = document.getElementById('buttons_area');                      
-    var inner_e = button_html(0, 
-		[['show_fmenu', 'files_show_menu();',   [0,1]],   
+    var buttons_arr = [ 
+		 ['show_menu', 'files_show_menu();',   [0,1]],   
 		 ['show_login', 'files_show_login();',  [4,1]], 
-		 ['ajax_enter', 'files_ajax_enter();',  [2,0]],   
-		 ['js_fprev',   'files_scroll(-2);',    [3,0]],
-		 ['js_fnext',   'files_scroll(-1);',    [7,0]]
-		]);
+		 ['ajax_enter', 'files_ajax_enter();',  [2,0, symbol_enter]],   
+		 ['js_fprev',   'files_scroll(-2);',    [3,0, symbol_prev]],
+		 ['js_fnext',   'files_scroll(-1);',    [7,0, symbol_next]]
+		 ];
     if (files.in_contacts){
-		inner_e+= button_html(0,    [['show_addcontact', 'files_show_addcontact();', [1,1]], 
-									 ['ajax_mailexit',   'files_ajax_enter(-1)',     [5,0]] ] );
+		buttons_arr.push( ['show_addcontact', 'files_show_addcontact();', [6,1]], 
+						  ['ajax_mailexit',   'files_ajax_enter(-1)',     [5,0,symbol_home]] );
 	}else{
-		inner_e+= button_html(0,    [['show_opt',    'files_show_options();', [6,1]], 
-		                             ['show_create', 'files_show_create();',  [1,1]],
-		                             ['ajax_contacts', 'files_ajax_contacts();', [5,0]]
-		                             ] );
+		buttons_arr.push( ['show_opt',    'files_show_options();', [1,1]], 
+		                  ['show_create', 'files_show_create();',  [6,1]],
+		                  ['ajax_contacts', 'files_ajax_contacts();', [5,0,symbol_people]]  );
+		                             
         if (user.name=='admin'){
-			inner_e+=button_html(0, [['show_sync',   'files_show_sync();',    [6,0]] ] );
+			buttons_arr.push( ['show_sync',   'files_show_sync();',    [6,0,'sync']] );
 		}
 	}
-    elem.innerHTML=inner_e;       
+    elem.innerHTML = button_html(0, buttons_arr, 4,2);        
 }
 
 function files_show_menu(){                                              consolelog_func();
 	var inner_e = button_html(1, 
-		[['show_lang',       'common_show_lang(1);',   [2,0]], 
+		[['show_lang',       'common_show_lang(1);',   [3,0]], 
 		 ['js_zoom',         'files_set_zoom();',      [6,0]],
 		 ['show_clickdelay', 'common_show_clickdelay();', [4,0]], 
-		 ['show_ffontsize',  'files_show_fontsize();', [5,0]],
+		 ['show_fontsize',   'files_show_fontsize();', [5,0]],
 		 ['show_sound',      '',                       [1,3]], 
 		 ['show_bugfix',     'files_show_bugfix();',   [0,0]]  
 		]);
         
     common_create_menu('files_menu', 0, inner_e);
-    document.getElementById('js_zoom').innerHTML = files.zoom_arr[files.zoom]; 
+    document.getElementById('js_zoom').innerHTML = dict.place_fileszoom[files.zoom]; 
 }
 
 function files_show_bugfix(){                                            consolelog_func();
@@ -165,10 +165,10 @@ function files_show_fontsize(){
 		 ['js_ffontsize', onclick,  [4,0], 3],
 		 ['place_fontsize', '',     [0,2]   ],
 		]);
-	var alpha=common.style.f_fontalpha, font_def = common.style.f_fontsize, scale = common.f_fontsize_scale;
-	var style='"color:rgba(0,0,0,'+alpha+'); font-size:'+font_def*scale*common.style.rmin+'vmin;"';
-	
     common_create_menu('common_fontsize',1, inner_e);
+    
+    var alpha=common.style.f_fontalpha, font_def = common.style.f_fontsize, scale = common.f_fontsize_scale; //console.log(scale, font_def, common.style.rmin);
+    common_set_fontsize(common.f_fontsize_scale,0);
 }  
 
 function files_show_addcontact(){                                        consolelog_func(); console.log('Show_add_contact');
@@ -184,8 +184,8 @@ function files_show_addcontact(){                                        console
 
 function files_show_sync(){                                              consolelog_func();
 	var inner_e = button_html(1, 
-		[['ajax_sync_past', 'files_ajax_past(1);',   [4,0]], 
-		 ['ajax_sync_rm',   'files_ajax_delete(1);', [6,0]] ]);          // !!! error
+		[['ajax_sync_past', 'files_ajax_past(1);',   [4,0, 'past']], 
+		 ['ajax_sync_rm',   'files_ajax_delete(1);', [6,0, 'rm']] ]);          // !!! error
 	
 	common_create_menu('files_sync', 0, inner_e);
 	var copy_path = localStorage.getItem("copy_shortpath");              
@@ -210,10 +210,10 @@ function files_set_zoom(order){                                          console
     }                                                                    
     
     document.getElementById('content_box').style.height = height*common.style.ry+'vh';
-    var name = files.zoom_arr[files.zoom];                               
+    var name = dict.place_fileszoom[files.zoom];                               
     
     var elem = document.getElementById('js_zoom'); 
-    if (elem) { elem.innerHTML = files.zoom_arr[files.zoom]; }
+    if (elem) { elem.innerHTML = dict.place_fileszoom[files.zoom]; }
 }
 
 //-- show items ----------------------------------------------------------

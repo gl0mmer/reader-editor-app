@@ -51,9 +51,8 @@ function common_disable_button(id, disable, todo){
 
 
 function button_html(lvl, arr, y_dim, x_dim){
-	if (y_dim==undefined){ y_dim = 2; }
-	if (x_dim==undefined){ x_dim = 4; }
-	var class_arr = [["symbol", "editor"],
+	if (y_dim==undefined){ y_dim = 2; x_dim=4; }
+	var class_arr = [["green", "grey", "green", "grey", "nobkg", 'green disabled', 'grey disabled'],
 	                 ["buttons_menu", "", "", "disabled buttons_menu"]];
 	
 	var html = '';
@@ -63,16 +62,20 @@ function button_html(lvl, arr, y_dim, x_dim){
 		pos = arr[i][2];                                                 //console.log(arr[i]);
 		name = arr[i][0]; 
 		inner = dict[name];
-		if (arr[i].length>3){                                            //console.log('inner: '+inner);           
+		
+		if (pos.length>2){ 
+			id = name; 
+			inner = pos[2];
+		}else if (arr[i].length>3){                                            
 			tail = inner[ 2+ arr[i][3] ];
 			id = tail;
 			inner = inner[0] +' '+ tail +' '+ inner[1];
 		}else{
-			inner = dict[ arr[i][0] ];
+			inner = dict[ name ];
 			id = name;
 		}                                                                //console.log('name: '+name+'|'+tail+'|'+inner);
 		var class_name = class_arr[lvl][pos[1]];
-		if (lvl==0){ var style = style_buttonpos(pos[0],pos[1], y_dim, x_dim); }
+		if (lvl==0){ var style = style_buttonpos(pos[0],pos[1], y_dim, x_dim); }   //console.log(style);
 		if (lvl==1){ var style = style_buttonpos_menu(pos[0],pos[1], y_dim, x_dim); }
 		if (lvl==1 && pos[1]==2){
 			html += '<div id="'+id+'_box" class="button_zoom_box " onclick="'+arr[i][1]+'" style="'+style+'"><div id="'+id+'" class="text_zoom">'+inner+'</div></div>';
@@ -108,7 +111,6 @@ function common_show_notification(text, welcome, blur){                        c
 	if (blur==undefined){blur=0;}
 	var parent='created_elements';
 	var id = "notification";
-	var b_top = 90-common.style.b_height;
 	common.repeat_text = common_textto_read(text);
 	menu_blur();
 	
@@ -116,14 +118,14 @@ function common_show_notification(text, welcome, blur){                        c
 	inner_e+= '<div class="menu_area" >';
 	inner_e+= '<div class="text_scroll_box" style="position:fixed;'
 			+ 'top:'+15*common.style.ry+'vh; left:12vw;'
-			+ 'width:76vw; height:'+(b_top-25)*common.style.ry+'vh;'
+			+ 'width:76vw; height:'+(52)*common.style.ry+'vh;'
 			+ 'font-size:'+4.8*common.style.ry+'vmin;line-height:'+7.5*common.style.ry+'vmin;'
 			+ 'color: rgba(0,0,0,0.55);">';
 	inner_e+= '<div class="text_scroll" align="left" style="top:0vh;"> <div class="reader_text" style="'
 			+ 'top:'+(-5*common.style.ry)+'vh;height:'+20*common.style.ry+'vh;'
 			+ '">'+text+' &nbsp </div> </div> </div> </div>' ;
       
-    inner_e += button_html(1, [ ['js_playpause', 'common_play_pause();', [11,0]], ], 3,4);
+    inner_e += button_html(1, [ ['js_playpause', 'common_play_pause();', [11,0,symbol_play]], ], 3,4);
                   
     element = document.createElement('div');
     element.setAttribute('id', id);
@@ -176,64 +178,79 @@ function common_show_utterrate(){                                       consolel
 //-- buttons positions ---------------------------------------------------
 
 
-function style_content_pars(){
-	var s = common.style;
+function style_content_pars(){          
+	var s = common.style;                                 
+	if (common.ineditor){ nrow = editor.style.b_ny; var bsize=editor.style.get_bsize(); var bspace=editor.style.get_bspace();}                    
+	else { nrow = 2; var bsize = s.dy; var bspace = s.xspace; }                                 
+	
 	var wratio = window.innerWidth/window.innerHeight;
-	var bright = wratio*s.bright;
-	var dx = s.dy*s.b_shape; 
-	var x =  (bright - 2*dx - 2*s.xspace) ;
-	var dy = s.dy/s.b_shape*wratio;                                        
-	var y =  s.bright - 2*dy - 2*s.xspace ; 
-	var z_height = s.zoomheight;
-	if (wratio>1){
+	var dx = bsize*s.b_shape; 
+	var x =  (100*wratio - nrow*dx - (nrow+1)*bspace) ;
+	var dy = bsize/s.b_shape*wratio;                                        
+	var y =  100 - nrow*dy - (nrow)*bspace ; 
+	
+	var z_height = s.zoomheight;  
+	if (wratio>1 && common.ineditor==false){
 		var c_width = x;
 		var b_left = c_width/wratio;
-		c_width = b_left-1.5-s.xspace/wratio;
+		c_width = b_left-1.5-bspace/wratio;
 		var c_height = 100; 
-		var b_top = 0; 
+		var b_top = 0;  
 	}else{
 		var c_height = y;
-		var c_width = 100-s.xspace;
+		var c_width = 100-bspace;
 		var b_top= c_height;
 		var b_left = 0; 
-		z_height = z_height*wratio;
-	}
-	return ([c_height, c_width, z_height, b_top, b_left]);
+		z_height = z_height*wratio;                                      
+	}                                                                    //console.log('ineditor: ', common.ineditor, [c_height, c_width, z_height, b_top, b_left]);  
+	return ([c_height, c_width,  z_height,  b_top, b_left]);
 	
 }
 	
-function style_buttonpos(i, class_n){                                     //consolelog_func('brown');
+function style_buttonpos(i, class_n, y_dim, x_dim){             //consolelog_func('brown');
 	var s = common.style;
+	if (y_dim==undefined){ y_dim = 4; x_dim = 2; }
+	if (common.ineditor) {
+		var bsize = editor.style.get_bsize(); 
+		var bspace = editor.style.get_bspace();
+		x_dim = x_dim+y_dim; y_dim=x_dim-y_dim; x_dim=x_dim-y_dim; 
+	}else{ 
+		var bsize = s.dy; 
+		var bspace = s.xspace;
+	}
 	
 	var wratio = window.innerWidth/window.innerHeight;
-	if (class_n===undefined) {class_n=0;}
-    var bright = wratio*s.bright;           
-    var n_x = (i-i%s.yn)/s.yn;
+    var n_x = (i-i%y_dim)/y_dim;
     
-    var dy = s.dy;
-    var dx = s.dy * s.b_shape; 
-    var yspace = (s.bbot - s.btop - s.yn*s.dy ) / (s.yn-1); 
-    var y =  s.btop + (i% s.yn) * (yspace + s.dy*1) ;
-    var x =  bright - (s.xn - n_x) * dx - (s.xn - n_x - 1) * s.xspace ; 
-    dx = dx/wratio;  x=x/wratio;
-    
-    if (wratio<1){ 
-		n_x = (n_x+1)%2;
+    if (wratio<1 || common.ineditor){                                    //console.log('ineditor');
 		var bleft = (100-s.bbot);
-		var dx = s.dy; 
-		var dy = dx/s.b_shape*wratio;                                        
-	    var xspace = (100-2*bleft - s.yn*s.dy ) / (s.yn-1); 
-	    var x =  bleft + (i%s.yn)*(xspace+dx*1) ;
-	    var y =  s.bright - (s.xn-n_x)*dy - (s.xn-n_x-1)*s.xspace ; 
+		var dx = bsize; 
+		var dy = dx/s.b_shape*wratio;  
+		                                      
+	    if (common.ineditor){
+			var xspace = (100 - y_dim*bsize ) / (y_dim);
+			var x =  xspace*0.5 + (i%y_dim)*(xspace+dx) ; 
+		}else{
+			var xspace = (100-2*bleft - y_dim*bsize ) / (y_dim-1); 
+			var x =  bleft + (i%y_dim)*(xspace+dx*1) ;
+		}
+	    var y =  100 - (x_dim-n_x)*dy - (x_dim-n_x-0.5)*bspace ; 
+	}else{
+		var dy = bsize;
+		var dx = bsize * s.b_shape; 
+		var yspace = (s.bbot - s.btop - y_dim*bsize ) / (y_dim-1); 
+		var y =  s.btop + (i% y_dim) * (yspace + bsize*1) ;
+		var x =  100*wratio - (x_dim - n_x) * dx - (x_dim - n_x) * bspace ; 
+		dx = dx/wratio;  x=x/wratio;
 	}
     
-    var fontsize = s.f_fontsize*common.f_fontsize_scale*s.b_fontsize_ratio;   
+    var fontsize = s.f_fontsize*common.f_fontsize_scale*s.get_bfontsize_ratio();   
     var style = 'left:'+x*s.rx+'vw; top:'+y*s.ry+'vh;'
 			  + 'width:'+dx*s.rx+'vw; height:'+dy*s.ry+'vh;'
 			  + 'border-width:'+fontsize*s.rmin*0.+'vmin;'
-			  + 'border-bottom-width:'+s.dy*0+'vmin;'
-			  + 'border-top-width:'+s.dy*0+'vmin;'
-			  + 'font-size:'+fontsize*s.rmin+'vmin; line-height:'+fontsize*1.1*s.rmin+'vmin;';	
+			  + 'border-bottom-width:'+bsize*0+'vmin;'
+			  + 'border-top-width:'+bsize*0+'vmin;'
+			  + 'font-size:'+fontsize*s.rmin+'vmin; line-height:'+fontsize*1.2*s.rmin+'vmin;';	
     return(style); 
 }
 
@@ -242,7 +259,6 @@ function style_buttonpos_menu(i, class_n, y_dim, x_dim){                 //conso
 	if (class_n===undefined) {class_n=0;}
 	var s = common.style;
 			
-	var b_height = 17;
 	var b_left = 10;  var b_right = 90; 
 	var b_top = 10; var b_bot = 90;
 	var wratio = window.innerWidth/window.innerHeight; 
@@ -264,7 +280,7 @@ function style_buttonpos_menu(i, class_n, y_dim, x_dim){                 //conso
 	var x = b_left + (b_right-b_left)/(x_dim+add) *(nx+1-(1-add)/2) - dx/2.;
 	var y = b_top +  (b_bot-b_top)/(y_dim+add) *(ny+1-(1-add)/2) - s.dy/2.;       //console.log(dx,s.dy,x,y);
 	
-	var fontsize = s.f_fontsize*common.f_fontsize_scale*s.b_fontsize_ratio;   
+	var fontsize = s.f_fontsize*common.f_fontsize_scale*s.get_bfontsize_ratio();   
 	var lineheight = fontsize*1.2;                                   
 	var borderwidth = fontsize*0.5;
 	if (class_n===2) { 
@@ -285,30 +301,40 @@ function style_resize(){                                                 console
 	
 	s.rx = window.innerWidth/document.body.clientWidth;   
     s.ry = window.innerHeight/document.body.clientHeight; 
-	var wratio = window.innerWidth/window.innerHeight;
+	var wratio = window.innerWidth/window.innerHeight;                   //console.log(wratio);
 	if (wratio>1){ s.rmin = s.ry; }
 	else{ s.rmin = s.rx; }
 
-	var pars = style_content_pars();
-	var elem = document.getElementById('content_box');
+	[c_height, c_width,  z_height,  b_top, b_left] = style_content_pars();
+	
+	var name = 'content_box';
+	if (common.ineditor){name = 'editor_text_scroll'; }
+	var elem = document.getElementById(name);
     if (elem){ 
-		elem.style.width= pars[1]*s.rx+'vw';                      
-		elem.style.height= pars[0]*s.ry+'vh'; 
+		elem.style.width= c_width*s.rx+'vw';                      
+		elem.style.height= (c_height)*s.ry+'vh'; 
 	}
     var elem = document.getElementById('zoom_box');
     if (elem){ 
-		elem.style.width= pars[1]*s.rx+'vw'; 
-		elem.style.height= pars[2]*s.ry+'vh'; 
-		elem.style.top= (pars[0]-pars[2])*s.ry+'vh';             
+		if (wratio<1){
+			elem.style.width= 100*s.rx+'vw'; 
+			elem.style.left= 0*s.rx+'vw'; 
+		}else{
+			//elem.style.width= (c_width+s.xspace/wratio-s.zoomleft)*s.rx+'vw'; 
+			elem.style.width= (c_width)*s.rx+'vw'; 
+			elem.style.left= 1.5*s.rx+'vw'; 
+		}
+		elem.style.height= (z_height)*s.ry+'vh'; 
+		elem.style.top= (c_height-z_height)*s.ry+'vh';             
 		elem.style.fontSize = 11*common.style.rmin+'vmin';
 		elem.style.lineHeight = 18*common.style.rmin+'vmin';
 	}
-    var elem = document.getElementById('buttons_area');
+	name = 'buttons_area';
+	if (common.ineditor){name = 'editor_buttons_area'; }
+    var elem = document.getElementById(name);
     if (elem){ 
-		elem.style.left= pars[4]*s.rx+'vw'; 
-		elem.style.top= pars[3]*s.ry+'vh'; 
+		elem.style.left= b_left*s.rx+'vw'; 
+		elem.style.top= b_top*s.ry+'vh'; 
 	} 
     
 }	
-
-//-- font size -----------------------------------------------------------
