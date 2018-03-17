@@ -1,4 +1,9 @@
 
+function reader_resize(){
+	style_resize();
+	reader_show_buttons();
+	reader_set_zoomtype(reader.zoomtype);
+}
 
 //-- reader scroll functions -------------------------------------------------------------------
  
@@ -99,12 +104,12 @@ function reader_highlite(){                                              console
 function reader_show_buttons(){                                          consolelog_func(); 
     var inner_e = button_html(0, 
 		[['show_rmenu', 'reader_show_menu();',    [0,1]],   
-		 ['js_edit',    'reader_editor();',       [1,1]],
+		 ['js_edit',    'reader_editor();',       [1,0]],
 		 ['js_rprev',   'reader_play_single(0);', [3,0]],   
 		 ['js_rnext',   'reader_play_single(1);', [7,0]],
-		 ['js_selecttype', 'reader_set_selecttype(1,1);', [5,0]],   
+		 ['js_selecttype', 'reader_set_selecttype(1,1);', [2,0]],   
 		 ['js_playpause',  'common_play_pause();',        [6,0]],
-		 ['show_navigate', 'reader_show_navigate();',     [2,1]],   
+		 ['show_navigate', 'reader_show_navigate();',     [5,1]],   
 		]);
 		
 	if (reader.in_messages){
@@ -120,14 +125,21 @@ function reader_show_buttons(){                                          console
 function reader_show_menu(){                                             consolelog_func(); 
     var n_zoom = reader.zoomtype; var obj='reader';
     var inner_e = button_html(1, 
-		[['show_rfontsize',  'reader_show_fontsize();',  [4,0]],   
-		 ['show_sound',      '',                         [0,3]],
+		[['show_rfontsize',  'reader_show_fontsize();',  [5,0]],   
+		 ['show_sound',      '',                         [1,3]],
 		 ['show_lang',       'common_show_lang(1);',     [2,0]],   
 		 ['ajax_readerexit', 'reader_exit();',           [7,0]],
-		 ['show_readerzoom', 'reader_show_zoomtype();', [3,0]],   
-		 ['show_utterrate',  'common_show_utterrate();', [6,0]],
+		 ['show_readerzoom', 'reader_show_zoomtype();',  [6,0]],   
+		 ['show_utterrate',  'common_show_utterrate();', [0,0]],
+		 ['show_clickdelay', 'common_show_clickdelay();', [4,0]], 
 		]);
+	if (reader.in_messages){ 
+		inner_e+= button_html(1,    [['ajax_mailexit', 'reader_exit(-1);',   [3,0]] ]);   
+	}
     common_create_menu('reader_menu', 0, inner_e);
+    if (reader.in_messages){ 
+		 document.getElementById('ajax_readerexit').innerHTML = symbol_people;
+	}
 }
 
 function reader_show_navigate(){                                         consolelog_func(); 

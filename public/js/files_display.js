@@ -6,6 +6,7 @@ function files_resize(){                                                 console
 	files_show_buttons();
 	files_set_zoom('no');
 	files_show_files(); 
+	files_scroll(files.iter, 'no');
 }
 
 //-- files scroll functions ----------------------------------------------
@@ -66,10 +67,13 @@ function files_show_buttons(){                                           console
 		 ['js_fnext',   'files_scroll(-1);',    [7,0]]
 		]);
     if (files.in_contacts){
-		inner_e+= button_html(0,    [['show_addcontact', 'files_show_addcontact();', [5,1]] ] );
+		inner_e+= button_html(0,    [['show_addcontact', 'files_show_addcontact();', [1,1]], 
+									 ['ajax_mailexit',   'files_ajax_enter(-1)',     [5,0]] ] );
 	}else{
-		inner_e+= button_html(0,    [['show_opt',    'files_show_options();', [1,1]], 
-		                             ['show_create', 'files_show_create();',  [5,1]]] );
+		inner_e+= button_html(0,    [['show_opt',    'files_show_options();', [6,1]], 
+		                             ['show_create', 'files_show_create();',  [1,1]],
+		                             ['ajax_contacts', 'files_ajax_contacts();', [5,0]]
+		                             ] );
         if (user.name=='admin'){
 			inner_e+=button_html(0, [['show_sync',   'files_show_sync();',    [6,0]] ] );
 		}
@@ -77,32 +81,16 @@ function files_show_buttons(){                                           console
     elem.innerHTML=inner_e;       
 }
 
-function files_show_sync(){                                              consolelog_func();
-	var inner_e = button_html(1, 
-		[['ajax_sync_past', 'files_ajax_past(1);',   [4,0]], 
-		 ['ajax_sync_rm',   'files_ajax_delete(1);', [6,0]] ]);          // !!! error
-	
-	common_create_menu('files_sync', 0, inner_e);
-	var copy_path = localStorage.getItem("copy_shortpath");              
-    if (["", undefined, null].indexOf(copy_path)!=-1 ){
-		common_disable_button("ajax_sync_past", true, function(){ files_ajax_past(1);});
-	}
-}
 function files_show_menu(){                                              consolelog_func();
 	var inner_e = button_html(1, 
 		[['show_lang',       'common_show_lang(1);',   [2,0]], 
-		 ['js_zoom',         'files_set_zoom();',      [3,0]],
+		 ['js_zoom',         'files_set_zoom();',      [6,0]],
 		 ['show_clickdelay', 'common_show_clickdelay();', [4,0]], 
 		 ['show_ffontsize',  'files_show_fontsize();', [5,0]],
 		 ['show_sound',      '',                       [1,3]], 
 		 ['show_bugfix',     'files_show_bugfix();',   [0,0]]  
 		]);
-    
-    if (files.in_contacts){ 
-		inner_e+= button_html(1,    [['ajax_mailexit', 'files_ajax_enter(-1)',   [7,0]] ]);    
-	}else{
-		inner_e+= button_html(1,    [['ajax_contacts', 'files_ajax_contacts();', [7,0]] ]);    
-	}       
+        
     common_create_menu('files_menu', 0, inner_e);
     document.getElementById('js_zoom').innerHTML = files.zoom_arr[files.zoom]; 
 }
@@ -194,6 +182,17 @@ function files_show_addcontact(){                                        console
 	}
 }
 
+function files_show_sync(){                                              consolelog_func();
+	var inner_e = button_html(1, 
+		[['ajax_sync_past', 'files_ajax_past(1);',   [4,0]], 
+		 ['ajax_sync_rm',   'files_ajax_delete(1);', [6,0]] ]);          // !!! error
+	
+	common_create_menu('files_sync', 0, inner_e);
+	var copy_path = localStorage.getItem("copy_shortpath");              
+    if (["", undefined, null].indexOf(copy_path)!=-1 ){
+		common_disable_button("ajax_sync_past", true, function(){ files_ajax_past(1);});
+	}
+}
 
 //-- menu functions ------------------------------------------------------
 
@@ -239,11 +238,11 @@ function files_show_files(){                                             console
     var left = left_pc*window.innerWidth/100;
     
     var xwidth = ywidth*1;
-    var xspace = yspace*0.7;
+    var xspace = yspace*0.5;
                                                           
-    var xn = Math.floor((content_width-xspace*2)/(xspace+xwidth));       //console.log('xn: '+xn);	          
+    var xn = Math.floor((content_width-xspace*1)/(xspace+xwidth));       //console.log('xn: '+xn);	          
     if (xn<1){xn=1};
-    var ratio = ( content_width - xwidth*xn )/(xspace*(xn+1.5));
+    var ratio = ( content_width - xwidth*xn )/(xspace*(xn));
     var pic_width = 0.6*xwidth;                                          //console.log('xwidth: '+xwidth+' ratio: '+ratio);
     xspace = xspace*ratio;
     
@@ -251,7 +250,7 @@ function files_show_files(){                                             console
     var inner_e = "";
 	for (i=0; i<files_arr.length; i+=1){                                 
 		var n_y = (i-i%xn)/xn;
-	    var x = left+ xspace + (xspace+xwidth)* (i%xn);
+	    var x = left+ xspace*0.5 + (xspace+xwidth)* (i%xn);
 	    var y = top + (ywidth+yspace)*n_y;  
 	    
 	    if (files.entrytype[i]=="folder") { 

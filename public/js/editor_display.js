@@ -64,7 +64,9 @@ function editor_show_start(){                                            console
 }
 function editor_show_menu(){                                             consolelog_func(); 
 	var inner_e = button_html(1, 
-		[['show_lang',  [5,0]], ['show_editorfont',   [6,0]]
+		[['show_lang',       'common_show_lang(1);',   [3,0]],
+		 ['show_editorfont', 'editor_show_fontsize();',   [5,0]],
+		 ['show_clickdelay', 'common_show_clickdelay();', [4,0]] 
 		]);
     common_create_menu('editor_menu', 0, inner_e,'editor_created_elements', true);
 }
@@ -86,7 +88,7 @@ function editor_show_symbols(lang, lvl){                                 console
 	else               { symbol1 = symbol_nextpage1; symbol2 = symbol_nextpage2; }
 	if (lang===5) { symbol1 = 'эюя'; }
     
-    key_arr = editor.dict.symbolset7_all()[lang][lvl];                 
+    key_arr = editor_get_symbolset()[lang][lvl];                 
     inner_e = ''; i=0; 
     if (lvl==0){                                                      
         inner_e+= editor.style.button_delete(6);
@@ -112,13 +114,14 @@ function editor_show_symbols(lang, lvl){                                 console
 			inner_e+= '<div id="editor_caps" onclick="editor.pin_letters=1;" ' +editor.style.get_button(13) +'> pin tab </div>';
 			reserved=[14,7,20,13];
 		}
-    }                                                                  
+    }                                                    
+    var allchar = editor_get_allchar();              
     for (ii=0; ii<editor.style.b_nx*editor.style.b_ny; ii++){
         if (reserved.indexOf(ii)==-1 && i<key_arr.length){
             i_name = key_arr[i];
-            i_name_button = editor.dict.allchar_buttons()[key_arr[i]];  
+            i_name_button = allchar[1][key_arr[i]];  
             style = editor.style.get_button(ii, 1);                    
-            keys = Object.keys(editor.dict.allchar() ); nn=keys.indexOf(i_name).toString();
+            keys = Object.keys(allchar[0] ); nn=keys.indexOf(i_name).toString();
             inner_e += '<div id="editor_letter_'+i_name+'" onclick="editor_set_letter('+nn+');"  '+style+'>'+i_name_button+'</div>';
             i+=1;
         } 

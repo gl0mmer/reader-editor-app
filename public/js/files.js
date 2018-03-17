@@ -86,9 +86,7 @@ function files_start(){                                                  console
 	inner_e += "</div>";
 	document.getElementById("content_box").innerHTML = inner_e;
 	window.onbeforeunload = files_beforunload;
-	window.onresize = function(){ 
-		files_resize();
-	};	
+	window.onresize = function(){ files_resize(); };	
 	
 	if (typeof common.utter_rate != 'number'){ common.utter_rate=1; }
 }
@@ -97,9 +95,9 @@ function files_update(){                                                 console
 	                                                                     //console.log('In reader: '+localStorage.getItem("in_reader"))
 	if (localStorage.getItem("in_reader")=='yes'){
 		useFile( localStorage.getItem("reader_url") ); 
-		
+		reader_resize(); 		
 	}else{		
-		var path = localStorage.getItem("folder_path");                  
+		var path = localStorage.getItem("folder_path");                  console.log(path);        
 		if ( [files.dir,"", undefined, null, 'mail'].indexOf(path)==-1 ){
 			goTo( path );
 		}
@@ -121,7 +119,7 @@ function files_update(){                                                 console
 
 function files_ajax_enter(path){                                         consolelog_func("orange");  
 	if (path==undefined){
-		var path = files.get_enterpath(files.iter);                      //console.log('EPath: '+path+' - '+files.dir+'/'+files.get_fname());           
+		var path = files.get_enterpath(files.iter);                      //console.log('EPath: '+path+' - '+localStorage.getItem("reader_url"));           
 	}
 	if (path==-1 && files.in_contacts ){
 		files.in_contacts = false;                                       

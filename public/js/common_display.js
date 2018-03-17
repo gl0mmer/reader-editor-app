@@ -53,7 +53,7 @@ function common_disable_button(id, disable, todo){
 function button_html(lvl, arr, y_dim, x_dim){
 	if (y_dim==undefined){ y_dim = 2; }
 	if (x_dim==undefined){ x_dim = 4; }
-	var class_arr = [["symbol", "menu2"],
+	var class_arr = [["symbol", "editor"],
 	                 ["buttons_menu", "", "", "disabled buttons_menu"]];
 	
 	var html = '';
@@ -181,19 +181,19 @@ function style_content_pars(){
 	var wratio = window.innerWidth/window.innerHeight;
 	var bright = wratio*s.bright;
 	var dx = s.dy*s.b_shape; 
-	var x =  (bright - 2*dx - 1.5*s.xspace) ;
+	var x =  (bright - 2*dx - 2*s.xspace) ;
 	var dy = s.dy/s.b_shape*wratio;                                        
-	var y =  s.bright - 2*dy - 1.5*s.xspace ; 
+	var y =  s.bright - 2*dy - 2*s.xspace ; 
 	var z_height = s.zoomheight;
 	if (wratio>1){
 		var c_width = x;
 		var b_left = c_width/wratio;
-		c_width = b_left*0.96;
+		c_width = b_left-1.5-s.xspace/wratio;
 		var c_height = 100; 
 		var b_top = 0; 
 	}else{
 		var c_height = y;
-		var c_width = 100;
+		var c_width = 100-s.xspace;
 		var b_top= c_height;
 		var b_left = 0; 
 		z_height = z_height*wratio;

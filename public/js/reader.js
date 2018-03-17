@@ -70,11 +70,7 @@ function reader_start(){                                                 console
 	window.onbeforeunload = reader_beforunload;                          
 	
 	reader.fname = localStorage.getItem("reader_fname");                 // !!
-	window.onresize = function(){ 
-		style_resize();
-		reader_show_buttons();
-		reader_set_zoomtype(reader.zoomtype);
-	};
+	window.onresize = function(){ reader_resize(); };
 	reader.cookie_suffix = "_"+reader.fname;                             //console.log('cookie_suffix: '+reader.cookie_suffix);
 	                 
 	console.log('Cookie_isset: '+cookie_get('isset_'+reader.fname)+' = '+reader.fname);
@@ -86,7 +82,7 @@ function reader_start(){                                                 console
 	reader_update();
 }
 
-function reader_exit(){
+function reader_exit(order){
 	var elem = document.getElementById('menu_back_lvl0');                //console.log('Elem: '+elem);
 	if (elem){ menu_back('menu_back_lvl0',1, 0); }
 	var elem = document.getElementById('menu_back_lvl1');                //console.log('Elem: '+elem);
@@ -98,7 +94,10 @@ function reader_exit(){
 	document.getElementById('created_elements').innerHTML = '';
 	
 	utter_stop();
-	if (reader.in_messages){                                             //console.log('U: '+localStorage.getItem("reader_exitpath"));
+	if (order==-1){
+		files.in_contacts = false;                                       
+		window.location.href=localStorage.getItem("url");
+	}else if (reader.in_messages){                                             //console.log('U: '+localStorage.getItem("reader_exitpath"));
 		window.location.href=localStorage.getItem("url")+'contacts';
 	}else{
 		files_start();
@@ -142,7 +141,7 @@ function reader_update(start) {                                          console
         reader_highlite(); 
         scroll_to(reader.get_id(),'content_box', title=0);
 	}                                                                    //console.log('Save_inprocess: '+reader.save_inprocess);
-    
+    reader_resize();
 }
 
 //-- ajax function -------------------------------------------------------
@@ -320,9 +319,9 @@ function reader_editor(){                                                console
 }
 
 function reader_beforunload() {                                          consolelog_func(); 
-	//common.cookie_save.call(reader); 
-	//common.cookie_save(); 
-	if (reader.save_inprocess==false){
-		reader_exit();
-	}
+	common.cookie_save.call(reader); 
+	common.cookie_save(); 
+	//if (reader.save_inprocess==false){
+	//	reader_exit();
+	//}
 }
