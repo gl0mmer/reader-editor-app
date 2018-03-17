@@ -78,7 +78,7 @@ reader_lang['en'] = {
 	js_rfontsize    : ['x','', '0.8','1','1.2','1.4', '2', '3'],
 	js_navigate     : ['','',  'start', 'mid', 'end'],
 	place_readerzoom : '',
-	js_readerzoom   : ['','',  'no', 'word', 'sentence'], 
+	js_readerzoom   : ['','',  'no zoom', 'by word', 'by sentence'], 
 	show_editorfont : 'font size', 
 	js_editorfont   : ['','lines', '5', '4', '3','2'],
 	show_utterrate  : 'speech rate', 

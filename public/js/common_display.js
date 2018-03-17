@@ -60,11 +60,11 @@ function button_html(lvl, arr, y_dim, x_dim){
 	var name = '', tail='', inner='', id='';
 	var pos = [];
 	for (var i=0; i<arr.length; i++){
-		pos = arr[i][1];                                                 //console.log(arr[i]);
+		pos = arr[i][2];                                                 //console.log(arr[i]);
 		name = arr[i][0]; 
 		inner = dict[name];
-		if (arr[i].length>2){                                            //console.log('inner: '+inner);           
-			tail = inner[ 2+ arr[i][2] ];
+		if (arr[i].length>3){                                            //console.log('inner: '+inner);           
+			tail = inner[ 2+ arr[i][3] ];
 			id = tail;
 			inner = inner[0] +' '+ tail +' '+ inner[1];
 		}else{
@@ -75,9 +75,9 @@ function button_html(lvl, arr, y_dim, x_dim){
 		if (lvl==0){ var style = style_buttonpos(pos[0],pos[1], y_dim, x_dim); }
 		if (lvl==1){ var style = style_buttonpos_menu(pos[0],pos[1], y_dim, x_dim); }
 		if (lvl==1 && pos[1]==2){
-			html += '<div id="'+id+'_box" class="button_zoom_box " onclick="'+dict_onclick[name]+'" style="'+style+'"><div id="'+id+'" class="text_zoom">'+inner+'</div></div>';
+			html += '<div id="'+id+'_box" class="button_zoom_box " onclick="'+arr[i][1]+'" style="'+style+'"><div id="'+id+'" class="text_zoom">'+inner+'</div></div>';
 		}else{
-			html += '<div id="'+id+'" onclick="'+dict_onclick[name]+'" class="buttons '+class_name+'" style="'+style+'">'+inner+'</div>' ;
+			html += '<div id="'+id+'" onclick="'+arr[i][1]+'" class="buttons '+class_name+'" style="'+style+'">'+inner+'</div>' ;
 		}
 	}
 	return html;
@@ -123,7 +123,7 @@ function common_show_notification(text, welcome, blur){                        c
 			+ 'top:'+(-5*common.style.ry)+'vh;height:'+20*common.style.ry+'vh;'
 			+ '">'+text+' &nbsp </div> </div> </div> </div>' ;
       
-    inner_e += button_html(1, [ ['js_playpause', [11,0]], ], 3,4);
+    inner_e += button_html(1, [ ['js_playpause', 'common_play_pause();', [11,0]], ], 3,4);
                   
     element = document.createElement('div');
     element.setAttribute('id', id);
@@ -138,44 +138,23 @@ function common_show_notification(text, welcome, blur){                        c
 
 function common_show_lang(lvl, parent){                                  consolelog_func(); 
     var inner_e = ''; var lang='';
-    var inner_e = button_html(1, [['place_lang', [0,2]],
-                                  ['js_lang',    [4,0], 0],
-                                  ['js_lang',    [5,0], 1],
-                                 ]);
+    var inner_e = button_html(1, 
+		[['js_lang', 'common_set_lang(this.id)',   [4,0], 0],
+		 ['js_lang', 'common_set_lang(this.id)',   [5,0], 1],
+		 ['place_lang', '',                        [0,2]],
+		]);
     if (editor!=undefined) {parent = "editor_created_elements";}
     common_create_menu('common_lang',lvl, inner_e, parent);
     document.getElementById('place_lang').innerHTML = common.langbase;
 }
-
-function reader_show_fontsize(){
-	var inner_e = button_html(1, 
-		[['js_rfontsize',    [4,0], 0], ['js_rfontsize',   [5,0],1],
-		 ['js_rfontsize',    [6,0], 2], ['js_rfontsize',   [7,0],3],
-		 ['js_rfontsize',    [3,0], 4], ['js_rfontsize',   [2,0],5],
-		 ['place_fontsize', [0,2]   ],
-		]);
-	var alpha=common.style.r_fontalpha, font_def = common.style.r_fontsize, scale = common.r_fontsize_scale;
-	var style='"color:rgba(0,0,0,'+alpha+'); font-size:'+font_def*scale*common.style.rmin+'vmin;"';
-	
-    common_create_menu('common_fontsize',1, inner_e);
-}  
-function files_show_fontsize(){
-	var inner_e = button_html(1, 
-		[['js_ffontsize',    [7,0], 0], ['js_ffontsize',   [6,0],1],
-		 ['js_ffontsize',    [5,0], 2], ['js_ffontsize',   [4,0],3],
-		 ['place_fontsize', [0,2]   ],
-		]);
-	var alpha=common.style.f_fontalpha, font_def = common.style.f_fontsize, scale = common.f_fontsize_scale;
-	var style='"color:rgba(0,0,0,'+alpha+'); font-size:'+font_def*scale*common.style.rmin+'vmin;"';
-	
-    common_create_menu('common_fontsize',1, inner_e);
-}  
-
 function common_show_clickdelay(){                                       consolelog_func(); 
+	var onclick = 'common_set_clickdelay(this.id);';
 	var inner_e = button_html(1, 
-		[['js_delay',    [4,0], 0], ['js_delay',   [5,0], 1],
-		 ['js_delay',    [6,0], 2], ['js_delay',   [7,0], 3],
-		 ['place_delay', [0,2]]
+		[['js_delay', onclick,  [4,0], 0], 
+		 ['js_delay', onclick,  [5,0], 1],
+		 ['js_delay', onclick,  [6,0], 2], 
+		 ['js_delay', onclick,  [7,0], 3],
+		 ['place_delay', '',    [0,2]]
 	    ]);
     common_create_menu('common_clickdelay',1, inner_e);
     
@@ -183,14 +162,16 @@ function common_show_clickdelay(){                                       console
 	document.getElementById('place_delay').innerHTML = delay+' sec';
 }
 function common_show_utterrate(){                                       consolelog_func(); 
+	var onclick = 'common_set_utterrate(this.id);';
 	var inner_e = button_html(1, 
-		[['js_utterrate',    [7,0], 0], ['js_utterrate',   [6,0], 1],
-		 ['js_utterrate',    [5,0], 2], ['js_utterrate',   [4,0], 3],
-		 ['place_utterrate', [0,2]]
+		[['js_utterrate', onclick,  [7,0], 0], 
+		 ['js_utterrate', onclick,  [6,0], 1],
+		 ['js_utterrate', onclick,  [5,0], 2], 
+		 ['js_utterrate', onclick,  [4,0], 3],
+		 ['place_utterrate', '',    [0,2]]
 	    ]);
     common_create_menu('common_utterrate',1, inner_e);
 }
-
 
 //-- buttons positions ---------------------------------------------------
 
@@ -330,4 +311,4 @@ function style_resize(){                                                 console
     
 }	
 
-//------------------------------------------------------------------------
+//-- font size -----------------------------------------------------------

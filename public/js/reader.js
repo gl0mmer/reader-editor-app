@@ -215,30 +215,22 @@ function reader_set_selecttype(order, settype){                          console
     document.getElementById('js_selecttype').innerHTML=reader.selecttext[n_select_type];
 }
 
-function reader_set_zoomtype(order,id){                                  //consolelog_func(); 
-	if (id!=undefined){
-		var nav = {no:0, word:1, sentence:2};                            //console.log('nav: '+id);
-		var n_zoomtype = nav[id];   
-	}else{
-		var n_zoomtype = order;
-	}
+function reader_set_zoomtype(order){                                     //consolelog_func(); 
+	var n_zoomtype = order;   
 	reader.zoomtype = n_zoomtype;
 	
 	var elem = document.getElementById("zoom_box");     
-	var wratio = window.innerWidth/window.innerHeight;
-    var zh = common.style.zoomheight;
-    if (wratio<1){ var height = common.style.get_content_height(); zh=zh*wratio; }
-	else{ var height = 100; }
-    
+    var pars = style_content_pars();
+    var height = pars[0];
     if (n_zoomtype==0){ 
         elem.style.visibility='hidden';
     }else{
         elem.style.visibility='visible';
-        height -= zh;                                                    
+        height -= pars[2]; 
     }                                                                    
     
     reader_fill_zoom(); 
-    document.getElementById('content_box').style.height = style_content_pars()[0]*common.style.ry+'vh';    
+    document.getElementById('content_box').style.height = height*common.style.ry+'vh';    
 	elem = document.getElementById('place_readerzoom');
     if (elem){ elem.innerHTML=reader.zoomtype_arr[n_zoomtype]; }
     

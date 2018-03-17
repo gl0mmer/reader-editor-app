@@ -272,11 +272,15 @@ function common_set_fontsize(id, obj){                                   console
 		elem.style.fontSize = fontsize+'vmin'; 
 		elem.style.color = 'rgba(0,0,0,'+alpha+')';
 	}
-    $('.buttons').css('font-size', fontsize*s.b_fontsize_ratio+'vmin');
+ 
     $('.'+classname).css('font-size', fontsize+'vmin');
     $('.'+classname).css('line-height', lineheight*fontsize+'vmin');
     $('.'+classname).css('color', 'rgba(0,0,0,'+alpha+')');
-    if (obj==0){ common.f_fontsize_scale = scale;   common.style.f_fontalpha = alpha; }
+    if (obj==0){ 
+		common.f_fontsize_scale = scale;   
+		common.style.f_fontalpha = alpha; 
+		$('.buttons').css('font-size', fontsize*s.b_fontsize_ratio+'vmin');
+	}
     if (obj==1){                                            //console.log('READER');
 		common.r_fontsize_scale = scale;   common.style.r_fontalpha = alpha; 
 		var elem = document.getElementById('text_scroll_area');

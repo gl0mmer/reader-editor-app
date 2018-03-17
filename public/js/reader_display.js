@@ -98,16 +98,19 @@ function reader_highlite(){                                              console
 
 function reader_show_buttons(){                                          consolelog_func(); 
     var inner_e = button_html(0, 
-		[['show_rmenu',    [0,1]],   ['js_edit',   [1,1]],
-		 ['js_rprev',      [3,0]],   ['js_rnext',   [7,0]],
-		 ['js_selecttype', [5,0]],   ['js_playpause', [6,0]],
-		 ['show_navigate', [2,1]],   
+		[['show_rmenu', 'reader_show_menu();',    [0,1]],   
+		 ['js_edit',    'reader_editor();',       [1,1]],
+		 ['js_rprev',   'reader_play_single(0);', [3,0]],   
+		 ['js_rnext',   'reader_play_single(1);', [7,0]],
+		 ['js_selecttype', 'reader_set_selecttype(1,1);', [5,0]],   
+		 ['js_playpause',  'common_play_pause();',        [6,0]],
+		 ['show_navigate', 'reader_show_navigate();',     [2,1]],   
 		]);
 		
 	if (reader.in_messages){
-		inner_e+= button_html(0,    [['show_mail',    [4,1]], ]);
+		inner_e+= button_html(0,    [['show_mail', 'reader_show_mail();',  [4,1]], ]);
 	}else{
-		inner_e+= button_html(0,    [['js_readall',   [4,0]], ]);
+		inner_e+= button_html(0,    [['js_readall', 'reader_play_all();',  [4,0]], ]);
 	}
     var elem = document.getElementById('buttons_area');
     elem.innerHTML=inner_e;
@@ -117,24 +120,31 @@ function reader_show_buttons(){                                          console
 function reader_show_menu(){                                             consolelog_func(); 
     var n_zoom = reader.zoomtype; var obj='reader';
     var inner_e = button_html(1, 
-		[['show_rfontsize',  [4,0]],   ['show_sound',      [0,3]],
-		 ['show_lang',       [2,0]],   ['ajax_readerexit', [7,0]],
-		 ['show_readerzoom', [3,0]],   ['show_utterrate', [6,0]],
+		[['show_rfontsize',  'reader_show_fontsize();',  [4,0]],   
+		 ['show_sound',      '',                         [0,3]],
+		 ['show_lang',       'common_show_lang(1);',     [2,0]],   
+		 ['ajax_readerexit', 'reader_exit();',           [7,0]],
+		 ['show_readerzoom', 'reader_show_zoomtype();', [3,0]],   
+		 ['show_utterrate',  'common_show_utterrate();', [6,0]],
 		]);
     common_create_menu('reader_menu', 0, inner_e);
 }
 
 function reader_show_navigate(){                                         consolelog_func(); 
 	var inner_e = button_html(1, 
-		[['js_navigate',  [4,0], 0],   ['js_navigate',    [6,0], 1],
-		 ['js_navigate',  [7,0], 2]
+		[['js_navigate', 'reader_navigate(this.id);', [4,0], 0],   
+		 ['js_navigate', 'reader_navigate(this.id);', [6,0], 1],
+		 ['js_navigate', 'reader_navigate(this.id);', [7,0], 2]
 		]);
     common_create_menu('reader_navigate', 0, inner_e);
 }
+
 function reader_show_zoomtype(){                                         consolelog_func(); 
     var inner_e = button_html(1, 
-		[['place_readerzoom',  [0,2]],   ['js_readerzoom',    [4,0], 0],
-		 ['js_readerzoom',  [5,0], 1],   ['js_readerzoom',  [6,0], 2]
+		[['place_readerzoom', '', [0,2]],   
+		 ['js_readerzoom', 'reader_set_zoomtype(0);', [4,0], 0],
+		 ['js_readerzoom', 'reader_set_zoomtype(1);', [5,0], 1],   
+		 ['js_readerzoom', 'reader_set_zoomtype(2);', [6,0], 2]
 		]);
     common_create_menu('reader_zoomtype', 1, inner_e);
     
@@ -144,7 +154,25 @@ function reader_show_zoomtype(){                                         console
 
 function reader_show_mail(){                                             consolelog_func(); 
 	var inner_e = button_html(1, 
-		[['ajax_refresh',  [4,0]],   ['ajax_sendmail', [7,0]]
+		[['ajax_refresh', 'location.reload();',   [4,0]],   
+		 ['ajax_sendmail', 'reader_ajax_send();', [7,0]]
 		]);
     common_create_menu('reader_mail', 0, inner_e);
 }
+
+function reader_show_fontsize(){
+	var onclick = 'common_set_fontsize(this.id,1);';
+	var inner_e = button_html(1, 
+		[['js_rfontsize', onclick,  [4,0], 0], 
+		 ['js_rfontsize', onclick,  [5,0], 1],
+		 ['js_rfontsize', onclick,  [6,0], 2], 
+		 ['js_rfontsize', onclick,  [7,0], 3],
+		 ['js_rfontsize', onclick,  [3,0], 4], 
+		 ['js_rfontsize', onclick,  [2,0], 5],
+		 ['place_fontsize', '',     [0,2]   ],
+		]);
+	var alpha=common.style.r_fontalpha, font_def = common.style.r_fontsize, scale = common.r_fontsize_scale;
+	var style='"color:rgba(0,0,0,'+alpha+'); font-size:'+font_def*scale*common.style.rmin+'vmin;"';
+	
+    common_create_menu('common_fontsize',1, inner_e);
+}  
