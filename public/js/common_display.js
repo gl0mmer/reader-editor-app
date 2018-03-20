@@ -52,8 +52,8 @@ function common_disable_button(id, disable, todo){
 
 function button_html(lvl, arr, y_dim, x_dim){
 	if (y_dim==undefined){ y_dim = 2; x_dim=4; }
-	var class_arr = [["green", "grey", "green", "grey", "nobkg", 'green disabled', 'grey disabled'],
-	                 ["buttons_menu", "", "", "disabled buttons_menu"]];
+	var class_arr = [["green", "grey", "editor1", "editor2", 'editor1 disabled', 'editor2 disabled', 'editor1'],
+	                 ["editor1", "", "", "disabled buttons_menu"]];
 	
 	var html = '';
 	var name = '', tail='', inner='', id='';
@@ -91,7 +91,7 @@ function common_create_menu(id, lvl, buttons_html, parent, ineditor){    console
     if (lvl==0){                                                         
         menu_blur(ineditor);
         inner_e = '<div id="menu_back_lvl0"  onclick="menu_back(this.id,1,'+ineditor+');" class="back_area"></div>';
-        inner_e+= '<div id="menu_area"  class="menu_area">';
+        inner_e+= '<div id="menu_area"  class="menu_area border">';
     }else{                                                               
         inner_e = '<div id="menu_back_lvl2"  onclick="menu_back(this.id,0,'+ineditor+');" class="back_area" style="opacity:0;"></div>';
         inner_e+= '<div id="menu_area1"  class="menu_area" style="background-color:rgba(100,100,100,0.2);"></div>';
@@ -114,12 +114,13 @@ function common_show_notification(text, welcome, blur){                        c
 	common.repeat_text = common_textto_read(text);
 	menu_blur();
 	
+	var fontsize = common.style.f_fontsize*common.f_fontsize_scale*common.style.rmin*common.style.get_bfontsize_ratio();
 	inner_e = '<div id="back_lvl" onclick="menu_back(this.id,'+blur+',false);" class="back_area"> </div>';
-	inner_e+= '<div class="menu_area" >';
+	inner_e+= '<div class="menu_area border" >';
 	inner_e+= '<div class="text_scroll_box" style="position:fixed;'
 			+ 'top:'+15*common.style.ry+'vh; left:12vw;'
 			+ 'width:76vw; height:'+(52)*common.style.ry+'vh;'
-			+ 'font-size:'+4.8*common.style.ry+'vmin;line-height:'+7.5*common.style.ry+'vmin;'
+			+ 'font-size:'+fontsize+'vmin;line-height:'+fontsize*1.5+'vmin;'
 			+ 'color: rgba(0,0,0,0.55);">';
 	inner_e+= '<div class="text_scroll" align="left" style="top:0vh;"> <div class="reader_text" style="'
 			+ 'top:'+(-5*common.style.ry)+'vh;height:'+20*common.style.ry+'vh;'
@@ -185,10 +186,12 @@ function style_content_pars(){
 	
 	var wratio = window.innerWidth/window.innerHeight;
 	var dx = bsize*s.b_shape; 
-	var x =  (100*wratio - nrow*dx - (nrow+1)*bspace) ;
+	//var x =  (100*wratio - nrow*dx - (nrow+1)*bspace) ;
+	var x =  (100*wratio - nrow*dx - (nrow)*bspace) ;
 	var dy = bsize/s.b_shape*wratio;                                        
 	var y =  100 - nrow*dy - (nrow)*bspace ; 
 	
+	var v_space = s.zoomleft*1.5;
 	var z_height = s.zoomheight;  
 	if (wratio>1 && common.ineditor==false){
 		var c_width = x;
@@ -202,8 +205,11 @@ function style_content_pars(){
 		var b_top= c_height;
 		var b_left = 0; 
 		z_height = z_height*wratio;                                      
+	}                   
+	if (common.style.content_border==false){
+		c_height += 2*v_space;
 	}                                                                    //console.log('ineditor: ', common.ineditor, [c_height, c_width, z_height, b_top, b_left]);  
-	return ([c_height, c_width,  z_height,  b_top, b_left]);
+	return ([c_height, c_width,  z_height,  b_top, b_left, v_space]);
 	
 }
 	
@@ -244,12 +250,15 @@ function style_buttonpos(i, class_n, y_dim, x_dim){             //consolelog_fun
 		dx = dx/wratio;  x=x/wratio;
 	}
     
-    var fontsize = s.f_fontsize*common.f_fontsize_scale*s.get_bfontsize_ratio();   
+    var padding = 0.7;
+    var fontsize = s.f_fontsize*common.f_fontsize_scale*s.get_bfontsize_ratio(); 
+    if (common.ineditor){ padding = 0.5; }  
+    if (class_n==6){ fontsize = fontsize*1.2; }  
     var style = 'left:'+x*s.rx+'vw; top:'+y*s.ry+'vh;'
 			  + 'width:'+dx*s.rx+'vw; height:'+dy*s.ry+'vh;'
-			  + 'border-width:'+fontsize*s.rmin*0.+'vmin;'
-			  + 'border-bottom-width:'+bsize*0+'vmin;'
-			  + 'border-top-width:'+bsize*0+'vmin;'
+			  + 'padding-left:'+padding*fontsize*s.rmin+'vmin;'
+			  + 'padding-right:'+padding*fontsize*s.rmin+'vmin;'
+			  //+ 'background-clip: content-box;'
 			  + 'font-size:'+fontsize*s.rmin+'vmin; line-height:'+fontsize*1.2*s.rmin+'vmin;';	
     return(style); 
 }
@@ -290,7 +299,9 @@ function style_buttonpos_menu(i, class_n, y_dim, x_dim){                 //conso
 	}        
 	var style = 'left:'+x*s.rx+'vw; top:'+y*s.ry+'vh;'
 			  + 'width:'+dx*s.rx+'vw; height:'+s.dy*s.ry+'vmin;'
-			  + 'border-width:'+borderwidth*s.rmin+'vmin;'
+			  + 'padding-left:'+0.7*fontsize*s.rmin+'vmin;'
+			  + 'padding-right:'+0.7*fontsize*s.rmin+'vmin;'
+			  //+ 'background-clip: content-box;'
 			  + 'font-size:'+fontsize*s.rmin+'vmin; line-height:'+lineheight*s.rmin+'vmin;';  
 	 
 	return(style);
@@ -305,36 +316,72 @@ function style_resize(){                                                 console
 	if (wratio>1){ s.rmin = s.ry; }
 	else{ s.rmin = s.rx; }
 
-	[c_height, c_width,  z_height,  b_top, b_left] = style_content_pars();
+	[c_height, c_width,  z_height,  b_top, b_left, v_space] = style_content_pars();
+	var border = common.style.content_border;
 	
+	//$('.text_scroll_box').css('height', (c_height-s.zoomleft)*s.ry+'vh');
 	var name = 'content_box';
 	if (common.ineditor){name = 'editor_text_scroll'; }
 	var elem = document.getElementById(name);
     if (elem){ 
-		elem.style.width= c_width*s.rx+'vw';                      
-		elem.style.height= (c_height)*s.ry+'vh'; 
+		if (border){
+			elem.style.top    = (v_space*s.ry)+'vh';                    
+			elem.style.height = (c_height-2*v_space)*s.ry+'vh';   
+		}else{        
+			elem.style.top    = (-v_space*s.ry)+'vh';                    
+			elem.style.height = (c_height)*s.ry+'vh';   
+		}
+		if (common.ineditor){
+			elem.style.top    = '0vh';     
+			elem.style.height = (c_height-0*v_space)*s.ry+'vh';   
+			elem.style.width = (100)*s.rx+'vw';                      
+			elem.style.left  = (0*v_space)*s.rx+'vw';      
+		}else{
+			elem.style.width = c_width*s.rx+'vw';                      
+			elem.style.left  = s.zoomleft*s.rx+'vw';   
+		}                   
 	}
+	
+	var elem = document.getElementById('files_scroll');
+	if (elem){ elem.style.top = (v_space*s.ry)+'vh'; }
+	
+	if (border==false){
+		var elem = document.getElementById('files_array');
+		if (elem){ elem.style.top = (3*v_space*s.ry)+'vh'; }
+	}
+	
+    
     var elem = document.getElementById('zoom_box');
     if (elem){ 
 		if (wratio<1){
-			elem.style.width= 100*s.rx+'vw'; 
-			elem.style.left= 0*s.rx+'vw'; 
+			elem.style.width = 100*s.rx+'vw'; 
+			elem.style.left  = 0*s.rx+'vw'; 
 		}else{
 			//elem.style.width= (c_width+s.xspace/wratio-s.zoomleft)*s.rx+'vw'; 
-			elem.style.width= (c_width)*s.rx+'vw'; 
-			elem.style.left= 1.5*s.rx+'vw'; 
+			elem.style.width = (c_width)*s.rx+'vw'; 
+			elem.style.left  = 1.5*s.rx+'vw'; 
 		}
-		elem.style.height= (z_height)*s.ry+'vh'; 
-		elem.style.top= (c_height-z_height)*s.ry+'vh';             
-		elem.style.fontSize = 11*common.style.rmin+'vmin';
+		elem.style.height = (z_height-v_space)*s.ry+'vh';
+		if (border){ elem.style.top = (c_height-z_height)*s.ry+'vh';  
+		}else{       elem.style.top = (c_height-z_height-2*v_space)*s.ry+'vh'; }            
+		elem.style.fontSize   = 11*common.style.rmin+'vmin';
 		elem.style.lineHeight = 18*common.style.rmin+'vmin';
 	}
+	
 	name = 'buttons_area';
 	if (common.ineditor){name = 'editor_buttons_area'; }
     var elem = document.getElementById(name);
-    if (elem){ 
-		elem.style.left= b_left*s.rx+'vw'; 
-		elem.style.top= b_top*s.ry+'vh'; 
+    if (elem){         
+		elem.style.height = (100-2*v_space)*s.ry+'vh'; 
+		if (common.ineditor){
+			elem.style.top  = (b_top)*s.ry+'vh'; 
+			elem.style.width  = (100)*s.rx+'vw'; 
+			elem.style.left = (0)*s.rx+'vw'; 
+		}else{
+			elem.style.top  = (b_top+v_space)*s.ry+'vh'; 
+			elem.style.width  = (100-c_width-2*v_space)*s.rx+'vw'; 
+			elem.style.left = (b_left-0.5*v_space)*s.rx+'vw'; 
+		}
 	} 
     
 }	

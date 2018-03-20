@@ -15,10 +15,10 @@
 	<div hidden> @include('includes.login') </div>
 		
 	<div id='base_elements'>
-		<div id='content_box' class='text_scroll_box' style='position:fixed;height:73%;top:0%;' align='top'> 
+		<div id='content_box' class='content_box ' align='top'> 
 			...
 		</div>
-		<div id="zoom_box" class="text_zoom_box">  
+		<div id="zoom_box" class="text_zoom_box border">  
 			<div id="zoom_text" class="text_zoom">...</div> 
 		</div>
 	    <div id='buttons_area' class='buttons_area'></div>

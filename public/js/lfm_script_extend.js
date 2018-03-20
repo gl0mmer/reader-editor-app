@@ -71,6 +71,11 @@ function loadItems(dir) {
       files.url = response.homedir.substring(0,response.homedir.lastIndexOf('/'));   //console.log('Homedir: ', files.url, response.homedir, home_path);
       $('#working_dir').val(response.working_dir);                       
       $('#current_dir').text(response.working_dir);                      //console.log('Current working_dir : ' + $('#working_dir').val());
+      var i = files.entries.indexOf('trash');                            //console.log(files.entries,i);
+      if (i>-1){
+		  files.entries.splice(i, 1);
+		  files.entries.splice(1,0, 'trash');                            //console.log(files.entries);
+		  }
       setOpenFolders();                                                  	
       files_update();
     });

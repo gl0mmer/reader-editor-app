@@ -45,7 +45,7 @@ editor.style = {
 	},	
 	get_bspace: function(){
 		var wratio = window.innerWidth/window.innerHeight; 
-		return 7.5 - 2*Math.abs(wratio-1.5);  
+		return 7 - 2*Math.abs(wratio-1.5);  
 	},	
 };
 
@@ -70,7 +70,7 @@ function editor_start(parent, text_raw, destination, iter){                conso
     
 	var elem=create_element('editor_text_box','editor_scroll_box', 'editor_area'); 
 	elem.innerHTML = '<div class="text_scroll" id="editor_text_scroll"><div id="editor_text_area"  class="editor_text" >zoom word</div></div>'; 
-	elem = create_element('editor_buttons_area', 'buttons_area', 'editor_area'); 
+	elem = create_element('editor_buttons_area', 'buttons_area_editor', 'editor_area'); 
 	window.onresize = function(){ editor_resize(); };
 	
 	var input = document.getElementsByTagName('body')[0];

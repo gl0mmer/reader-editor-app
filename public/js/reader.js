@@ -57,6 +57,9 @@ function reader_start(){                                                 console
 	reader.in_messages = common.in_messages;     
 	localStorage.setItem("in_reader", "yes");	                                  
 	
+	common.style.content_border = true;
+	$("#content_box").addClass("border");
+	
 	var inner_e = "";
 	inner_e += "<div id='text_scroll_area' class='text_scroll' align='left' >";
 	inner_e += "<em id='file_title' style='font-style:normal;top:-0vh; left:1.7vw;position:relative;'> </em> ";
@@ -89,6 +92,8 @@ function reader_exit(order){
 	localStorage.setItem("in_reader", "no"); 
 	document.getElementById('created_elements').innerHTML = '';
 	
+	common.style.content_border = false;
+	$("#content_box").removeClass("border");
 	utter_stop();
 	if (order==-1){
 		files.in_contacts = false;                                       
@@ -216,7 +221,7 @@ function reader_set_zoomtype(order){                                     //conso
 	
 	var elem = document.getElementById("zoom_box");     
     var pars = style_content_pars();
-    var height = pars[0];
+    var height = pars[0]-2*pars[5];
     if (n_zoomtype==0){ 
         elem.style.visibility='hidden';
     }else{

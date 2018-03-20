@@ -51,15 +51,15 @@ function editor_capital(setcaps, lock, reset){                           console
 function editor_show_start(){                                            consolelog_func(); 
 	editor.style.state = ['start',0,0];
 	var buttons_arr = [ 
-		 ['ajax_editorexit', 'editor_exit();',  [5,1]], 
-		 ['ajax_editorsave', 'editor_save();',  [1,1]], 
-		 ['show_menu', 'editor_show_menu();',   [4,1]], 
+		 ['ajax_editorexit', 'editor_exit();',  [5,3]], 
+		 ['ajax_editorsave', 'editor_save();',  [1,3]], 
+		 ['show_menu', 'editor_show_menu();',   [4,3]], 
 		 ['', 'editor_show_symbols(0,0);',   [2,2,'123']], 
 		 ['', 'editor_show_symbols(4,0);',   [7,2,'abc']], 
 		 ['', 'editor_show_symbols(5,0);',   [8,2,'абв']], 
-		 ['', 'editor_show_navigate(0);',    [9,1,symbol_prev_next]], 
-		 ['', '',                            [0,6,'copy past']], 
-		 ['', '',                            [3,5,symbol_nextpage3]], 
+		 ['', 'editor_show_navigate(0);',    [9,3,symbol_prev_next]], 
+		 ['', '',                            [0,5,'copy past']], 
+		 ['', '',                            [3,4,symbol_nextpage3]], 
 		 ]; 
 	var inner_e0 = "<div id='editor_buttons_area_0'>" + button_html(0, buttons_arr, 2,5, true) + "</div>";
     
@@ -93,32 +93,32 @@ function editor_show_symbols(lang, lvl){                                 console
 		reserved=[5,6, 13,14,20];                                     
         reserved=[0,6,7, 13,14,20,19]; 
         
-        if (editor.parent==="files"){ buttons_arr.push( ['ajax_editorexit', 'editor_exit();',       [14,1]]  );
-		}else{                        buttons_arr.push( ['js_editorback', 'editor_backto_start();', [14,1]]  ); }                    
+        if (editor.parent==="files"){ buttons_arr.push( ['ajax_editorexit', 'editor_exit();',       [14,3]]  );
+		}else{                        buttons_arr.push( ['js_editorback', 'editor_backto_start();', [14,3]]  ); }                    
 		buttons_arr.push(
-			['js_spell', 'editor_spell();',   [0,1]],                             
+			['js_spell', 'editor_spell();',   [0,3]],                             
 			['', 'editor_show_symbols('+lang+',1);',   [13,3,symbol1]],                             
 			['', 'editor_show_symbols('+lang+',2);',   [7,3,symbol2]],                             
-			['', 'editor_delete();',   [6,1,symbol_delete]], 
-			['', 'editor_scroll(0);',   [19,1,symbol_prev]], 
-			['', 'editor_scroll(1);',   [20,1,symbol_next]], 
+			['', 'editor_delete();',   [6,3,symbol_delete]], 
+			['', 'editor_scroll(0);',   [19,3,symbol_prev]], 
+			['', 'editor_scroll(1);',   [20,3,symbol_next]], 
 			);           
 			                            
     }else {
-        buttons_arr.push( ['js_editorback', 'editor_backto_letters(0);', [14,1]]  );
+        buttons_arr.push( ['js_editorback', 'editor_backto_letters(0);', [14,3]]  );
         if (lvl===2)  { 
 			reserved=[14,0,7,13];
 			buttons_arr.push( 
 				['', 'editor_show_symbols('+lang+',1);', [13,3,symbol1]],   
-				['js_capslock', 'editor_capital(1,1,0);',       [0,1]],   
-				['js_pintab',   'editor.pin_letters=1;',        [7,1]],  
+				['js_capslock', 'editor_capital(1,1,0);',       [0,3]],   
+				['js_pintab',   'editor.pin_letters=1;',        [7,3]],  
 				); 
 		}else if (lvl===1)  { 
 			reserved=[14,7,20,13];
 			buttons_arr.push(
 				['', 'editor_show_symbols('+lang+',2);', [7,3,symbol2]],   
-				['js_caps', 'editor_capital(1,0,0);',            [20,1]],   
-				['js_pintab',   'editor.pin_letters=1;',        [13,1]],  
+				['js_caps', 'editor_capital(1,0,0);',            [20,3]],   
+				['js_pintab',   'editor.pin_letters=1;',        [13,3]],  
 				); 
 		}
     }                                                    
@@ -128,7 +128,7 @@ function editor_show_symbols(lang, lvl){                                 console
             i_name = key_arr[i];
             i_name_button = allchar[1][key_arr[i]];  
             keys = Object.keys(allchar[0] ); nn=keys.indexOf(i_name).toString();
-            buttons_arr.push( ['',  'editor_set_letter('+nn+');',   [ii,2, i_name_button]] );
+            buttons_arr.push( ['',  'editor_set_letter('+nn+');',   [ii,6, i_name_button]] );
             i+=1;
         } 
     }    
@@ -148,26 +148,26 @@ function editor_show_symbols(lang, lvl){                                 console
 function editor_show_navigate(lvl){                                      consolelog_func(); 
 	editor.style.set_nrow(2,0);
 	var buttons_arr = [
-		['', 'editor_delete();',       [6, 0, symbol_delete] ], 
-		['', 'editor_scroll(0);',      [10,1, symbol_prev] ], 
-		['', 'editor_scroll(1);',      [12,1, symbol_next] ], 
-		['', 'editor_scrollword(0);',  [9, 1, symbol_prev_prev] ], 
-		['', 'editor_scrollword(1);',  [13,1, symbol_next_next] ], 
-		['', 'editor_scrollvert(0);',  [4, 1, symbol_up] ], 
-		['', 'editor_scrollvert(1);',  [11,1, symbol_down] ], 
-		['js_sound', 'editor_sound();',[2, 0, symbols_sound[editor.sound_navigator]] ], 
+		['', 'editor_delete();',       [6, 2, symbol_delete] ], 
+		['', 'editor_scroll(0);',      [10,3, symbol_prev] ], 
+		['', 'editor_scroll(1);',      [12,3, symbol_next] ], 
+		['', 'editor_scrollword(0);',  [9, 3, symbol_prev_prev] ], 
+		['', 'editor_scrollword(1);',  [13,3, symbol_next_next] ], 
+		['', 'editor_scrollvert(0);',  [4, 3, symbol_up] ], 
+		['', 'editor_scrollvert(1);',  [11,3, symbol_down] ], 
+		['js_sound', 'editor_sound();',[2, 2, symbols_sound[editor.sound_navigator]] ], 
 		['', '',                       [0, 5, symbol_undo] ], 
 		['', '',                       [1, 5, symbol_redo] ], 
-		['js_spell', 'editor_spell();', [8,0]], 
+		['js_spell', 'editor_spell();', [8,2]], 
 		//['editor_nav_symbol', '',      [5,4,'_']], 
 		];
 
     if (lvl===0){ 
-		buttons_arr.push( ['js_editorback', 'editor_backto_start();', [7,1]] ); 
+		buttons_arr.push( ['js_editorback', 'editor_backto_start();', [7,3]] ); 
 		document.getElementById('editor_buttons_area_0').style.visibility='hidden';
 		var elem = document.getElementById('editor_buttons_area_1');
 	}else{ 
-		buttons_arr.push( ['js_editorback', 'editor_backto_letters(0);', [7,1]]  );
+		buttons_arr.push( ['js_editorback', 'editor_backto_letters(0);', [7,3]]  );
 		document.getElementById('editor_buttons_area_1').style.visibility='hidden';
 		var elem = document.getElementById('editor_buttons_area_2');
 	}

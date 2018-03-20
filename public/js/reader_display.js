@@ -103,8 +103,8 @@ function reader_highlite(){                                              console
 
 function reader_show_buttons(){                                          consolelog_func(); 
     var buttons_arr = [ 
-		 ['show_menu', 'reader_show_menu();',    [0,1]],   
-		 ['js_edit',    'reader_editor();',       [1,0, symbol_edit1]],
+		 ['show_menu', 'reader_show_menu();',    [0,1,symbol_menu]],   
+		 ['js_edit',    'reader_editor();',       [1,0, symbol_edit2]],
 		 ['js_rprev',   'reader_play_single(0);', [3,0,symbol_prev]],   
 		 ['js_rnext',   'reader_play_single(1);', [7,0,symbol_next]],
 		 ['js_selecttype', 'reader_set_selecttype(1,1);', [2,0]],   
