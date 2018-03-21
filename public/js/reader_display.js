@@ -112,7 +112,7 @@ function reader_show_buttons(){                                          console
 		 ['show_navigate', 'reader_show_navigate();',     [5,1,symbol_up_down]],   
 		 ];
 	if (reader.in_messages){
-		buttons_arr.push( ['show_mail', 'reader_show_mail();',  [4,1]] );
+		buttons_arr.push( ['show_mail', 'reader_show_mail();',  [4,1,symbol_send]] );
 	}else{
 		buttons_arr.push( ['js_readall', 'reader_play_all();',  [4,0]] );
 	}

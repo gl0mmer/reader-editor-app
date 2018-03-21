@@ -74,10 +74,9 @@ var common = {
 }
 
 common.style = {
-    yn:4, btop:3.5, bbot:96.5, 
-    xn:2, xspace:4, 
-    dy: 16.5,
-    b_shape: 1.1,
+    yn:4, xn:2, 
+    btop:3.5, bbot:96.5,  
+    dy: 15, xspace:4, b_shape: 1.1, 
     zoomheight: 22, zoomleft:1.5,
     rx: 1.0, ry:1.0, rmin:1,
  
@@ -95,6 +94,9 @@ common.style = {
 		var scale = common.f_fontsize_scale;
 		return (1.2- 0.4*(scale-1));                                 
 	},
+	get_bfontsize: function(){
+		return common.f_fontsize_scale*this.f_fontsize*this.rmin*this.get_bfontsize_ratio();
+	}
     
 }
 

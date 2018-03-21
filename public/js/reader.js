@@ -62,9 +62,10 @@ function reader_start(){                                                 console
 	
 	var inner_e = "";
 	inner_e += "<div id='text_scroll_area' class='text_scroll' align='left' >";
-	inner_e += "<em id='file_title' style='font-style:normal;top:-0vh; left:1.7vw;position:relative;'> </em> ";
+	inner_e += "<div id='title_box' > <span id='file_title'></span> </div> ";
 	inner_e += "<div id='text_from_file' class='reader_text' style='top:1vh;'> </div>";
 	inner_e += "</div>";
+	//inner_e += '<div style="position:fixed;left:86vw;top:0vh;width:23vw;height:18.5vh; background-color:rgba(78, 106, 126,0.9); border-radius:0.25vmin; "></div>';
 	document.getElementById("content_box").innerHTML = inner_e;
 	window.onbeforeunload = reader_beforunload;                          
 	
@@ -86,7 +87,8 @@ function reader_exit(order){
 	if (elem){ menu_back('menu_back_lvl0',1, 0); }
 	var elem = document.getElementById('menu_back_lvl1');                //console.log('Elem: '+elem);
 	if (elem){ menu_back('menu_back_lvl1',1, 0); }
-
+	
+	if (reader.iter_prev==undefined){ reader.iter=0; reader.iter_prev = 0; reader.id_prev= "p0s0w0";  reader.id_curr= "p0s0w0";}     
 	common.cookie_save.call(reader);
 	common.cookie_save();  
 	localStorage.setItem("in_reader", "no"); 
@@ -112,16 +114,21 @@ function reader_update(start) {                                          console
 	if (common.ischanged_text){
 		reader_ajax_save();
 	}
-                                             
+                   
+    var elem = document.getElementById('title_box');                    
     if (reader.in_messages){
-		var fname = [user.name+'/', reader.fname.replace('/','/ ')];
 		reader_messages_tohtml();
+		var title = reader.fname.substring(reader.fname.lastIndexOf('/')+1);
+		elem.className = 'reader_title_mail';
+		elem.style.fontSize = 1.5*common.style.get_bfontsize()+'vmin';
 	}else{
 		var name = localStorage.getItem("reader_savepath");
 		var i = name.lastIndexOf('/');
 	    var fname = [ user.name +'/'+ name.substring(0,i+1),  name.substring(i+1) ];
+	    var title = '<span><span style="opacity:0.4;">'+fname[0]+' </span>'+fname[1]+'</span>';
+	    elem.className = 'reader_title';
 	}
-	document.getElementById('file_title').innerHTML = '<em><span style="color:black;opacity:0.3;direction:ltr;">'+fname[0]+' </span>'+fname[1]+'</em>';
+	document.getElementById('file_title').innerHTML = title;
         
         
     var text = document.getElementById('hidden_text').innerHTML;         //console.log('Draft 3: '+text);              

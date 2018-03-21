@@ -76,7 +76,7 @@ function files_start(){                                                  console
 	}else { 
 		common.cookie_load.call(files); 
 		common.cookie_load();
-	}
+	}                                                                    
 	dict = reader_lang[common.langbase];                                 
 	
 	var inner_e = "";

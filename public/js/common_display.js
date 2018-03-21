@@ -51,7 +51,8 @@ function common_disable_button(id, disable, todo){
 
 
 function button_html(lvl, arr, y_dim, x_dim){
-	if (y_dim==undefined){ y_dim = 2; x_dim=4; }
+	if (y_dim==undefined){ y_dim = 2; x_dim=4; }                         //console.log('lang: ',reader_lang);
+	if (dict==undefined){ common.langbase='en'; dict = reader_lang['en']; }   console.log(common.langbase); console.log(dict);
 	var class_arr = [["green", "grey", "editor1", "editor2", 'editor1 disabled', 'editor2 disabled', 'editor1'],
 	                 ["editor1", "", "", "disabled buttons_menu"]];
 	
@@ -114,7 +115,7 @@ function common_show_notification(text, welcome, blur){                        c
 	common.repeat_text = common_textto_read(text);
 	menu_blur();
 	
-	var fontsize = common.style.f_fontsize*common.f_fontsize_scale*common.style.rmin*common.style.get_bfontsize_ratio();
+	var fontsize = common.style.get_bfontsize();
 	inner_e = '<div id="back_lvl" onclick="menu_back(this.id,'+blur+',false);" class="back_area"> </div>';
 	inner_e+= '<div class="menu_area border" >';
 	inner_e+= '<div class="text_scroll_box" style="position:fixed;'
@@ -187,7 +188,7 @@ function style_content_pars(){
 	var wratio = window.innerWidth/window.innerHeight;
 	var dx = bsize*s.b_shape; 
 	//var x =  (100*wratio - nrow*dx - (nrow+1)*bspace) ;
-	var x =  (100*wratio - nrow*dx - (nrow)*bspace) ;
+	var x =  (100*wratio - nrow*dx - (nrow+0.)*bspace) ;
 	var dy = bsize/s.b_shape*wratio;                                        
 	var y =  100 - nrow*dy - (nrow)*bspace ; 
 	
@@ -251,15 +252,15 @@ function style_buttonpos(i, class_n, y_dim, x_dim){             //consolelog_fun
 	}
     
     var padding = 0.7;
-    var fontsize = s.f_fontsize*common.f_fontsize_scale*s.get_bfontsize_ratio(); 
+    var fontsize = s.get_bfontsize();
     if (common.ineditor){ padding = 0.5; }  
     if (class_n==6){ fontsize = fontsize*1.2; }  
     var style = 'left:'+x*s.rx+'vw; top:'+y*s.ry+'vh;'
 			  + 'width:'+dx*s.rx+'vw; height:'+dy*s.ry+'vh;'
-			  + 'padding-left:'+padding*fontsize*s.rmin+'vmin;'
-			  + 'padding-right:'+padding*fontsize*s.rmin+'vmin;'
+			  + 'padding-left:'+padding*fontsize+'vmin;'
+			  + 'padding-right:'+padding*fontsize+'vmin;'
 			  //+ 'background-clip: content-box;'
-			  + 'font-size:'+fontsize*s.rmin+'vmin; line-height:'+fontsize*1.2*s.rmin+'vmin;';	
+			  + 'font-size:'+fontsize+'vmin; line-height:'+fontsize*1.2+'vmin;';	
     return(style); 
 }
 
@@ -289,9 +290,8 @@ function style_buttonpos_menu(i, class_n, y_dim, x_dim){                 //conso
 	var x = b_left + (b_right-b_left)/(x_dim+add) *(nx+1-(1-add)/2) - dx/2.;
 	var y = b_top +  (b_bot-b_top)/(y_dim+add) *(ny+1-(1-add)/2) - s.dy/2.;       //console.log(dx,s.dy,x,y);
 	
-	var fontsize = s.f_fontsize*common.f_fontsize_scale*s.get_bfontsize_ratio();   
+	var fontsize = s.get_bfontsize();  
 	var lineheight = fontsize*1.2;                                   
-	var borderwidth = fontsize*0.5;
 	if (class_n===2) { 
 		lineheight = lineheight+s.dy*s.ry/1.6; 
 		dx = dx + (b_right-b_left)/(x_dim+add);
@@ -299,10 +299,10 @@ function style_buttonpos_menu(i, class_n, y_dim, x_dim){                 //conso
 	}        
 	var style = 'left:'+x*s.rx+'vw; top:'+y*s.ry+'vh;'
 			  + 'width:'+dx*s.rx+'vw; height:'+s.dy*s.ry+'vmin;'
-			  + 'padding-left:'+0.7*fontsize*s.rmin+'vmin;'
-			  + 'padding-right:'+0.7*fontsize*s.rmin+'vmin;'
+			  + 'padding-left:'+0.7*fontsize+'vmin;'
+			  + 'padding-right:'+0.7*fontsize+'vmin;'
 			  //+ 'background-clip: content-box;'
-			  + 'font-size:'+fontsize*s.rmin+'vmin; line-height:'+lineheight*s.rmin+'vmin;';  
+			  + 'font-size:'+fontsize+'vmin; line-height:'+lineheight+'vmin;';  
 	 
 	return(style);
 }
@@ -319,7 +319,6 @@ function style_resize(){                                                 console
 	[c_height, c_width,  z_height,  b_top, b_left, v_space] = style_content_pars();
 	var border = common.style.content_border;
 	
-	//$('.text_scroll_box').css('height', (c_height-s.zoomleft)*s.ry+'vh');
 	var name = 'content_box';
 	if (common.ineditor){name = 'editor_text_scroll'; }
 	var elem = document.getElementById(name);
@@ -357,7 +356,6 @@ function style_resize(){                                                 console
 			elem.style.width = 100*s.rx+'vw'; 
 			elem.style.left  = 0*s.rx+'vw'; 
 		}else{
-			//elem.style.width= (c_width+s.xspace/wratio-s.zoomleft)*s.rx+'vw'; 
 			elem.style.width = (c_width)*s.rx+'vw'; 
 			elem.style.left  = 1.5*s.rx+'vw'; 
 		}

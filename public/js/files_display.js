@@ -95,7 +95,7 @@ function files_show_menu(){                                              console
 		 ['show_fontsize',   'files_show_fontsize();', [5,0]],
 		 ['show_sound',      '',                       [1,3]], 
 		 ['show_bugfix',     'files_show_bugfix();',   [0,0]]  
-		]);
+		] );
         
     common_create_menu('files_menu', 0, inner_e);
     document.getElementById('js_zoom').innerHTML = dict.place_fileszoom[files.zoom]; 
