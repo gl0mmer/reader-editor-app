@@ -48,7 +48,7 @@ function editor_capital(setcaps, lock, reset){                           console
 
 //-- show buttons ---------------------------------------------------------------
 
-function editor_show_start(){                                            consolelog_func(); 
+function editor_show_start(){                                            consolelog_func(); console.log('show_start');
 	editor.style.state = ['start',0,0];
 	var buttons_arr = [ 
 		 ['ajax_editorexit', 'editor_exit();',  [5,3]], 
@@ -68,7 +68,7 @@ function editor_show_start(){                                            console
     inner_e2 = "<div id='editor_buttons_area_2'></div>";
     inner_e3 = "<div id='editor_buttons_area_3'></div>";
     inner_e4 = "<div id='editor_buttons_area_4'></div>";
-    elem.innerHTML = inner_e0+inner_e1+inner_e2 + inner_e3 + inner_e4;
+    elem.innerHTML = inner_e0+inner_e1+inner_e2 + inner_e3 + inner_e4;   //console.log(elem.innerHTML);
 }
     
 function editor_show_symbols(lang, lvl){                                 consolelog_func(); 
@@ -133,8 +133,11 @@ function editor_show_symbols(lang, lvl){                                 console
         } 
     }    
     
+    var elem = document.getElementById('editor_buttons_area_0');         //console.log(elem);
     if (lvl==0){
-        document.getElementById('editor_buttons_area_0').style.visibility='hidden';
+		if (elem){
+			document.getElementById('editor_buttons_area_0').style.visibility='hidden';
+		}
         elem = document.getElementById('editor_buttons_area_1');
     }else{
         document.getElementById('editor_buttons_area_1').style.visibility='hidden';

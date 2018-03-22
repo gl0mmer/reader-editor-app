@@ -351,7 +351,7 @@ function files_edittext(id){                                             console
 			text = fname;
 		}
 	}
-    editor_start('files', text, id.substring(0,id.lastIndexOf('_')) );                                       //console.log('Edit: '+id+' '+text+' '+files.entrytype);
+    editor_start('files', text, id.substring(0,id.lastIndexOf('_')) );   console.log('Edit: '+id+' '+text+' '+files.entrytype);
 }
 
 function files_beforunload() {                                           consolelog_func();
