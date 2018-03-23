@@ -10,7 +10,7 @@ var files = {
 	userpass: "",
 	userremember: false,
 	
-	cookie_number: 7,
+	cookie_number: 6,
 	cookie_suffix: "_f",
 	name: "files",
 	

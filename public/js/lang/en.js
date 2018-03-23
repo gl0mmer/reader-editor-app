@@ -91,7 +91,7 @@ reader_lang['en'] = {
 	alert_wasdeleted : 'Item was deleted',
 	alert_wasrenamed : 'Item was renamed',
 	
-	alert_signin     : 'Signed in succesfully, user name is ',
+	alert_signin     : 'Signed in successfully, user name is ',
 	alert_signup     : 'New account was created, user name is ',
 	alert_logout     : 'Loged out succesfully',
 	

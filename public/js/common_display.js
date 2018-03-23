@@ -272,8 +272,8 @@ function style_buttonpos_menu(i, class_n, y_dim, x_dim){                 //conso
 	var b_top = 10; var b_bot = 90;
 	var wratio = window.innerWidth/window.innerHeight; 
 	if (x_dim*y_dim==8){              
-		if (wratio<1.3 && wratio>0.8){ x_dim=3; y_dim=3; }
-		if (wratio>1.3 ){ x_dim=4; y_dim=2; }
+		if (wratio<1.2 && wratio>0.8){ x_dim=3; y_dim=3; }
+		if (wratio>1.2 ){ x_dim=4; y_dim=2; }
 		if (wratio<0.8 ){ x_dim=2; y_dim=4; }                           
 	}else if (x_dim*y_dim==12){
 		if (wratio<2.3 && wratio>1){ x_dim=4; y_dim=3; }

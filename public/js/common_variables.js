@@ -38,7 +38,7 @@ var common = {
 	utter_rate: 1,
 	alert_text: '',
 	
-	cookie_number: 14,         //ERROR!! somehow it gets value of 15 after load_cookie(), cookie_suffix is lost
+	cookie_number: 13,         //ERROR!! somehow it gets value of 15 after load_cookie(), cookie_suffix is lost
 	//cookie_suffix: "_",                                           
 	name: "common",
 	play_counter: 0,           
@@ -97,7 +97,10 @@ common.style = {
 		return (1.2- 0.4*(scale-1));                                 
 	},
 	get_bfontsize: function(){
-		return common.f_fontsize_scale*this.f_fontsize*this.rmin*this.get_bfontsize_ratio();
+		var wratio = window.innerWidth/window.innerHeight;
+		if (wratio>1){ var r = this.rmin; }
+		else         { var r = 1; }
+		return r*common.f_fontsize_scale*this.f_fontsize*this.get_bfontsize_ratio();
 	}
     
 }
