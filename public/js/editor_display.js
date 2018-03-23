@@ -1,5 +1,5 @@
 
-function editor_resize(){
+function editor_resize(){                                                consolelog_func("darkblue");
 	style_resize();
 	var state = editor.style.state;
 	if (state[0]=='start'){ editor_show_start(); editor_set_fontsize(editor.style.nlines_lvl0, 0);  }
@@ -17,10 +17,10 @@ function editor_backto_letters(change_style){                            console
     if (change_style==1){ 
 		editor.style.set_nrow(3,1);
 	}
+	editor.style.state = ['letters',editor.style.state[1],0];
     document.getElementById('editor_buttons_area_1').style.visibility='visible';
     document.getElementById('editor_buttons_area_2').style.visibility='hidden';
     document.getElementById('editor_buttons_area_3').style.visibility='hidden';
-    document.getElementById('editor_text_box').style.width='96%';
     editor.pin_letters = 0;
 }
 
@@ -50,6 +50,8 @@ function editor_capital(setcaps, lock, reset){                           console
 
 function editor_show_start(){                                            consolelog_func(); console.log('show_start');
 	editor.style.state = ['start',0,0];
+	editor.style.set_nrow(2,0);
+	
 	var buttons_arr = [ 
 		 ['ajax_editorexit', 'editor_exit();',  [5,3]], 
 		 ['ajax_editorsave', 'editor_save();',  [1,3]], 
@@ -72,11 +74,11 @@ function editor_show_start(){                                            console
 }
     
 function editor_show_symbols(lang, lvl){                                 consolelog_func(); 
-    var state = editor.style.state;
-    if (state[0]!='letters' || state[1]!=lang || state[2]!=lvl){         //console.log('State');
+    //var state = editor.style.state;
+    //if (state[0]!='letters' || state[1]!=lang || state[2]!=lvl){         console.log('State');
 		editor.style.state = ['letters',lang,lvl];
 		editor.style.set_nrow(3,1);
-	}
+	//}
     var b_nx=7;
     
     var symbol1, symbol2;

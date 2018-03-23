@@ -35,9 +35,12 @@ editor.style = {
 	
 	state: ['start',0],         // remember panel to reopen when resize
 	
-	set_nrow: function(nrow, lvl){
+	set_nrow: function(nrow, lvl){                                       consolelog_func('brown');
 		this.b_ny=nrow;
-		editor_resize();
+		style_resize();
+		if (lvl==0){ editor_set_fontsize(editor.style.nlines_lvl0, 0);  }
+		else { editor_set_fontsize(editor.style.nlines_lvl1, 1); }
+		editor_set_cursor();
 	},
 	get_bsize: function(){
 		var wratio = window.innerWidth/window.innerHeight; 
@@ -103,8 +106,9 @@ function editor_start(parent, text_raw, destination, iter){                conso
     if (editor.text_raw.length>1){
 		editor.iter = editor.text_raw.length;
 		editor_scroll(0,'no');
-	}
-	editor_set_cursor();                                                     
+	}else{
+		editor_set_cursor(); 
+	}                                                    
 	editor_show_start();                                                   
 	if (parent==='files') { editor_show_symbols(3,0); }
 }
@@ -130,8 +134,6 @@ function editor_exit(){                                                  console
 		window.onresize = function(){ files_resize(); };                     
 		elem = document.getElementById(editor.destination);
 		if (elem) { elem.innerHTML = editor.text_raw; }               
-		elem = document.getElementById("ffiles_edit_text" );
-		if (elem) { elem.value = editor.text_raw; }   
 		files_resize();                   
 	}  
 }function editor_save(){                                                 consolelog_func("darkblue"); 
@@ -165,7 +167,7 @@ function editor_delete(){                                                console
 		editor.text_raw = text_c;	
         editor_set_cursor(); 
     }
-}function editor_set_letter(n, keypress){                                          consolelog_func(); 
+}function editor_set_letter(n, keypress){                                          consolelog_func('darkblue'); 
 	if (keypress===undefined) { keypress=false; }
 	var letter = "";
 	var iter = editor.iter;
@@ -239,7 +241,7 @@ function editor_spell(){                                                 console
 
 //-- navigation functions ------------------------------------------------
 
-function editor_scrollvert(order){                                       consolelog_func(); 
+function editor_scrollvert(order){                                       consolelog_func('darkblue'); 
     order = parseInt(order);
     var iter_prev = editor.iter;
     var iter_save = iter_prev; 
@@ -271,7 +273,7 @@ function editor_scrollvert(order){                                       console
     var text_read = editor_textto_read( editor.text_raw.substring(iter_save, iter) );
 	if (editor.sound_navigator==1) { utter(text_read, 1); }   
 }
-function editor_scrollword(order){                                       consolelog_func(); 
+function editor_scrollword(order){                                       consolelog_func('darkblue'); 
     order = parseInt(order);
     var iter = editor.iter;
     var text = editor.text_raw;
@@ -302,7 +304,7 @@ function editor_scrollword(order){                                       console
 	var text_read = editor_textto_read( text.substring(i_left, i_right) );
 	if (editor.sound_navigator==1) { utter(text_read, 1); }   
 }
-function editor_scroll(order, if_utter){                                           consolelog_func(); 
+function editor_scroll(order, if_utter){                                 consolelog_func('darkblue'); 
     var ltag = editor.symbol_ltag, rtag = editor.symbol_rtag; 
     var iter = editor.iter;
     var iter_prev = iter;
@@ -350,7 +352,10 @@ function editor_set_cursor(){                                            console
 		var cursor = '<em id="cursor" style="position:relative;"><em class="blinking-cursor" style="position:absolute;left:-'+cursorshift.toString()+'px;" >|</em></em>'; 
     }
     var iter = editor.iter;                                           
-    var text = editor.text_raw;                                     
+    var text = editor.text_raw;                                          //console.log(iter, text.length);
+    if (text.length<1){ iter = 0; editor.iter=iter; }
+    else if (iter>text.length){ iter = text.length-1; editor.iter=iter; }
+                                         
     var rspace = text.indexOf(' ',iter);                                  
     var lspace = text.substr(0,iter).lastIndexOf(' ');                       
     

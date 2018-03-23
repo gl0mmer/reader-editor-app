@@ -196,7 +196,7 @@ function common_playpause_icon(i){
 //-- cookie functions ----------------------------------------------------
 
 function cookie_get(cname) {                                             //consolelog_func(); 
-    var name = cname + "=";                                              
+    var name = cname + "=";                                              //console.log(document.cookie);         
     decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(';');  
     var i;  var c;
@@ -241,6 +241,8 @@ function common_set_lang(lang){                                          console
 	document.getElementById('place_lang').innerHTML = lang;	  
 	dict = lang[common.langbase];        
 	location.reload();
+	//files_start();
+	//files_resize();
 }
 function common_set_utterrate(rate){                                     consolelog_func();
 	console.log('rate: '+rate);
@@ -346,13 +348,13 @@ function consolelog(text, lvl, color){
 	console.log('%c'+text, 'color:'+color); 
 }
 
-function editor_textto_read(text){                                       consolelog_func(); 
+function editor_textto_read(text){                                       consolelog_func('grey'); 
 	text = text.replace(/<br>/g, ' new line ');
 	text = text.replace(/<abbr>/g, '');
 	text = text.replace('</abbr>', '');
 	return(text);
 }
-function common_textto_read(text){                                       consolelog_func(); 
+function common_textto_read(text){                                       consolelog_func('grey'); 
 	text = text.replace(/<br>/g, ' ');                                   
 	text = text.replace(/\n/g,' ');   
 	return(text);

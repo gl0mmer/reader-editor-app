@@ -65,10 +65,8 @@ function loadItems(dir) {
       $('#content').html(response.html);                                 //console.log('Resp.html: '+response.html);
       files.entries = response.entries;                                  //console.log('Paths: '+response.paths);
       files.entrytype = response.entrytype;                              
-      var home_path = response.path;
-      files.home = home_path.substring(0,home_path.lastIndexOf('/'));   
       files.dir = response.working_dir;
-      files.url = response.homedir.substring(0,response.homedir.lastIndexOf('/'));   //console.log('Homedir: ', files.url, response.homedir, home_path);
+      files.url = response.homedir.substring(0,response.homedir.lastIndexOf('/'));   //console.log('Homedir: ', files.url, response.homedir);
       $('#working_dir').val(response.working_dir);                       
       $('#current_dir').text(response.working_dir);                      //console.log('Current working_dir : ' + $('#working_dir').val());
       var i = files.entries.indexOf('trash');                            //console.log(files.entries,i);

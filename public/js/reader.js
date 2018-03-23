@@ -8,10 +8,10 @@ var reader = {
     iter: 0,
     selecttype: 2,
     zoomtype: 0,
-    text_origin: "", editor_text: "", mailtext: "",
+    editor_text: "", mailtext: "",
     editor_iter: 0,
     
-    cookie_number: 12,
+    cookie_number: 11,
     cookie_suffix: "_",
     name: 'reader',
     
@@ -137,7 +137,6 @@ function reader_update(start) {                                          console
 	reader.word_id=parser[1]; reader.sentence_id=parser[2]; reader.paragraph_id=parser[3];
 																	
 	document.getElementById('text_from_file').innerHTML = text_parsed;  
-	reader.text_origin = text;
 	reader.text_parsed = text_parsed;                                    //console.log('Draft 4: '+text_parsed);
     
     reader_show_buttons();    

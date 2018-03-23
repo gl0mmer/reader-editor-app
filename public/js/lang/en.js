@@ -90,6 +90,11 @@ reader_lang['en'] = {
 	alert_wascopied  : 'Item was copied',
 	alert_wasdeleted : 'Item was deleted',
 	alert_wasrenamed : 'Item was renamed',
+	
+	alert_signin     : 'Signed in succesfully, user name is ',
+	alert_signup     : 'New account was created, user name is ',
+	alert_logout     : 'Loged out succesfully',
+	
 	alert_welcome   : "Hi! <br>This website helps people to read and write. <br><br>"
 					+ "Check 'Welcome.txt' file for details. "
 					+ "You will see it after closing this window. "

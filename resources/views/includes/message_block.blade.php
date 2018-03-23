@@ -6,6 +6,7 @@
 					<li> {{ $error }} </li>
 					<script> 
 						console.log("PHP Error: "+"{{ $error }}" ); 
+						files.php_errors.push( "{{ $error }}" );
 					</script>
 				@endforeach
 			</ul>
@@ -18,7 +19,8 @@
 		<div class="col-md-5 success">
 			{{ Session::get('msg') }}
 			<script> 
-				console.log("PHP Message: "+"{{ Session::get('msg') }}" ); 
+				console.log("PHP Message: "+"{{ Session::get('msg') }}" );
+				files.php_messages.push( "{{ Session::get('msg') }}"  );
 			</script>
 		</div>
 	</div>	

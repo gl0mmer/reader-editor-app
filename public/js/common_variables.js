@@ -36,9 +36,10 @@ var common = {
 	editor_text: '',
 	ischanged_text: false,
 	utter_rate: 1,
+	alert_text: '',
 	
-	cookie_number: 13,
-	cookie_suffix: "_",
+	cookie_number: 14,         //ERROR!! somehow it gets value of 15 after load_cookie(), cookie_suffix is lost
+	//cookie_suffix: "_",                                           
 	name: "common",
 	play_counter: 0,           
 	utter_recursive_done: 1,           
@@ -48,16 +49,17 @@ var common = {
 	time_click: 0,
 	ineditor: false,
 	browser: "",
+	cookie_suffix: "_",
 	
 	cookie_save: function(){                                             consolelog_func('brown');
-	    var keys = Object.keys(this);                                    
+	    var keys = Object.keys(this);                                    //console.log('cookie_number save',this.cookie_number);                        
 	    var i;
 	    for (i=0; i<this.cookie_number; i+=1){                             
 	        cookie_set(keys[i]+this.cookie_suffix, this[keys[i]].toString() );  //console.log('save_cookie: '+i+' | '+this.cookie_suffix+' | '+this[keys[i]].toString());                    
 		}
 	},
 	cookie_load: function(){                                             consolelog_func('brown');
-	    var keys = Object.keys(this);                                    
+	    var keys = Object.keys(this);                                    //console.log('cookie_number load', this.cookie_number);                        
 	    var i; var v;
 	    for (i=0; i<this.cookie_number; i+=1){                           
 			v = cookie_get(keys[i]+this.cookie_suffix);                  //console.log('load_cookie: '+i+' | '+this.cookie_suffix+' | '+v);       

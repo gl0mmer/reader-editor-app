@@ -50,9 +50,8 @@ function common_disable_button(id, disable, todo){
 //-- create html ---------------------------------------------------------
 
 
-function button_html(lvl, arr, y_dim, x_dim){
-	if (y_dim==undefined){ y_dim = 2; x_dim=4; }                         //console.log('lang: ',reader_lang);
-	if (dict==undefined){ common.langbase='en'; dict = reader_lang['en']; }   //console.log(common.langbase); console.log(dict);
+function button_html(lvl, arr, y_dim, x_dim){                            consolelog_func('grey', true);
+	if (y_dim==undefined){ y_dim = 2; x_dim=4; }                         //console.log('lang: ',common.langbase, reader_lang);
 	var class_arr = [["green", "grey", "editor1", "editor2", 'editor1 disabled', 'editor2 disabled', 'editor1'],
 	                 ["editor1", "", "", "disabled buttons_menu"]];
 	

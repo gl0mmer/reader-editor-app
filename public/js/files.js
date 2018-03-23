@@ -18,12 +18,11 @@ var files = {
 	paths: [],
 	entrytype: [],
 	dir: "",
-	home: '',
-	in_contacts: false,
-	contacts: [],
-	messages: [],
 	url: '',
+	in_contacts: false,
 	items_protected: ['..','trash'],
+	php_errors: [],
+	php_messages: [],
 	
 	get_fname: function(i){                                              //consolelog_func('brown');
 		if (i===undefined) {i=this.iter;} 
@@ -69,7 +68,7 @@ var files = {
 //-- start/update --------------------------------------------------------
 function files_start(){                                                  consolelog_func('darkblue');  
 	
-	if (cookie_get('isset_files_')!='isset'){                            
+	if (cookie_get('isset_files_')!='isset'){                            console.log('No cookie!!');                        
 		cookie_set("isset_files_", "isset");
 		common.cookie_save.call(files);
 		common.cookie_save();
@@ -85,7 +84,7 @@ function files_start(){                                                  console
 	inner_e += "</div>";
 	document.getElementById("content_box").innerHTML = inner_e;
 	window.onbeforeunload = files_beforunload;
-	window.onresize = function(){ files_resize(); };	
+	window.onresize = function(){ files_resize(); };	                 
 	
 	if (typeof common.utter_rate != 'number'){ common.utter_rate=1; }
 }
@@ -96,19 +95,26 @@ function files_update(){                                                 console
 		useFile( localStorage.getItem("reader_url") ); 
 		reader_resize(); 		
 	}else{		
-		var path = localStorage.getItem("folder_path");                  //console.log(path);        
-		if ( [files.dir,"", undefined, null, 'mail'].indexOf(path)==-1 ){
+		var path = localStorage.getItem("folder_path");                  //console.log('Folder_path:',path);    
+		if ( [files.dir,"", undefined, null, 'mail'].indexOf(path)==-1 ){  
+			console.log('goTo():', path);                                // Can get stuck here!!     
 			goTo( path );
 		}
-		files_resize();
-		if (files.entries.length>0){
-			files_scroll(files.iter, 'no');
-			files_fill_zoom();
-			files_set_zoom('no');    
-		}                                                                //console.log('files.dir: '+files.dir+',  get_subdir(): '+files.get_subdir());
+		files_resize();                 
+		var errors = files.php_errors;                                   //console.log(files.php_messages[0]);                
+		if (errors.length>0){ 
+			common.alert_text = '';
+			for (i=0; i<errors.length; i++){ common.alert_text += errors[i]+'<br>'; }
+		}else if(files.php_messages.length>0){
+			if (files.php_messages[0].toLowerCase().indexOf('error')>-1){ common.alert_text = 'Error'; }
+		}
+		                                                                 //console.log('files.dir: '+files.dir+',  get_subdir(): '+files.get_subdir());
 		if (common.welcome=='do' && localStorage.getItem("show_welcome")==="yes" ){ 
 			common_show_notification(dict.alert_welcome, false, 1);
 			localStorage.setItem("show_welcome",'no');
+		}else if (common.alert_text!=''){
+			common_show_notification(common.alert_text, false, 1);
+			common.alert_text = '';
 		} 
 	}
 	                                                                     //console.log('Parent dir: '+getPreviousDir());
@@ -137,7 +143,7 @@ function files_ajax_enter(path){                                         console
 			if (previous_dir == '') return;
 			path = previous_dir;
 		}
-		localStorage.setItem("folder_path", path);                       
+		localStorage.setItem("folder_path", path);                       console.log('SET PATH');                      
 		goTo( path );
 		files.iter_prev = 0;
 		files.iter = 0;
@@ -308,6 +314,9 @@ function files_signin(){                                                 console
     var pass = document.getElementById('edit_userpass').innerHTML;
     document.getElementById('signin_username').value = name;
     document.getElementById('signin_password').value = pass;
+    
+    common.alert_text = dict.alert_signin+name;
+    localStorage.setItem("folder_path", '');                             console.log('SignIn:',name, pass);
     document.getElementById('signin_submit').click();  
 }
 function files_signup(){                                                 consolelog_func();
@@ -318,11 +327,14 @@ function files_signup(){                                                 console
 	document.getElementById('signup_email').value = email;
 	document.getElementById('signup_username').value = name;
     document.getElementById('signup_password').value = pass;
+    common.alert_text = dict.alert_signup+name;
     document.getElementById('signup_submit').click();  
 }
 
 
 function files_logout(){                                                 consolelog_func();
+	common.alert_text = dict.alert_logout;
+	localStorage.setItem("folder_path", ''); 
     document.getElementById('logout_submit').click();
 }
 function files_login_remember(){                                         consolelog_func();
@@ -351,7 +363,7 @@ function files_edittext(id){                                             console
 			text = fname;
 		}
 	}
-    editor_start('files', text, id.substring(0,id.lastIndexOf('_')) );   console.log('Edit: '+id+' '+text+' '+files.entrytype);
+    editor_start('files', text, id.substring(0,id.lastIndexOf('_')) );   //console.log('Edit: '+id+' '+text+' '+files.entrytype);
 }
 
 function files_beforunload() {                                           consolelog_func();

@@ -65,11 +65,11 @@ class UserController extends Controller
 	
 	public function postSignUp(Request $request) 
 	{	
-		$msg = 'Error';
-		$this->validate($request, [
+		$msg = 'Success';
+		if (!$this->validate($request, [
 			'first_name' => 'required|max:20|unique:users',
 			'password' => 'required|min:4'
-		]);
+		]) ) { return redirect()->route('home'); }
 		
 		$email = $request['email'];
 		$username = $request['first_name'];
@@ -96,15 +96,16 @@ class UserController extends Controller
 	public function postSignIn(Request $request)
 	{
 		$msg = 'SignIn Error';
-		$this->validate($request, [
+		
+		if (!$this->validate($request, [
 			'first_name' => 'required',
 			'password' => 'required'
-		]);
+		]) ){ return redirect()->route('home'); }
 		
-		if (Auth::attempt(['first_name'=>$request['first_name'], 'password'=>$request['password']])){
+		if ( $request['first_name']=='name' ){
+			$msg = 'SignIn Error wrong name';
+		}else if (Auth::attempt(['first_name'=>$request['first_name'], 'password'=>$request['password']])){
 			$msg = 'SignIn success';
-			//return redirect()->route('dashboard') ->with(['msg'=>$msg]);
-			return redirect()->route('home');
 		}
 		//return redirect()->route('login') ->with(['msg'=>$msg]);
 		return redirect()->back() ->with(['msg'=>$msg]);

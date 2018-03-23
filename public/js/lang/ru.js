@@ -90,6 +90,11 @@ reader_lang['ru'] = {
 	alert_wascopied  : 'Файл скопирован',
 	alert_wasdeleted : 'Файл удален',
 	alert_wasrenamed : 'Файл переименован',
+	
+	alert_signin     : 'Вход совершен, имя пользователя - ',
+	alert_signup     : 'Новый аккаунт создан, имя пользователя - ',
+	alert_logout     : 'Выход совершен',
+	
 	alert_welcome    : "Hi! <br>This website helps people to read and write. <br><br>"
 					 + "Check 'Welcome.txt' file for details. "
 					 + "You will see it after closing this window. "

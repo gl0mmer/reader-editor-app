@@ -56,7 +56,6 @@
 	</div>
 	<div hidden style="position:fixed;top:50%;">		
 		
-		<meta name="csrf-token" content="{{ Session::token() }}"> 
 		@if ($in_contacts)
 			<?php $i=0; ?>
 			Connection: {{ count($connections) }}<br>
