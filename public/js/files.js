@@ -106,7 +106,7 @@ function files_update(){                                                 console
 			common.alert_text = '';
 			for (i=0; i<errors.length; i++){ common.alert_text += errors[i]+'<br>'; }
 		}else if(files.php_messages.length>0){
-			if (files.php_messages[0].toLowerCase().indexOf('error')>-1){ common.alert_text = 'Error'; }
+			if (files.php_messages[0].toLowerCase().indexOf('error')>-1){ common.alert_text = dict.alert_error; }
 		}
 		                                                                 //console.log('files.dir: '+files.dir+',  get_subdir(): '+files.get_subdir());
 		if (common.welcome=='do' && localStorage.getItem("show_welcome")==="yes" ){ 
@@ -191,8 +191,13 @@ function files_ajax_addcontact(){
 	if ( !common_ajax_permit() ){ return true; }
 	
 	var new_contact = document.getElementById('edit_contactname').innerHTML; 
-	document.getElementById('addcontact_name').value = new_contact;
-	document.getElementById('addcontact_submit').click(); 
+	if (new_contact==user.name){ common_show_notification(dict.alert_namewrong,0,1); }
+	else if( files.entries.indexOf(new_contact)>-1 ){ common_show_notification(dict.alert_contactexists,0,1); }
+	else{
+		document.getElementById('addcontact_name').value = new_contact;
+		document.getElementById('addcontact_submit').click(); 
+		common.alert_text = dict.alert_newcontact+new_contact;
+	}
 }
 
 function files_ajax_rename(){

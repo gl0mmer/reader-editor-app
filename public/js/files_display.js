@@ -93,8 +93,9 @@ function files_show_menu(){                                              console
 		 ['js_zoom',         'files_set_zoom();',      [6,0]],
 		 ['show_clickdelay', 'common_show_clickdelay();', [4,0]], 
 		 ['show_fontsize',   'files_show_fontsize();', [5,0]],
-		 ['show_sound',      '',                       [1,3]], 
-		 ['show_bugfix',     'files_show_bugfix();',   [0,0]]  
+		 ['show_sound',      '',                       [2,3]], 
+		 ['show_bugfix',     'files_show_bugfix();',   [0,0]],  
+		 ['ajax_refresh',    'location.reload();',     [1,0]], 
 		] );
         
     common_create_menu('files_menu', 0, inner_e);
@@ -183,7 +184,7 @@ function files_show_addcontact(){                                        console
 	}else{
 		var inner_e = button_html(1, 
 			[['edit_contactname', 'files_edittext(this.id);', [0,2]], 
-			 ['ajax_addcontact',  'files_ajax_addcontact();'  [4,0]] ]);
+			 ['ajax_addcontact',  'files_ajax_addcontact();', [4,0]] ]);
 		common_create_menu('files_addcontact', 0, inner_e);
 	}
 }

@@ -126,11 +126,12 @@ function reader_show_menu(){                                             console
     var n_zoom = reader.zoomtype; var obj='reader';
     var inner_e = button_html(1, 
 		[['show_fontsize',   'reader_show_fontsize();',  [5,0]],   
-		 ['show_sound',      '',                         [1,3]],
+		 ['show_sound',      '',                         [2,3]],
 		 ['show_lang',       'common_show_lang(1);',     [3,0]],   
 		 ['show_readerzoom', 'reader_show_zoomtype();',  [6,0]],   
 		 ['show_utterrate',  'common_show_utterrate();', [0,0]],
 		 ['show_clickdelay', 'common_show_clickdelay();', [4,0]], 
+		 //['ajax_refresh',    'location.reload();',       [1,0]], 
 		]);
 	if (reader.in_messages){ 
 		inner_e+= button_html(1, [['ajax_readerexit', 'reader_exit();',   [7,0,symbol_people]] ]);   

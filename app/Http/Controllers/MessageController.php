@@ -126,7 +126,7 @@ class MessageController extends Controller
 			}
 		
 		}else{
-			$msg = 'User does not exist';
+			$msg = 'Error: User does not exist';
 		}
 		return redirect()->back()-> with(['msg'=>$msg]);
 	}

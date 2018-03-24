@@ -30,7 +30,7 @@ reader_lang['ru'] = {
 	ajax_upload     : 'Загру- зить',
 	ajax_newdir     : 'Создать папку',
 	ajax_newtxt     : 'Создать файл',
-	ajax_addcontact : 'Добавить',
+	ajax_addcontact : 'Доба- вить',
 	ajax_reinit     : 'Reinit files',
 	js_cleancookie  : 'Clean cookie',
 	
@@ -43,7 +43,7 @@ reader_lang['ru'] = {
 	
 	js_edit         : 'Редак- тировать',
 	js_readall      : 'Читать все',
-	ajax_refresh    : 'Обновить',
+	ajax_refresh    : 'Обно- вить',
 	ajax_sendmail   : 'Отпра- вить',
 	
 	edit_create     : '',
@@ -86,10 +86,13 @@ reader_lang['ru'] = {
 	alert_nameexists : 'Имя уже используется',
 	alert_newfolder  : 'Новая папка создана',
 	alert_newtxt     : 'Новый файл создан',
+	alert_newcontact : 'Новый контакт создан, имя контакта - ',
 	alert_waspasted  : 'Файл вставлен',
 	alert_wascopied  : 'Файл скопирован',
 	alert_wasdeleted : 'Файл удален',
 	alert_wasrenamed : 'Файл переименован',
+	alert_namewrong  : 'Неправильное имя',
+	alert_contactexists : 'Контакт с данным именем уже существует',
 	
 	alert_signin     : 'Вход совершен, имя пользователя - ',
 	alert_signup     : 'Новый аккаунт создан, имя пользователя - ',

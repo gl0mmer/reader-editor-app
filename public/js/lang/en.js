@@ -80,16 +80,19 @@ reader_lang['en'] = {
 	ajax_editorsave  : 'Save',
 	
 	
-	alert_error     : 'Error',
-	alert_guest     : 'You need registration to proceed',
+	alert_error      : 'Error',
+	alert_guest      : 'You need registration to proceed',
 	alert_nameempty  : 'Name is empty',
 	alert_nameexists : 'Name exists',
 	alert_newfolder  : 'New folder was created',
 	alert_newtxt     : 'New text file was created',
+	alert_newcontact : 'New contact was created, contact name is ',
 	alert_waspasted  : 'Item was pasted',
 	alert_wascopied  : 'Item was copied',
 	alert_wasdeleted : 'Item was deleted',
 	alert_wasrenamed : 'Item was renamed',
+	alert_namewrong  : 'Wrong name',
+	alert_contactexists : 'Contact already exists',
 	
 	alert_signin     : 'Signed in successfully, user name is ',
 	alert_signup     : 'New account was created, user name is ',
