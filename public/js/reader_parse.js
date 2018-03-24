@@ -12,16 +12,18 @@ function replace_all(text, a,b){                                         //conso
 }
 
 function merge_text(text){                                               consolelog_func(); 
+    var tag = reader.parse_tag;
+    
     proceed = 1;
     while (proceed==1){
-        i = text.indexOf('<'+common.ctag);
+        i = text.indexOf('<'+tag);
         if (i==-1){ proceed=0; }
         else { 
 			i2 = text.indexOf('>',i+1);                               
             text = text.substr(0,i)+text.substr(i2+1);                   
         }
     }                                                                    
-    text = replace_all(text, '</'+common.ctag+'>', '');
+    text = replace_all(text, '</'+tag+'>', '');
     return (text);
 }
 
@@ -62,8 +64,8 @@ function parse_words(text){                                              console
 
 
 function find_spaceend(txt, i_start){                                    consolelog_func(color="green", noargs=true); 
-	if ( txt[i_start]!=' ' || i_start==txt.length ) { return(i_start); }
 	if ( i_start === undefined ) { i_start = 0; }
+	if ( txt[i_start]!=' ' || i_start==txt.length ) { return(i_start); }
 	var proceed = 1; var i=i_start+1;
 	while (proceed==1){
 		if ( i>=txt.length-1 ) { proceed=0; }
@@ -120,12 +122,16 @@ function find_indexof_all(text_origin, arr, i_start, i_end){             //conso
 		}else { 
 			if ( symb == "<" ) { 
 				k = txt.indexOf(">", k+1)+1; 
+				res_arr.push([res,symb]);
+				res = k;
+				symb = '>';
 				
+				/*
 				var proceed2 = 1; 
 				while (proceed2==1){
 					if ( k>=txt.length-1 || txt[k]!=' ') { proceed2=0; }
 					else { k+=1; } 
-				}         
+				}      */   
 			}
 			else{ k = res + symb.length; }
 			res_arr.push([res,symb]);
@@ -137,10 +143,12 @@ function find_indexof_all(text_origin, arr, i_start, i_end){             //conso
 
 
 function text_clean(text_origin){                                        //consolelog_func();  // only void tags allowed!  
-	var txt = text_origin.replace('\n','<br>');                         //console.log(txt);               
-	txt = txt.replace('&nbsp;',' ');                                                  
+	var txt = text_origin.replace('\n','<br>');                          //console.log(txt);               
+	txt = txt.replace(/&nbsp;/g,' ');                                                  
 	txt = txt.replace(/\\n/g,'<br> ');                                                  
-	txt = txt.replace(/\n/g,'<br>');                                    // ! this one works                      
+	txt = txt.replace(/\n/g,'<br>');                                     // ! this one works                      
+	txt = txt.replace(/&lt;/g,'<');                                      // for messages               
+	txt = txt.replace(/&gt;/g,'>');                                      // for messages               
 	var proceed = 1, i = 0, j1=0, j2=0; 
 	i = txt.indexOf('<');
 	if (i===-1) {proceed=0;}
@@ -248,7 +256,7 @@ function reader_parse_html(text_origin){                                 //conso
 		
 		if ( (txt_i.toString().replace(' ','')!=='' || upper_div==true) && skip_div===false ) { 
 			txt_parsed = reader_parse_txt(txt_i, n_p);                   //console.log('Parsed: '+txt_parsed[0].substring(0,300)); 
-			text_final += txt_parsed[0];                                 
+			text_final += txt_parsed[0];                                 //console.log('Parsed: '+txt_parsed[0]); 
 			arr_w = arr_w.concat(txt_parsed[1]);
 			arr_s = arr_s.concat(txt_parsed[2]);
 			arr_p = arr_p.concat(txt_parsed[3]);                                     
@@ -260,8 +268,7 @@ function reader_parse_html(text_origin){                                 //conso
 
 function reader_parse_txt(text_origin, n_p){                             //consolelog_func(); 
     var txt = text_origin;
-    var endsymbol = ['<br>', '...', '!!!', '???', '.', '!', '?', ',', ' ','<'] ;
-    //var endsymbol = [' '];
+    var endsymbol = ['<br>', '...', '!!!', '???', '.', '!', '?', ',',':',';', ' ','</','<'] ;
     var emptytag = ['area','base','col','command','embed','hr','img','input','ceygen','link','meta','param','source','track','wbr','video','audio'];
     var proceed = 1; 
     var j = [];                                                          // tmp for arr_endpositions[k], 
@@ -270,53 +277,46 @@ function reader_parse_txt(text_origin, n_p){                             //conso
     var tag_i = "";
     
     //-- split text by words ---------------------------------------------
-    if (txt[0]==' '){
-		var proceed2 = 1; 
-		while (proceed2==1){                                             // find first not-space symbol -> i
-			if ( i>=txt.length-1 || txt[i]!=' ') { proceed2=0; }
-			else { i+=1; } 
-		}  
-		arr.push( txt.substring(0,i) );                                  //concole.log('Arr 0: '+arr);
-	}
 	
 	var arr_endpositions = find_indexof_all(txt, endsymbol );            //console.log('Ends: '+arr_endpositions);
-	if (arr_endpositions.length==0){ arr_endpositions=[txt.length-1]; }
-	var k=0;        
+	if (arr_endpositions.length==0){ arr_endpositions=[[0,'']]; }
+	var arr = []; 
+	var j = arr_endpositions[0];
+	if (j[0]>0){ arr.push( txt.substring(0,j[0]) ); }
+	
 	var i_end_test=0;                                                    // position of the next endsymbol
-	for (k=0; k<arr_endpositions.length; k+=1){
-		if ( i>=txt.length-1 ) { break; }                                // end of text                   
+	for (var k=0; k<arr_endpositions.length; k+=1){
+		
 		if (k<arr_endpositions.length-1) { i_end_test = arr_endpositions[k+1][0]; }
 		else { i_end_test = txt.length; }                                // set position of the next endsymbol
 
-		j = arr_endpositions[k];                                         //if (k<10){console.log(k+" ["+j+"]");}
-				                                                         //console.log(j, i_end);
-		if ( k==arr_endpositions.length-1 ) {                            // end of text
-			i_end = txt.length; 
-			proceed=0; 
-		} else if ( j[0]==i && j[1]=="<" ) {                              //console.log('!!',j, i_end);
-			i_end = txt.indexOf(">", i)+1;           
-			tag_i = txt.substring(i+1, txt.indexOf(" ",i));
-			if ( emptytag.indexOf(tag_i)!=-1 ) { tag_arr.push(arr.length); }    // remember index if word has non-empty tag, to preserve html structure
-		} else if ( j[0]==i ){                                           //
-			i_end = j[0]+j[1].length;
-			a=0;  
-		} else {                                                         // ! main
-			if (j[1]=="<br>"){ i_end = j[0]+j[1].length; }
-			else if (j[1]==' ') { i_end = j[0]+1; } 
-			else { i_end = j[0]; }                                       //console.log('!!',j,txt[j[0]], i, txt[i], i_end, txt[i_end], txt.substring(i,i_end)); 
-			a=0;                                   
-        }   
-                 
-        var proceed2 = 1; 
-		while (proceed2==1){                                             // find first not-space symbol (move spaces to previous word)
-			if ( i_end>=txt.length-1 || txt[i_end]!=' ' ) { proceed2=0; }
-			else { i_end+=1; } 
-		}  
-		                                                         
-        if (i!=i_end){                                  
-			arr.push( txt.substring(i,i_end) );     
-		}                         
-        i = i_end;
+		j = arr_endpositions[k];                                         //console.log(j, i_end);
+		var word = txt.substring(j[0],i_end_test);                       //console.log(k,word, j);
+		
+		if (j[1]=='<br>'){                                             
+			arr.push('<br>');
+			word = word.substring(4);                                    //console.log('ifspace:',arr[arr.length-1], ispace);
+		}
+		if (word[0]==' ' && arr.length>0){                                             
+			var ispace = find_spaceend(word);
+			arr[arr.length-1] = arr[arr.length-1]+word.substring(0,ispace); 
+			word = word.substring(ispace);                               //console.log('ifspace:',arr[arr.length-1], ispace);
+		}
+		if (word!=''){
+			arr.push(word);
+		}
+		
+		// remember index if word has non-empty tag, to preserve html structure
+		if (j[1]=="</"){
+			tag_i = word.substring(2, word.indexOf(">"));
+			if ( emptytag.indexOf(tag_i)==-1 ) { tag_arr.push(arr.length-1); //console.log('tag',tag_i); 
+			}   
+		}else if (j[1]=="<"){
+			tag_i = word.substring(1, word.indexOf(">"));
+			if ( emptytag.indexOf(tag_i)==-1 ) { tag_arr.push(arr.length-1); //console.log('tag',tag_i); 
+			} 
+		}
+		
     }                                                                    
     if (arr.length===0){ arr=[" "]; }                                    //console.log('Arr: '+arr+' | '+txt);                               
     
@@ -329,39 +329,33 @@ function reader_parse_txt(text_origin, n_p){                             //conso
     
     var id_p='', id_s='', id_w='';
     var word='', word_start = '', word_end='';
-    var otag=common.otag, ctag=common.ctag, tag_p=common.ptag;
+    var otag=reader.parse_tag, ctag=reader.parse_tag, tag_p=reader.parse_tag;
     var character='';
     
     word_start = "<"+tag_p+" id='p"+p0+"'><"+otag+" id='p"+p0+"s0'><"+otag+" id='p"+p0+"s0w0'>";
     
-    var i = arr.length-1,  i_end=-1;
-    while (i_end==-1 && i>=0 ) {
-		if ( tag_arr.indexOf(i)==-1 ) { i_end = i; }
-		else { i -=1; } 
-	}                                                                    
-    
     var new_sentence = false;
     for (i=0; i<arr.length; i+=1){
         word=arr[i];             
-		new_sentence = false;
+		new_sentence = false;                                            //console.log('|'+word+'|');
 		if (endsentence.indexOf(word.replace(' ',''))!=-1){
-			/*  
-			//-- check uppercase in the beginning of a new sentence ------
-			if (i===i_end) {character = 'A';}
-			else{ character = arr[i+1].charAt(0); }                      //console.log('1: '+character+' |'+arr[i]+'|'+arr[i+1]+'|');
-			if (character.toLowerCase() === character.toUpperCase() && /^\d+$/.test(character)===false){ character='a'; }  //console.log('2: '+character);
-			if (character == character.toUpperCase() ){ new_sentence = true; }
-			*/
 			new_sentence = true;
-			}
+		}
+		
+		if (i==arr.length-1) {                                           // last word
+			word_end = '</'+ctag+'></'+ctag+'></'+tag_p+'>'; 
+			text = text+ word_start + word + word_end;  
+			break; 
+		}
 		
         if ( tag_arr.indexOf(i)!=-1 ) {                                  // if tag, no wrapping
-				text = text+word; 
-		} else if (i===i_end) {                                          // last word
-			word_end = '</'+ctag+'></'+ctag+'></'+tag_p+'>'; 
-			text = text+ word_start + word + word_end;
-			
-		} else if ( word.indexOf('<br>')!=-1 ){                          // new paragraph
+				var i_word = word_start.lastIndexOf('<');                //console.log('|'+word+'|');
+				if (word.indexOf('</')>-1){ text = text+word; }
+				else{
+					word_start = word_start.substring(0,i_word)+word+word_start.substring(i_word);
+				}
+				
+		} else if ( word.indexOf('<br>')!=-1 && arr[i+1].indexOf('<br>')==-1 ){  // new paragraph
 			i_p+=1;  i_s=0;  i_w=0;
 			id_p = 'p'+i_p; 
 			id_s = 'p'+i_p + 's'+i_s; 
@@ -369,7 +363,7 @@ function reader_parse_txt(text_origin, n_p){                             //conso
 			arr_p.push(id_p);  arr_s.push(id_s);  arr_w.push(id_w);      //console.log(word);
 			
 			word_end = '</'+ctag+'></'+ctag+'></'+tag_p+'>';
-			text = text+ word_start + word + word_end;
+			text = text+ word_start + word + word_end;                   //console.log('P:|'+word+'|',word_start + word + word_end);
 			word_start =  '<'+tag_p+' id="'+id_p+'"><'+otag+' id="'+id_s+'"><'+otag+' id="'+id_w+'">';
 			
 		} else if ( new_sentence ){                                      // new sentence
@@ -379,7 +373,7 @@ function reader_parse_txt(text_origin, n_p){                             //conso
 			arr_s.push(id_s);  arr_w.push(id_w);
 			
 			word_end = '</'+ctag+'></'+ctag+'>';
-			text = text+ word_start + word + word_end;
+			text = text+ word_start + word + word_end;                   //console.log('S:|'+word+'|', word_start + word + word_end);
 			word_start =  '<'+otag+' id="'+id_s+'"><'+otag+' id="'+id_w+'">';
 			
 		} else {                                                         // new word
@@ -388,7 +382,7 @@ function reader_parse_txt(text_origin, n_p){                             //conso
 			arr_w.push(id_w);
 			
 			word_end = '</'+ctag+'>';
-			text = text+ word_start + word + word_end;
+			text = text+ word_start + word + word_end;                   //console.log('W:|'+word+'|', word_start + word + word_end);
 			word_start =  '<'+otag+' id="'+id_w+'">';
 		}
     }

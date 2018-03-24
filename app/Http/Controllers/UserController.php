@@ -104,7 +104,7 @@ class UserController extends Controller
 		
 		if ( $request['first_name']=='name' ){
 			$msg = 'SignIn Error wrong name';
-		}else if (Auth::attempt(['first_name'=>$request['first_name'], 'password'=>$request['password']])){
+		}else if (Auth::attempt(['first_name'=>$request['first_name'], 'password'=>$request['password']] )){
 			$msg = 'SignIn success';
 		}
 		//return redirect()->route('login') ->with(['msg'=>$msg]);

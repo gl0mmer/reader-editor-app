@@ -22,6 +22,7 @@ var reader = {
     draft: '',
     save_inprocess: false,
     in_messages: false,
+    parse_tag: 'span',
         
     get_id_array: function(){                                            //consolelog_func('brown'); 
         var id_arr = [];
@@ -109,7 +110,7 @@ function reader_exit(order){
 	
 }
 
-function reader_update(start) {                                          consolelog_func('darkblue');   console.log('ischanged_text: ',common.ischanged_text);                                            
+function reader_update(start) {                                          consolelog_func('darkblue');   console.log('UPDATE ischanged: ',common.ischanged_text);                                            
 	
 	if (common.ischanged_text){
 		reader_ajax_save();
@@ -166,7 +167,7 @@ function reader_ajax_save(){                                             console
 		}                                                                //console.log('true text_parsed: '+text_parsed);
 		
 		reader.id_curr = reader.get_id();                                
-		text = common.editor_text;                                       
+		text = common.editor_text;                                       console.log('SAVE |'+text+'|'); 
 		document.getElementById('tmp').innerHTML = text_parsed;         
 		var id = reader.id_curr;                                         //console.log('text_new: '+text+' ID: '+id);
 		document.getElementById("text_from_file").innerHTML = "";

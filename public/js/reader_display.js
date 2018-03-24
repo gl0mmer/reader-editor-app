@@ -54,23 +54,23 @@ function reader_scroll(order,stop,onend){                                console
     common_disable_button("js_edit", ifdisable, function(){ reader_editor();});
     
 }    
-function reader_utter(stop_i) {                                   consolelog_func(); 
+function reader_utter(stop_i) {                                          consolelog_func(); 
     id = reader.get_id();                                                //console.log('reader onend: '+onend);
     iter = reader.iter;
     n_select_type = reader.selecttype;
     
-		if (n_select_type!=2 || iter==-1 ){
-			var text = document.getElementById(id).innerText;
-			utter_sentence(text, stop_i); 
-		}
-        else { 
-            first_iter = reader.sentence_id.indexOf(id+'s0');                  
-            if ( iter==reader.paragraph_id.length-1 ){ last_iter=reader.sentence_id.length; }
-            else { last_iter = reader.sentence_id.indexOf(reader.paragraph_id[iter+1]+'s0'); }  
-            sentence_id_part = reader.sentence_id.slice(first_iter,last_iter);  
-            utter_paragraph(id, sentence_id_part, stop_i); 
-             
-        }
+	if (n_select_type!=2 || iter==-1 ){
+		var text = document.getElementById(id).innerText;
+		utter_sentence(text, stop_i); 
+	}
+	else { 
+		first_iter = reader.sentence_id.indexOf(id+'s0');                  
+		if ( iter==reader.paragraph_id.length-1 ){ last_iter=reader.sentence_id.length; }
+		else { last_iter = reader.sentence_id.indexOf(reader.paragraph_id[iter+1]+'s0'); }  
+		sentence_id_part = reader.sentence_id.slice(first_iter,last_iter);  
+		utter_paragraph(id, sentence_id_part, stop_i); 
+		 
+	}
        
 }
 function reader_fill_zoom(){                                             consolelog_func(); 

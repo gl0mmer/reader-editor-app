@@ -1,7 +1,7 @@
 
 
 function files_resize(){                                                 consolelog_func("darkblue"); 
-	style_resize();                                                      console.log('files resize');
+	style_resize();                                                      //console.log('files resize');
 	common_set_fontsize(common.f_fontsize_scale, 0);
 	files_show_buttons();
 	files_set_zoom('no');
