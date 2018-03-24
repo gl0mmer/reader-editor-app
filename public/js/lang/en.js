@@ -98,7 +98,7 @@ reader_lang['en'] = {
 	alert_signup     : 'New account was created, user name is ',
 	alert_logout     : 'Loged out succesfully',
 	
-	alert_welcome   : "Hi! <br>This website helps people to read and write. <br><br>"
+	alert_welcome   : "Hi! This website helps people to read and write. <br><br>"
 					+ "Check 'Welcome.txt' file for details. "
 					+ "You will see it after closing this window. "
 					+ "To open the file click on the file icon and 'check' button to the right. ",

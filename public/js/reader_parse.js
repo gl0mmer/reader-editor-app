@@ -321,6 +321,7 @@ function reader_parse_txt(text_origin, n_p){                             //conso
     if (arr.length===0){ arr=[" "]; }                                    //console.log('Arr: '+arr+' | '+txt);                               
     
     //-- compose text with rpoper tags -----------------------------------
+    var tag = reader.parse_tag;
     var endsentence = ['... ', '!!! ', '??? ', '. ', '! ', '? ', '...', '!!!', '???', '.', '!', '?'];
     var p0=n_p.toString();  
     var text = '';
@@ -329,8 +330,7 @@ function reader_parse_txt(text_origin, n_p){                             //conso
     
     var id_p='', id_s='', id_w='';
     var word='', word_start = '', word_end='';
-    var otag=reader.parse_tag, ctag=reader.parse_tag, tag_p=reader.parse_tag;
-    var character='';
+    var otag=tag, ctag=tag, tag_p=tag;
     
     word_start = "<"+tag_p+" id='p"+p0+"'><"+otag+" id='p"+p0+"s0'><"+otag+" id='p"+p0+"s0w0'>";
     

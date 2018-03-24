@@ -118,12 +118,12 @@ function common_show_notification(text, welcome, blur){                        c
 	inner_e = '<div id="back_lvl" onclick="menu_back(this.id,'+blur+',false);" class="back_area"> </div>';
 	inner_e+= '<div class="menu_area border" >';
 	inner_e+= '<div class="text_scroll_box" style="position:fixed;'
-			+ 'top:'+15*common.style.ry+'vh; left:12vw;'
-			+ 'width:76vw; height:'+(52)*common.style.ry+'vh;'
+			+ 'top:'+18*common.style.ry+'vh; left:14vw;'
+			+ 'width:72vw; height:'+(45)*common.style.ry+'vh;'
 			+ 'font-size:'+fontsize+'vmin;line-height:'+fontsize*1.5+'vmin;'
 			+ 'color: rgba(0,0,0,0.55);">';
-	inner_e+= '<div class="text_scroll" align="left" style="top:0vh;"> <div class="reader_text" style="'
-			+ 'top:'+(-5*common.style.ry)+'vh;height:'+20*common.style.ry+'vh;'
+	inner_e+= '<div class="text_scroll" align="left" style="top:0%;"> <div class="reader_text" style="'
+			+ 'top:0%;height:'+20*common.style.ry+'vh;'
 			+ '">'+text+' &nbsp </div> </div> </div> </div>' ;
       
     inner_e += button_html(1, [ ['js_playpause', 'common_play_pause();', [11,0,symbol_play]], ], 3,4);
