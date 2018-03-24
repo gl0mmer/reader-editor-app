@@ -11,6 +11,11 @@ body{
   font-family: "Open Sans";
   font-weight: 100;
   background-color: rgb(237, 238, 240); 
+  
+  -webkit-user-select: none;
+     -moz-user-select: -moz-none;
+      -ms-user-select: none;
+          user-select: none;
 }
 .text{}
 .text_highlite{
@@ -84,7 +89,7 @@ body{
 
 .ion_symbol_item{ width:45%; fill:currentColor; }
 .file        { color:rgba(68, 100, 111,0.3);  /*color:rgba(78, 106, 126,0.35); */ }
-.folder      { color:rgba(68, 100, 111,0.75); /*color:rgba(78, 106, 126,0.8);*/ }
+.folder      { color:rgba(68, 100, 111,0.75); /*color:rgba(78, 106, 126,0.8);  */ }
 .file_hover  { color:rgba(110,152,27, 0.7); }
 .folder_hover{ color:rgba(110,152,27, 0.7); }
 .file:hover  { color:rgba(110,152,27, 0.7); }
@@ -102,7 +107,7 @@ body{
 }
 .files_symbol{ opacity: 1;
   display:flex; justify-content:center; align-items:center;
-  position:absolute; height:100%; top:0%; padding-bottom:53%;
+  position:absolute; height:100%; width:100%; top:0%; padding-bottom:53%;
 }
 .files_symbol:hover{ padding-bottom:56%; }
 

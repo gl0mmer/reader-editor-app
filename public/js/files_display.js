@@ -1,7 +1,7 @@
 
 
 function files_resize(){                                                 consolelog_func("darkblue"); 
-	style_resize();
+	style_resize();                                                      console.log('files resize');
 	common_set_fontsize(common.f_fontsize_scale, 0);
 	files_show_buttons();
 	files_set_zoom('no');
@@ -233,7 +233,6 @@ function files_show_files(){                                             console
 	var left_pc = -1; 
 	var top_pc=-5.4; 
     var ywidth_pc=22; var yspace_pc=3.7;
-    //var ywidth_pc=17; var yspace_pc=4;
     
     var r = 1;
     if (wratio<1){ r=1*wratio; }
@@ -246,12 +245,11 @@ function files_show_files(){                                             console
     var left = left_pc*window.innerWidth/100;
     
     var xwidth = ywidth*1; var xspace = yspace*0.5;
-    //var xwidth = ywidth*1.5; var xspace = yspace*0.9;
                                                           
     var xn = Math.floor((content_width-xspace*1)/(xspace+xwidth));       //console.log('xn: '+xn);	          
     if (xn<1){xn=1};
     var ratio = ( content_width - xwidth*xn )/(xspace*(xn));
-    var pic_width = 0.6*xwidth;                                          //console.log('xwidth: '+xwidth+' ratio: '+ratio);
+    var pic_width = 0.6*xwidth;                                          //console.log('xwidth: '+xwidth+' ratio: '+ratio, top,left);
     xspace = xspace*ratio;
     
     var i=0; var type=''; 
@@ -259,13 +257,13 @@ function files_show_files(){                                             console
 	for (i=0; i<files_arr.length; i+=1){                                 
 		var n_y = (i-i%xn)/xn;
 	    var x = left+ xspace*0.5 + (xspace+xwidth)* (i%xn);
-	    var y = top + (ywidth+yspace)*n_y;  
+	    var y = top + (ywidth+yspace)*n_y;                               //console.log(i, x,y, xwidth, ywidth);
 	    
 	    if (files.entrytype[i]=="folder") { symbol = symbol_folder2; } 
 		else { symbol = symbol_file3; }
 		var style = 'position:absolute;top:'+y+'px; left:'+x+'px; height:'+ywidth+'px; width:'+xwidth+'px;';
 		inner_e+= '<div id="fileid_'+i+'" onclick="files_scroll('+i+');"  class="files" style="'+style+'">';
-		inner_e+= '<div id="fileid_'+i+'_name"  class="files_name" >'+files.entries[i]+'</div> ' ;
+		inner_e+= '<div id="fileid_'+i+'_name"  class="files_name" >'+files.entries[i]+'</div> ' ;     //console.log(i,files.get_ftype(i), symbol);
 		inner_e+= '<div id="fileid_'+i+'_pic"  class="files_symbol '+files.get_ftype(i)+'" >'+symbol+'</div>';
 		inner_e+= '</div>';
 	}

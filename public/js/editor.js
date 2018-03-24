@@ -55,6 +55,16 @@ editor.style = {
 
 //-- run/save/exit -------------------------------------------------------
 
+function create_element(id, cl, parent, style, inner){                   //consolelog_func(); 
+    if (parent===undefined){ parent = 'created_elements'; }
+    var element = document.createElement('div');
+    element.setAttribute('id', id);
+    element.setAttribute('class', cl);
+    if (style!=undefined) { element.setAttribute('style', style); }
+    if (inner!=undefined) { element.innerHTML=inner; }
+    document.getElementById(parent).appendChild(element);
+    return (element);
+}
 
 function editor_start(parent, text_raw, destination, iter){                consolelog_func("darkblue"); 
 	editor.style.nlines_lvl0 = common.editor_nlines_lvl0;

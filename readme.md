@@ -51,7 +51,8 @@ Messenger
 - Refresh page
 
 ## Limitations
-- Speech synthesis works fully in Chrome/desktop only. Firefox/Android and default Android browser does not support speech synthesis. 
+- Firefox/Android and default Android browser does not support speech synthesis
+- Speech resume doesn't work in Chrome/Android and Firefox/Windows
 
 ## Known bugs
 Major
