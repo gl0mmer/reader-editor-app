@@ -257,7 +257,7 @@ function files_show_files(){                                             console
 	for (i=0; i<files_arr.length; i+=1){                                 
 		var n_y = (i-i%xn)/xn;
 	    var x = left+ xspace*0.5 + (xspace+xwidth)* (i%xn);
-	    var y = top + (ywidth+yspace)*n_y;                               //console.log(i, x,y, xwidth, ywidth);
+	    var y = top + (ywidth+yspace)*n_y;                               console.log(i, x,y, xwidth, ywidth);
 	    
 	    if (files.entrytype[i]=="folder") { symbol = symbol_folder2; } 
 		else { symbol = symbol_file3; }

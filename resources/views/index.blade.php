@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="description" content="Hedgehogappp.com helps people with cerebral palsy and other vision and motor skills problems to read, write and communicate. All buttons are large here, all text is playable. It contains text-reader with speech synthesis and easy scalable text, text editor, simplified file system, simplified messenger. " >
+  <meta name="keywords" content="reader, editor, speech synthesis, cerebral palsy, file manager, messenger, account, user, read, write, large buttons, scalable text">
+  <title>Reader-editor-messenger for serabral palsy</title>
+  
   <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   
