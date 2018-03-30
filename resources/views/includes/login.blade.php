@@ -1,4 +1,4 @@
-<div hidden class="row new-post" >
+<div class="row new-post" >
 	<div class="col-md-3">
 	</div>	
 

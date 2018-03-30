@@ -17,22 +17,23 @@
 
 <body>
 	<div hidden> @include('includes.login') </div>
+	<div hidden> @include('includes.forms') </div>
 		
 	<div id='base_elements'>
 		<div id='content_box' class='content_box ' align='top'> 
-			...
+			<div hidden> File icons will be here, or contacts/people icons, or text from the opened file, or messages </div>
 		</div>
 		<div id="zoom_box" class="text_zoom_box border">  
-			<div id="zoom_text" class="text_zoom">...</div> 
+			<div id="zoom_text" class="text_zoom"> <div hidden> Zoom of file name, or selected text in reader </div></div> 
 		</div>
-	    <div id='buttons_area' class='buttons_area'></div>
+	    <div id='buttons_area' class='buttons_area'> <div hidden> Large accessible buttons          </div></div>
 	</div>
-	<div id='created_elements'></div>
-	<div id='editor_base_elements'></div>
-	<div id='editor_created_elements'></div>
+	<div id='created_elements'>        <div hidden> Filemanager or reader: menu panels with buttons </div></div>
+	<div id='editor_base_elements'>    <div hidden> Editor: background and start panel with buttons </div></div>
+	<div id='editor_created_elements'> <div hidden> Editor: panels with symbol buttons              </div></div>
 	
-	<div hidden id='tmp' > </div>
-	<div hidden id='hidden_text' > </div>
+	<div hidden id='tmp' > After editor text will be updated here then merged and saved to server   </div>
+	<div hidden id='hidden_text' > Text from file, before parsing </div>
 	
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/lang/en.js') }}"></script> 
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/lang/ru.js') }}"></script> 
@@ -49,71 +50,29 @@
     
     <script>
 	files_start();
-	
 	contacts = []; contact_names = []; posts = [];
 	user.name = "{{ $username }}";   
 	user.id = "{{ Auth::user()->id }}";   
 	</script>
-		
-	<div hidden > Messages: <br>
-		@include('includes.message_block')
-	</div>
-	<div hidden style="position:fixed;top:50%;">		
-		
-		@if ($in_contacts)
-			<?php $i=0; ?>
-			Connection: {{ count($connections) }}<br>
-			@foreach($connections as $connection)
-				<script>
-					contacts.push("{{ $connection }}");
-					contact_names.push("{{ $names[$i] }}");
-				</script>
-				<?php $i+=1; ?>
-			@endforeach
-			<form action="{{ route('connection_add') }}" method="post">
-				<input id="addcontact_name" class="form-control" type="text" name="addcontact_name" value=""  > 
-				<button id="addcontact_submit" type="submit" class="btn btn-primary"> Add connection </button>
-				<input type="hidden" name="_token" value="{{ Session::token() }}">
-			</form>
-		@endif
+	<div hidden> @include('includes.message_block') </div>
 	
-		@if ($in_messages)
-			<form action="{{ route('message_create') }}" method="post">
-				<textarea class="form-control" name="message" id="createmessage_text" rows="2" plaseholder="Your Post"></textarea>
-				<input   name="id_to" value="{{ $id_to }}" > {{ $id_to }} </input>
-				<button id="createmessage_submit" type="submit" class="btn btn-primary">Create Post</button>
-				<input type="hidden" value="{{ Session::token() }}" name="_token">
-			</form>
-			<form action="{{ route('save_draft') }}" method="post">
-				<textarea class="form-control" name="draft" id="savedraft_text" rows="2" plaseholder="Your Post"></textarea>
-				<input   name="id_to" value="{{ $id_to }}" > {{ $id_to }} </input>
-				<button id="savedraft_submit" type="submit" class="btn btn-primary">Save Draft</button>
-				<input type="hidden" value="{{ Session::token() }}" name="_token">
-			</form>
-			@foreach($posts as $post)
-				<script>
-					posts.push(["{{ $post->id }}", "{{ $post->user_id }}", "{{ $post->created_at }}",  "{{ $post->message }}"]);
-				</script>
-			@endforeach
-		@endif
-		
-		
-		<div id="add-folder" class="btn btn-primary"> Add folder </div> 
-		<form action="{{ route('unisharp.lfm.upload') }}" role='form' id='uploadForm' name='uploadForm' method='post' enctype='multipart/form-data' class="dropzone">
-			<div class="form-group" id="attachment">
-			  
-			  <div class="controls text-center">
-				<div class="input-group" style="width: 100%">
-				  <a class="btn btn-primary" id="upload-button">{{ trans('laravel-filemanager::lfm.message-choose') }}</a>
-				</div>
-			  </div>
-			</div>
-			<input type='hidden' name='working_dir' id='working_dir'>
-			<input type='hidden' name='type' value='{{ request("type") }}'>
-			<input type='hidden' name='_token' value='{{csrf_token()}}'>
-		</form>
-	</div>
-	
+	@if ($in_contacts)
+		<?php $i=0; ?>
+		@foreach($connections as $connection)
+			<script>
+				contacts.push("{{ $connection }}");
+				contact_names.push("{{ $names[$i] }}");
+			</script>
+			<?php $i+=1; ?>
+		@endforeach
+	@endif
+	@if ($in_messages)
+		@foreach($posts as $post)
+			<script>
+				posts.push(["{{ $post->id }}", "{{ $post->user_id }}", "{{ $post->created_at }}",  "{{ $post->message }}"]);
+			</script>
+		@endforeach
+	@endif
 	
 	
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
