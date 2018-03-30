@@ -98,6 +98,26 @@ function reader_highlite(){                                              console
     reader.id_prev = id;
 }
 
+function reader_set_zoomtype(order){                                     //consolelog_func(); 
+	var n_zoomtype = order;   
+	reader.zoomtype = n_zoomtype;
+	
+	var elem = document.getElementById("zoom_box");     
+    var pars = style_content_pars();
+    var height = pars[0]-2*pars[5];
+    if (n_zoomtype==0){ 
+        elem.style.display='none';
+    }else{
+        elem.style.display='flex';
+        height -= pars[2]; 
+    }                                                                    
+    
+    reader_fill_zoom(); 
+    document.getElementById('content_box').style.height = height*common.style.ry+'vh';    
+	elem = document.getElementById('place_readerzoom');
+    if (elem){ elem.innerHTML=dict.place_readerzoom[n_zoomtype]; }
+    
+}
 
 //-- show buttons --------------------------------------------------------
 
@@ -119,6 +139,7 @@ function reader_show_buttons(){                                          console
     
     var elem = document.getElementById('buttons_area');
     elem.innerHTML = button_html(0, buttons_arr, 4,2);
+    elem.style.display='block';    
     document.getElementById('js_selecttype').innerHTML = dict.js_selecttype[reader.selecttype];
 }
 

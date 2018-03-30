@@ -14,9 +14,11 @@ class UserController extends Controller
 	// Start here
 	public function getHomePage()
 	{
+		$msg = 'EMPTY';
 		if (!Auth::user()){
 			$user = User::where('first_name','guest')->first();
 			Auth::login($user);
+			$msg = \Request::ip();
 		}
 		$username = User::where('id', Auth::user()->id) -> value('first_name');
 		
@@ -26,7 +28,7 @@ class UserController extends Controller
 						'in_messages'=>false, 
 						'create'=>'no', 
 						'username'=>$username 
-		] );
+		] ) ->with(['msg'=>$msg]);
 		
 	}
 	

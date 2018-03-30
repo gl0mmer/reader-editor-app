@@ -221,27 +221,6 @@ function reader_set_selecttype(order, settype){                          console
     reader.id_curr = id;                                              
     document.getElementById('js_selecttype').innerHTML=dict.js_selecttype[n_select_type];
 }
-
-function reader_set_zoomtype(order){                                     //consolelog_func(); 
-	var n_zoomtype = order;   
-	reader.zoomtype = n_zoomtype;
-	
-	var elem = document.getElementById("zoom_box");     
-    var pars = style_content_pars();
-    var height = pars[0]-2*pars[5];
-    if (n_zoomtype==0){ 
-        elem.style.visibility='hidden';
-    }else{
-        elem.style.visibility='visible';
-        height -= pars[2]; 
-    }                                                                    
-    
-    reader_fill_zoom(); 
-    document.getElementById('content_box').style.height = height*common.style.ry+'vh';    
-	elem = document.getElementById('place_readerzoom');
-    if (elem){ elem.innerHTML=dict.place_readerzoom[n_zoomtype]; }
-    
-}
    
 function reader_play_all(){                                              
 	if (common.utter_playall==1 ){

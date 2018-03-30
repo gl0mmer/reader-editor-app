@@ -4,9 +4,9 @@ function files_resize(){                                                 console
 	style_resize();                                                      //console.log('files resize');
 	common_set_fontsize(common.f_fontsize_scale, 0);
 	files_show_buttons();
-	files_set_zoom('no');
 	files_show_files(); 
 	files_scroll(files.iter, 'no');
+	files_set_zoom('no');
 }
 
 //-- files scroll functions ----------------------------------------------
@@ -84,7 +84,8 @@ function files_show_buttons(){                                           console
 			buttons_arr.push( ['show_sync',   'files_show_sync();',    [6,0,'sync']] );
 		}
 	}
-    elem.innerHTML = button_html(0, buttons_arr, 4,2);        
+    elem.innerHTML = button_html(0, buttons_arr, 4,2);  
+    elem.style.display='block';      
 }
 
 function files_show_menu(){                                              consolelog_func();
@@ -210,9 +211,9 @@ function files_set_zoom(order){                                          console
     var pars = style_content_pars();
     var height = pars[0]-2*pars[5];
     if (files.zoom===1){ 
-        elem.style.visibility='hidden';
+        elem.style.display='none';
     }else{
-        elem.style.visibility='visible';
+        elem.style.display='flex';
         height -= pars[2];                                                    
     }                                                                    
     
@@ -257,7 +258,7 @@ function files_show_files(){                                             console
 	for (i=0; i<files_arr.length; i+=1){                                 
 		var n_y = (i-i%xn)/xn;
 	    var x = left+ xspace*0.5 + (xspace+xwidth)* (i%xn);
-	    var y = top + (ywidth+yspace)*n_y;                               console.log(i, x,y, xwidth, ywidth);
+	    var y = top + (ywidth+yspace)*n_y;                               //console.log(i, x,y, xwidth, ywidth);
 	    
 	    if (files.entrytype[i]=="folder") { symbol = symbol_folder2; } 
 		else { symbol = symbol_file3; }

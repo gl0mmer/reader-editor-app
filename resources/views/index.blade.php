@@ -20,13 +20,13 @@
 	<div hidden> @include('includes.forms') </div>
 		
 	<div id='base_elements'>
-		<div id='content_box' class='content_box ' align='top'> 
-			<div hidden> File icons will be here, or contacts/people icons, or text from the opened file, or messages </div>
+		<div hidden id='content_box' class='content_box ' align='top'> 
+			File icons will be here, or contacts/people icons, or text from the opened file, or messages 
 		</div>
-		<div id="zoom_box" class="text_zoom_box border">  
-			<div id="zoom_text" class="text_zoom"> <div hidden> Zoom of file name, or selected text in reader </div></div> 
+		<div hidden id="zoom_box" class="text_zoom_box border">  
+			<div id="zoom_text" class="text_zoom"> Zoom of file name, or selected text in reader </div> 
 		</div>
-	    <div id='buttons_area' class='buttons_area'> <div hidden> Large accessible buttons          </div></div>
+	    <div hidden id='buttons_area' class='buttons_area'> Large accessible buttons             </div>
 	</div>
 	<div id='created_elements'>        <div hidden> Filemanager or reader: menu panels with buttons </div></div>
 	<div id='editor_base_elements'>    <div hidden> Editor: background and start panel with buttons </div></div>
@@ -47,12 +47,16 @@
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/editor_display.js') }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader_display.js') }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader_parse.js') }}"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <script language=JavaScript type="text/javascript" src="{{ URL::to('js/plugins/jquery.foggy.min.js') }}"></script>
     
     <script>
 	files_start();
 	contacts = []; contact_names = []; posts = [];
 	user.name = "{{ $username }}";   
-	user.id = "{{ Auth::user()->id }}";   
+	user.id = "{{ Auth::user()->id }}";  
+	//$.getJSON("https://freegeoip.net/json/"+"{{ $msg }}", function (data) { var country = data.country_name; console.log(country); });
 	</script>
 	<div hidden> @include('includes.message_block') </div>
 	
@@ -74,10 +78,7 @@
 		@endforeach
 	@endif
 	
-	
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
-  <script language=JavaScript type="text/javascript" src="{{ URL::to('js/plugins/jquery.foggy.min.js') }}"></script>
+
   <script>
     var route_prefix = "{{ url('/') }}";
     var lfm_route = "{{ url(config('lfm.url_prefix', config('lfm.prefix'))) }}";

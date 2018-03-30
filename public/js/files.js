@@ -117,6 +117,7 @@ function files_update(){                                                 console
 			common.alert_text = '';
 		} 
 	}
+	document.getElementById('content_box').style.display='block';    
 	                                                                     //console.log('Parent dir: '+getPreviousDir());
 }                                                     
 

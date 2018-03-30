@@ -47,7 +47,6 @@ class LfmExtendController extends LfmController
 		}
 		sort($fnames_arr);
         
-        //$paths_arr = array('..');
         $types_arr = array('folder');
         $names_arr = array('..');
         foreach($directories as $f){ 
@@ -63,7 +62,6 @@ class LfmExtendController extends LfmController
         return [ 'html' =>$msg,
                 'entries'   => $names_arr,
                 'entrytype' => $types_arr,
-                //'paths' => $paths_arr,
             'working_dir' => parent::getInternalPath($path),
             'path' => $path0,
             'homedir' => $homedir,
