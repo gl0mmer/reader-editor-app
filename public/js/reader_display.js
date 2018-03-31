@@ -176,7 +176,7 @@ function reader_show_navigate(){                                         console
 
 function reader_show_zoomtype(){                                         consolelog_func(); 
     var inner_e = button_html(1, 
-		[['place_readerzoom', '', [0,2]],   
+		[['place_readerzoom', '', [0,4]],   
 		 ['js_readerzoom', 'reader_set_zoomtype(0);', [4,0], 0],
 		 ['js_readerzoom', 'reader_set_zoomtype(1);', [5,0], 1],   
 		 ['js_readerzoom', 'reader_set_zoomtype(2);', [6,0], 2]
@@ -205,7 +205,7 @@ function reader_show_fontsize(){
 		 ['js_rfontsize', onclick,  [7,0], 3],
 		 ['js_rfontsize', onclick,  [3,0], 4], 
 		 ['js_rfontsize', onclick,  [2,0], 5],
-		 ['place_fontsize', '',     [0,2]   ],
+		 ['place_fontsize', '',     [0,4]   ],
 		]);
 	
     common_create_menu('common_fontsize',1, inner_e);

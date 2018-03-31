@@ -2,8 +2,10 @@
 function editor_resize(){                                                consolelog_func("darkblue");
 	style_resize();
 	var state = editor.style.state;
-	if (state[0]=='start'){ editor_show_start(); editor_set_fontsize(editor.style.nlines_lvl0, 0);  }
-	else { editor_show_symbols(state[1], state[2]); editor_set_fontsize(editor.style.nlines_lvl1, 1); }
+	editor_show_start();
+	if (state[0]!='start'){ editor_show_symbols(state[1], state[2]);  }
+	editor_set_fontsize(editor.style.nlines_lvl0, 0); 
+	editor_set_fontsize(Math.max(editor.style.nlines_lvl0-1,2), 1); 
 	editor_set_cursor();
 }
 
@@ -193,8 +195,10 @@ function editor_show_fontsize(){                                         console
 	var onclick = 'editor_set_fontsize(this.id,0);';
 	var inner_e = button_html(1, 
 		[['js_editorfont', onclick, [4,0],0], ['js_editorfont', onclick,  [5,0],1],
-		 ['js_editorfont', onclick, [6,0],2], ['js_editorfont', onclick,  [7,0],3]
+		 ['js_editorfont', onclick, [6,0],2], ['js_editorfont', onclick,  [7,0],3],
+		 ['place_editorfont', '',    [0,4]]
 		]);
     common_create_menu('editor_fontsize', 1, inner_e, 'editor_created_elements', true);
+    document.getElementById('place_editorfont').innerHTML = editor.style.nlines_lvl0+' '+dict.js_editorfont[1];
 }
 

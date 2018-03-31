@@ -4,8 +4,8 @@ function menu_blur(ineditor){                                            console
 	
 	if (ineditor===undefined) {ineditor=false;}
 	if (common.browser!='Firefox'){
-		if (ineditor){ $('#editor_base_elements').foggy({ blurRadius:5, opacity:0.8, cssFilterSupport:true }); }
-		else{          $('#base_elements').foggy({ blurRadius:5, opacity:0.8, cssFilterSupport:true }); 
+		if (ineditor){ $('#editor_base_elements').foggy({ blurRadius:5, opacity:0.7, cssFilterSupport:true }); }
+		else{          $('#base_elements').foggy({ blurRadius:5, opacity:0.7, cssFilterSupport:true }); 
 		}
 	}
 }
@@ -51,9 +51,9 @@ function common_disable_button(id, disable, todo){
 
 
 function button_html(lvl, arr, y_dim, x_dim){                            consolelog_func('grey', true);
-	if (y_dim==undefined){ y_dim = 2; x_dim=4; }                         //console.log('lang: ',common.langbase, reader_lang);
+	if (y_dim==undefined){ y_dim = 2; x_dim=4; }                         
 	var class_arr = [["green", "grey", "editor1", "editor2", 'editor1 disabled', 'editor2 disabled', 'editor1'],
-	                 ["editor1", "", "", "disabled buttons_menu"]];
+	                 ["editor1", '', 'menu4', "editor1 disabled", '']];
 	
 	var html = '';
 	var name = '', tail='', inner='', id='';
@@ -77,8 +77,8 @@ function button_html(lvl, arr, y_dim, x_dim){                            console
 		var class_name = class_arr[lvl][pos[1]];
 		if (lvl==0){ var style = style_buttonpos(pos[0],pos[1], y_dim, x_dim); }   //console.log(style);
 		if (lvl==1){ var style = style_buttonpos_menu(pos[0],pos[1], y_dim, x_dim); }
-		if (lvl==1 && pos[1]==2){
-			html += '<div id="'+id+'_box" class="button_zoom_box " onclick="'+arr[i][1]+'" style="'+style+'"><div id="'+id+'" class="text_zoom">'+inner+'</div></div>';
+		if (lvl==1 && (pos[1]==2 || pos[1]==4) ){
+			html += '<div id="'+id+'_box" class="button_zoom_box '+class_name+' border" onclick="'+arr[i][1]+'" style="'+style+'"><div id="'+id+'" class="text_zoom">'+inner+'</div></div>';
 		}else{
 			html += '<div id="'+id+'" onclick="'+arr[i][1]+'" class="buttons '+class_name+'" style="'+style+'">'+inner+'</div>' ;
 		}
@@ -86,16 +86,18 @@ function button_html(lvl, arr, y_dim, x_dim){                            console
 	return html;
 }
 
-function common_create_menu(id, lvl, buttons_html, parent, ineditor){    consolelog_func(); 
+function common_create_menu(id, lvl, buttons_html, parent, ineditor, white){    consolelog_func(); 
 	if (parent==undefined) { parent='created_elements'; }
+	if (white==true) { var style='style="background-color:white;"'; }
+	else{ var style=''; }
     if (lvl==0){                                                         
         menu_blur(ineditor);
         inner_e = '<div id="menu_back_lvl0"  onclick="menu_back(this.id,1,'+ineditor+');" class="back_area"></div>';
-        inner_e+= '<div id="menu_area"  class="menu_area border">';
+        inner_e+= '<div id="menu_area"  class="menu_area border" '+style+'>';
     }else{                                                               
         inner_e = '<div id="menu_back_lvl2"  onclick="menu_back(this.id,0,'+ineditor+');" class="back_area" style="opacity:0;"></div>';
-        inner_e+= '<div id="menu_area1"  class="menu_area" style="background-color:rgba(100,100,100,0.2);"></div>';
-        inner_e+= '<div id="menu_area2"  class="menu_area_lvl2">';
+        inner_e+= '<div id="menu_area1"  class="menu_area menu_area_lvl1 border"></div>';
+        inner_e+= '<div id="menu_area2"  class="menu_area_lvl2 border" '+style+'>';
         }                                                                
     var elem = document.createElement('div');                            //console.log('elem: '+elem+', parent: '+parent);
     elem.innerHTML = inner_e + buttons_html + '</div>';
@@ -144,7 +146,7 @@ function common_show_lang(lvl, parent){                                  console
     var inner_e = button_html(1, 
 		[['js_lang', 'common_set_lang(this.id)',   [4,0], 0],
 		 ['js_lang', 'common_set_lang(this.id)',   [5,0], 1],
-		 ['place_lang', '',                        [0,2]],
+		 ['place_lang', '',                        [0,4]],
 		]);
     if (editor!=undefined) {parent = "editor_created_elements";}
     common_create_menu('common_lang',lvl, inner_e, parent);
@@ -157,7 +159,7 @@ function common_show_clickdelay(){                                       console
 		 ['js_delay', onclick,  [5,0], 1],
 		 ['js_delay', onclick,  [6,0], 2], 
 		 ['js_delay', onclick,  [7,0], 3],
-		 ['place_delay', '',    [0,2]]
+		 ['place_delay', '',    [0,4]]
 	    ]);
     common_create_menu('common_clickdelay',1, inner_e);
     
@@ -171,7 +173,7 @@ function common_show_utterrate(){                                       consolel
 		 ['js_utterrate', onclick,  [6,0], 1],
 		 ['js_utterrate', onclick,  [5,0], 2], 
 		 ['js_utterrate', onclick,  [4,0], 3],
-		 ['place_utterrate', '',    [0,2]]
+		 ['place_utterrate', '',    [0,4]]
 	    ]);
     common_create_menu('common_utterrate',1, inner_e);
 }
@@ -291,7 +293,7 @@ function style_buttonpos_menu(i, class_n, y_dim, x_dim){                 //conso
 	
 	var fontsize = s.get_bfontsize();  
 	var lineheight = fontsize*1.2;                                   
-	if (class_n===2) { 
+	if (class_n==2 || class_n==4) { 
 		lineheight = lineheight+s.dy*s.ry/1.6; 
 		dx = dx + (b_right-b_left)/(x_dim+add);
 		borderwidth = 0;

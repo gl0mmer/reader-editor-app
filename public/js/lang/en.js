@@ -9,7 +9,7 @@ reader_lang['en'] = {
 	show_create     : 'New',
 	show_lang       : 'Lang',
 	show_sound      : 'Sound',
-	show_bugfix     : 'Bug fix',
+	show_bugfix     : 'Adva- nced',
 	show_login      : 'Log In',
 	show_readerzoom : 'Zoom',
 	show_addcontact : 'New',
@@ -37,8 +37,8 @@ reader_lang['en'] = {
 	ajax_logout     : 'Log Out',
 	ajax_signup     : 'Sign Up',
 	ajax_signin     : 'Sign In',
-	ajax_maildata   : '',
-	ajax_deleteuser : '',
+	ajax_maildata   : 'Send mail',
+	ajax_deleteuser : 'Delete',
 	js_rememberme   : 'Remem- ber me',
 	
 	js_edit         : 'Edit',
@@ -65,6 +65,7 @@ reader_lang['en'] = {
 	place_readerzoom : ['No zoom', 'By word', 'By sentence'],
 	js_readerzoom   : ['','',  'No zoom', 'By word', 'By sentence'], 
 	show_editorfont : 'Font size', 
+	place_editorfont: 'Font size', 
 	js_editorfont   : ['','lines', '5', '4', '3','2'],
 	show_utterrate  : 'Speech rate', 
 	place_utterrate : 'Text example in speech speed menu', 
@@ -98,6 +99,7 @@ reader_lang['en'] = {
 	alert_signup     : 'New account was created, user name is ',
 	alert_logout     : 'Loged out succesfully',
 	
+	alert_nospeech  : "This browser does not support speech synthesis! Speech synthesis works in Chrome on Android 6+/Windows/Linux, and in Firefox on Windows.",
 	alert_welcome   : "Hi! This website helps people to read and write. <br><br>"
 					+ "Check 'Welcome.txt' file for details. "
 					+ "You will see it after closing this window. "

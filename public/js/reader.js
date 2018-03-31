@@ -132,7 +132,11 @@ function reader_update(start) {                                          console
 	document.getElementById('file_title').innerHTML = title;
         
         
-    var text = document.getElementById('hidden_text').innerHTML;         //console.log('Draft 3: '+text);              
+    var text = document.getElementById('hidden_text').innerHTML;         //console.log('Draft 3: '+text);
+    if (reader.fname=='Welcome.txt' && !('speechSynthesis' in window) ){
+		text = '<strong class="text_error">'+dict.alert_nospeech +'</strong><br><br>'+ text;
+	}
+                  
 	var parser = reader_parse_html(text);
 	var text_parsed = parser[0];                                         //console.log('false text_parsed: '+text_parsed);                                
 	reader.word_id=parser[1]; reader.sentence_id=parser[2]; reader.paragraph_id=parser[3];
@@ -150,6 +154,7 @@ function reader_update(start) {                                          console
         scroll_to(reader.get_id(),'content_box', title=0);
 	}                                                                    //console.log('Save_inprocess: '+reader.save_inprocess);
     reader_resize();
+    document.getElementById('content_box').style.display='block'; 
 }
 
 //-- ajax function -------------------------------------------------------
@@ -171,7 +176,7 @@ function reader_ajax_save(){                                             console
 		document.getElementById('tmp').innerHTML = text_parsed;         
 		var id = reader.id_curr;                                         //console.log('text_new: '+text+' ID: '+id);
 		document.getElementById("text_from_file").innerHTML = "";
-		document.getElementById(id).innerHTML = text;                    //console.log('text_new_parsed: '+document.getElementById('tmp').innerHTML);
+		document.getElementById(id).innerHTML = text;                    
 		
 		var text_all_parsed = document.getElementById('tmp').innerHTML; 
 		var text_all_origin = merge_text(text_all_parsed);               

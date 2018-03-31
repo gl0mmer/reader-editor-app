@@ -39,7 +39,7 @@ editor.style = {
 		this.b_ny=nrow;
 		style_resize();
 		if (lvl==0){ editor_set_fontsize(editor.style.nlines_lvl0, 0);  }
-		else { editor_set_fontsize(editor.style.nlines_lvl1, 1); }
+		else { editor_set_fontsize(Math.max(editor.style.nlines_lvl0-1,2), 1); }
 		editor_set_cursor();
 	},
 	get_bsize: function(){
@@ -221,9 +221,15 @@ function editor_set_fontsize(id, lvl){                                   console
 		editor.style.nlines_lvl1 = id;                                            
 		common.editor_nlines_lvl1 = id;         
 	}            
+	var wratio = window.innerWidth/window.innerHeight; 
+	if (wratio<1){id = id/wratio;}
     var fontsize = (area.bottom-area.top) / (id+0.5);                    //console.log('area: '+area.top+' - '+area.bottom+' - '+fontsize+' - '+id);
 	document.getElementById('editor_text_area').style.fontSize = fontsize.toString()+'px';
-	editor.style.fontsize = fontsize;    
+	editor.style.fontsize = fontsize;  
+	var elem = document.getElementById('place_editorfont');
+	if (elem){
+		elem.innerHTML = editor.style.nlines_lvl0+' '+dict.js_editorfont[1];
+	}
 }
 function editor_spell(){                                                 consolelog_func(); 
     var iter = editor.iter;

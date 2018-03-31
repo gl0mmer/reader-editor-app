@@ -9,7 +9,7 @@ reader_lang['ru'] = {
 	show_create     : 'Создать',
 	show_lang       : 'Язык',
 	show_sound      : 'Звук',
-	show_bugfix     : 'Bug fix',
+	show_bugfix     : 'Дополни тельно',
 	show_login      : 'Войти',
 	show_readerzoom : 'Увели- чение',
 	show_addcontact : 'Доба- вить',
@@ -23,7 +23,7 @@ reader_lang['ru'] = {
 	
 	js_copy         : 'Копи- ровать',
 	ajax_past       : 'Вставить',
-	ajax_rename     : 'Переи- меновать',
+	ajax_rename     : 'Переиме новать',
 	ajax_rm         : 'Удалить',
 	ajax_totrash    : 'Удалить',
 	ajax_download   : 'Скачать',
@@ -64,6 +64,7 @@ reader_lang['ru'] = {
 	js_navigate     : ['','',  'Начало', 'Сере- дина', 'Конец'],
 	place_readerzoom : ['Нет', 'По слову', 'По предложению'],
 	js_readerzoom   : ['','',  'Нет', 'По слову', 'По предло- жению'], 
+	place_editorfont: 'Шрифт', 
 	show_editorfont : 'Шрифт', 
 	js_editorfont   : ['','строк', '5', '4', '3','2'],
 	show_utterrate  : 'Скорость речи', 
@@ -98,6 +99,7 @@ reader_lang['ru'] = {
 	alert_signup     : 'Новый аккаунт создан, имя пользователя - ',
 	alert_logout     : 'Выход совершен',
 	
+	alert_nospeech   : "Данный браузер не поддерживает синтез речи! Синтез речи работает в Chrome браузере на Android 6+/Windows/Linux, и в Firefox на Windows.",
 	alert_welcome    : "Hi! <br>This website helps people to read and write. <br><br>"
 					 + "Check 'Welcome.txt' file for details. "
 					 + "You will see it after closing this window. "

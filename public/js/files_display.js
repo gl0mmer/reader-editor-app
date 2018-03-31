@@ -159,7 +159,7 @@ function files_show_login(){                                             console
 		], 3,4);
     common_create_menu('files_lodin', 0, inner_e);
     
-    var name="name", pass="password";
+    var name="name", pass="password";                                    // !!Error if change placeholders
 	if (files.userremember) {name = files.username; pass = files.userpass; }
 	document.getElementById('edit_username').innerHTML = name;
 	document.getElementById('edit_userpass').innerHTML = pass;
@@ -171,7 +171,7 @@ function files_show_fontsize(){
 		 ['js_ffontsize', onclick,  [6,0], 1],
 		 ['js_ffontsize', onclick,  [5,0], 2], 
 		 ['js_ffontsize', onclick,  [4,0], 3],
-		 ['place_fontsize', '',     [0,2]   ],
+		 ['place_fontsize', '',     [0,4]   ],
 		]);
     common_create_menu('common_fontsize',1, inner_e);
     
@@ -258,7 +258,7 @@ function files_show_files(){                                             console
 	for (i=0; i<files_arr.length; i+=1){                                 
 		var n_y = (i-i%xn)/xn;
 	    var x = left+ xspace*0.5 + (xspace+xwidth)* (i%xn);
-	    var y = top + (ywidth+yspace)*n_y;                               console.log(i, x,y, xwidth, ywidth);
+	    var y = top + (ywidth+yspace)*n_y;                               //console.log(i, x,y, xwidth, ywidth);
 	    
 	    if (files.entrytype[i]=="folder") { symbol = symbol_folder2; } 
 		else { symbol = symbol_file3; }
