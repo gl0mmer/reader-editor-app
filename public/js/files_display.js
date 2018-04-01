@@ -1,7 +1,7 @@
 
 
 function files_resize(){                                                 consolelog_func("darkblue"); 
-	style_resize();                                                      //console.log('files resize');
+	style_resize();                                                      
 	common_set_fontsize(common.f_fontsize_scale, 0);
 	files_show_buttons();
 	files_show_files(); 
@@ -45,9 +45,9 @@ function files_scroll(order, i_utter){                                   console
     var fname = files.get_fname().replace(/_/g,' ');                          
     if (i_utter===undefined){ utter(fname, 1); } 
     
-    var name = files.get_subdir()+files.get_fname();                     //console.log('Opt name: '+name);
+    var name = files.get_subdir()+files.get_fname();                     
     var ifdisable = !(files.items_protected.indexOf(name)==-1 && files.iter!=0);
-    common_disable_button("show_opt", ifdisable, function(){ files_show_options();} );   //console.log('Opt name: '+name, ifdisable);
+    common_disable_button("show_opt", ifdisable, function(){ files_show_options();} );   
          
 }  
 function files_fill_zoom(){                                              consolelog_func();
@@ -77,11 +77,11 @@ function files_show_buttons(){                                           console
 		buttons_arr.push( ['show_addcontact', 'files_show_addcontact();', [6,1,symbol_plus]], 
 						  ['ajax_mailexit',   'files_ajax_enter(-1)',     [5,0,symbol_home]] );
 	}else{
-		buttons_arr.push( ['show_create', 'files_show_create();',  [6,1,symbol_plus]],
-		                  ['ajax_contacts', 'files_ajax_contacts();', [5,0,symbol_people]]  );
+		buttons_arr.push( ['show_create', 'files_show_create();',         [6,1,symbol_plus]],
+		                  ['ajax_contacts', 'files_ajax_contacts();',     [5,0,symbol_people]]  );
 		                             
         if (user.name=='admin'){
-			buttons_arr.push( ['show_sync',   'files_show_sync();',    [6,0,'sync']] );
+			buttons_arr.push( ['show_sync',   'files_show_sync();',       [6,0,'sync']] );
 		}
 	}
     elem.innerHTML = button_html(0, buttons_arr, 4,2);  
@@ -203,7 +203,7 @@ function files_show_addcontact(){                                        console
 function files_show_sync(){                                              consolelog_func();
 	var inner_e = button_html(1, 
 		[['ajax_sync_past', 'files_ajax_past(1);',   [4,0, 'past']], 
-		 ['ajax_sync_rm',   'files_ajax_delete(1);', [6,0, 'rm']] ]);          // !!! error
+		 ['ajax_sync_rm',   'files_ajax_delete(1);', [6,0, 'rm']] ]);    // !!Error here
 	
 	common_create_menu('files_sync', 0, inner_e);
 	var copy_path = localStorage.getItem("copy_shortpath");              
@@ -247,7 +247,7 @@ function files_show_files(){                                             console
     
     var r = 1;
     if (wratio<1){ r=1*wratio; }
-	var content_width = 0.95*style_content_pars()[1]/100* window.innerWidth;                 //console.log('c2: ',content_width);
+	var content_width = 0.95*style_content_pars()[1]/100* window.innerWidth;                 
 	
 	
     var ywidth = r*ywidth_pc*window.innerHeight/100; 
@@ -274,12 +274,12 @@ function files_show_files(){                                             console
 		else { symbol = symbol_file3; }
 		var style = 'position:absolute;top:'+y+'px; left:'+x+'px; height:'+ywidth+'px; width:'+xwidth+'px;';
 		inner_e+= '<div id="fileid_'+i+'" onclick="files_scroll('+i+');"  class="files" style="'+style+'">';
-		inner_e+= '<div id="fileid_'+i+'_name"  class="files_name" >'+files.entries[i]+'</div> ' ;     //console.log(i,files.get_ftype(i), symbol);
+		inner_e+= '<div id="fileid_'+i+'_name"  class="files_name" >'+files.entries[i]+'</div> ' ;     
 		inner_e+= '<div id="fileid_'+i+'_pic"  class="files_symbol '+files.get_ftype(i)+'" >'+symbol+'</div>';
 		inner_e+= '</div>';
 	}
 	document.getElementById('files_array').style.visibility = 'visible';
-	document.getElementById('files_array').innerHTML = inner_e;          //console.log(inner_e);
+	document.getElementById('files_array').innerHTML = inner_e;          
 	common_set_fontsize(common.f_fontsize_scale, 0);
 	
 }

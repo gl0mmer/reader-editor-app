@@ -31,7 +31,10 @@ function scroll_to(id, id_area, title){                                  console
     if (elem){
 	    var area = document.getElementById(id_area).getBoundingClientRect();     
 	    var rect = elem.getBoundingClientRect();                         //console.log(rect, area);
-	    if (rect.top+0.5*(rect.bottom-rect.top)>area.bottom || rect.left+0.5*(rect.right-rect.left)>area.right || rect.bottom-0.5*(rect.bottom-rect.top)<area.top || rect.right-0.5*(rect.right-rect.left)<area.left )
+	    if (   rect.top   +0.5*(rect.bottom-rect.top)>area.bottom 
+			|| rect.left  +0.5*(rect.right-rect.left)>area.right 
+	        || rect.bottom-0.5*(rect.bottom-rect.top)<area.top 
+	        || rect.right -0.5*(rect.right-rect.left)<area.left )
 	        { elem.scrollIntoView(true); } 
 	}
 }
@@ -107,7 +110,6 @@ function common_create_menu(id, lvl, buttons_html, parent, ineditor){    console
     return (elem);
 }
 
-//function common_show_notification(text, welcome, blur, lvl, confirm){                        consolelog_func(); console.log('LVL: ',lvl);
 function common_show_notification(text, confirm){                        consolelog_func(); 
 	
 	var elem = document.getElementById('menu_back_lvl0');
@@ -166,7 +168,7 @@ function common_show_clickdelay(){                                       console
     var delay = common.time_delay/1000;                                 
 	document.getElementById('place_delay').innerHTML = delay+' sec';
 }
-function common_show_utterrate(){                                       consolelog_func(); 
+function common_show_utterrate(){                                        consolelog_func(); 
 	var onclick = 'common_set_utterrate(this.id);';
 	var inner_e = button_html(1, 
 		[['js_utterrate', onclick,  [7,0], 0], 
@@ -188,7 +190,6 @@ function style_content_pars(){
 	
 	var wratio = window.innerWidth/window.innerHeight;
 	var dx = bsize*s.b_shape; 
-	//var x =  (100*wratio - nrow*dx - (nrow+1)*bspace) ;
 	var x =  (100*wratio - nrow*dx - (nrow+0.)*bspace) ;
 	var dy = bsize/s.b_shape*wratio;                                        
 	var y =  100 - nrow*dy - (nrow)*bspace ; 
@@ -215,7 +216,7 @@ function style_content_pars(){
 	
 }
 	
-function style_buttonpos(i, class_n, y_dim, x_dim){             //consolelog_func('brown');
+function style_buttonpos(i, class_n, y_dim, x_dim){                      //consolelog_func('brown');
 	var s = common.style;
 	if (y_dim==undefined){ y_dim = 4; x_dim = 2; }
 	if (common.ineditor) {

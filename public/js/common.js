@@ -85,7 +85,7 @@ function utter_split_sentence(txt){
     return txt_arr;
 }
 function utter_sentence(txt, stop, repeat){                              consolelog_func();  
-    if (repeat!==undefined){ txt=common.repeat_text; }                   //console.log(txt);
+    if (repeat!==undefined){ txt=common.repeat_text; }                   
     
     if (txt.length>200){ 
 		var txt_arr = utter_split_sentence(txt);
@@ -105,10 +105,10 @@ function utter(txt, stop, rate, onend){                                  console
 		if (ru && ru+en==1){ msg.lang='ru'; } 
 		if (ru==en){ msg.lang=common.langbase; }	
 	}
-    else { msg.lang=common.lang; }                                       //console.log(common.lang, common.langbase,  msg.lang, en+'-'+ru);
+    else { msg.lang=common.lang; }                                       
     
     if (typeof rate != 'number'){ msg.rate=common.utter_rate; }
-    else{ msg.rate=rate; }                                               //console.log(rate, msg.rate, common.utter_rate);
+    else{ msg.rate=rate; }                                               
     if (localStorage.getItem("in_reader")!='yes'){ msg.rate=1; };
     
     if (stop==1){ window.speechSynthesis.cancel(); }   
@@ -231,7 +231,7 @@ function cookie_delete_all() {                                           console
 
 //-- menu functions ------------------------------------------------------
 
-function common_set_clickdelay(delay){                                      consolelog_func(); 
+function common_set_clickdelay(delay){                                   consolelog_func(); 
 	common.time_delay = delay*1000;                                     
 	document.getElementById('place_delay').innerHTML = delay+' sec';
 }
@@ -281,10 +281,10 @@ function common_set_fontsize(id, obj){                                   //conso
 		common.style.f_fontalpha = alpha; 
 		$('.buttons').css('font-size', fontsize*s.get_bfontsize_ratio()+'vmin');
 	}
-    if (obj==1){                                            //console.log('READER');
+    if (obj==1){                                                         //console.log('READER');
 		common.r_fontsize_scale = scale;   common.style.r_fontalpha = alpha; 
 		var elem = document.getElementById('text_scroll_area');
-	    elem.style.fontSize = fontsize+'vmin';                             //console.log(elem.style.fontSize);
+	    elem.style.fontSize = fontsize+'vmin';                           //console.log(elem.style.fontSize);
 		elem.style.color = 'rgba(0,0,0,'+common.style.r_fontalpha+');'; 
 		elem.style.lineHeight = lineheight*fontsize+'vmin'; 
 	}  

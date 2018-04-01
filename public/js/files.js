@@ -45,16 +45,16 @@ var files = {
 		if (this.entrytype[i]=='file'){
 			path = this.url;
 		}
-		path += this.dir+'/'+this.entries[i];                            //console.log('this.dir: ',this.dir);
+		path += this.dir+'/'+this.entries[i];                            
 		return path;
 	},
 	get_savepath: function(i){
 		if (i==0){ return ''; }
 		
 		var path = '';
-		var dir = this.dir.substring(1);                                 //console.log('Savepath: ',dir);
+		var dir = this.dir.substring(1);                                 
 		if (dir.indexOf('/')==-1){ dir = ''; }
-		else{ dir = dir.substring(dir.indexOf('/')+1)+'/'; }             //console.log('Savepath: '+this.dir+' - '+dir+' - '+this.entries[i]);
+		else{ dir = dir.substring(dir.indexOf('/')+1)+'/'; }             
 		return dir+this.entries[i];
 	},
 	get_subdir: function(){
@@ -90,12 +90,12 @@ function files_start(){                                                  console
 }
 
 function files_update(){                                                 consolelog_func('darkblue');                                                                              
-	                                                                     //console.log('In reader: '+localStorage.getItem("in_reader"))
+	                                                                     
 	if (localStorage.getItem("in_reader")=='yes'){
 		useFile( localStorage.getItem("reader_url") ); 
 		reader_resize(); 		
 	}else{		
-		var path = localStorage.getItem("folder_path");                  //console.log('Folder_path:',path);    
+		var path = localStorage.getItem("folder_path");                    
 		if ( [files.dir,"", undefined, null, 'mail'].indexOf(path)==-1 ){  
 			console.log('goTo():', path);                                // Can get stuck here!!     
 			goTo( path );
@@ -110,8 +110,8 @@ function files_update(){                                                 console
 		}else if(files.php_messages.length>0){
 			if (files.php_messages[0].toLowerCase().indexOf('error')>-1){ common.alert_text = dict.alert_error; }
 		}
-		                                                                 //console.log('files.dir: '+files.dir+',  get_subdir(): '+files.get_subdir());
-		if (common.welcome=='do' && localStorage.getItem("show_welcome")==="yes" ){ 
+		                                                                 
+		if (common.welcome=='do' && localStorage.getItem("show_welcome")=="yes" ){ 
 			common_show_notification(dict.alert_welcome);
 			localStorage.setItem("show_welcome",'no');
 		}else if (common.alert_text!=''){
@@ -125,7 +125,7 @@ function files_update(){                                                 console
 
 function files_ajax_enter(path){                                         consolelog_func("orange");  
 	if (path==undefined){
-		var path = files.get_enterpath(files.iter);                      //console.log('EPath: '+path+' - '+localStorage.getItem("reader_url"));           
+		var path = files.get_enterpath(files.iter);                              
 	}
 	if (path==-1 && files.in_contacts ){
 		files.in_contacts = false;                                       
@@ -136,7 +136,7 @@ function files_ajax_enter(path){                                         console
 		}else{
 			localStorage.setItem("reader_savepath", files.get_savepath(files.iter));  
 			localStorage.setItem("reader_fname", files.get_savepath(files.iter));
-			useFile( path );                                             //console.log('EnterPath: '+path); console.log('SavePath: '+files.get_savepath(files.iter));
+			useFile( path );                                             
 		}
 	}else{                                                               // open folder
 		if (files.iter==0){
@@ -176,7 +176,7 @@ function files_ajax_create(type){
 		if (type == 0){
 			new_name = common.editor_text;
 			performLfmRequest('newfolder', {name: new_name})
-			.done(refreshFoldersAndItems);                               //console.log('New folder');
+			.done(refreshFoldersAndItems);                               
 			alert = dict.alert_newfolder;
 		}else if (type == 1){
 			$.ajax( {type: 'GET', dataType: 'text', url: 'create', cache: false, data: {file_name: new_name, file_text:''}} )
@@ -271,12 +271,10 @@ function files_ajax_totrash(){
 	}
 }      
 function files_ajax_upload(id){
-	if ( !common_ajax_permit() ){ return true; }
-	
+	if ( !common_ajax_permit() ){ return true; }	
 	document.getElementById('upload-button').click();
 	loadFolders(true);
 	menu_back('menu_back_lvl0',1, 0);
-	//location.reload();
 }
 function files_ajax_download(){                                          consolelog_func();
 	if (files.get_ftype()=='file' && files.get_savepath(files.iter)!=''){
@@ -299,7 +297,7 @@ function files_ajax_past(sync){                                          console
 		
 	common_show_notification(alert);
 }    
-function files_copy(){                                                   consolelog_func();
+function files_copy(){                                                    consolelog_func();
 	var alert = dict.alert_error;
 	if (files.get_savepath(files.iter)!='' ){
 		var short_path = files.get_savepath(files.iter);
@@ -373,14 +371,14 @@ function files_edittext(id){                                             console
 	var text = "";                
 	common.ineditor = true;                                    
 	if (id=="edit_filename_box"){
-		var fname = files.get_fname();                                   //console.log('Edit: '+id+' '+text+' '+files.get_ftype());
+		var fname = files.get_fname();                                   
 		if (files.get_ftype()!='folder'){
 			text = fname.substring(0,fname.lastIndexOf('.'));
 		}else{
 			text = fname;
 		}
 	}
-    editor_start('files', text, id.substring(0,id.lastIndexOf('_')) );   //console.log('Edit: '+id+' '+text+' '+files.entrytype);
+    editor_start('files', text, id.substring(0,id.lastIndexOf('_')) );   
 }
 
 function files_beforunload() {                                           consolelog_func();

@@ -128,11 +128,9 @@ class UserController extends Controller
 		if ($username=='guest'){
 			return redirect()->back() ->with(['msg'=>$msg]);
 		}else{
-			
 			$user = User::find(Auth::user()->id);
 			Auth::logout();
 			$user->delete();
-			
 			return redirect()->route('home');
 		}
 	}

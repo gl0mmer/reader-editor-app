@@ -8,7 +8,7 @@ function reader_resize(){
 
 //-- reader scroll functions -------------------------------------------------------------------
  
-function reader_scroll(order,stop,onend, iter_new){                                consolelog_func('darkblue'); 
+function reader_scroll(order,stop,onend, iter_new){                      consolelog_func('darkblue'); 
     var iter          = reader.iter;                
     var n_select_type = reader.selecttype;
     var id_arr        = reader.get_id_array();
@@ -59,7 +59,7 @@ function reader_scroll(order,stop,onend, iter_new){                             
     
 }    
 function reader_utter(stop_i) {                                          consolelog_func(); 
-    id = reader.get_id();                                                //console.log('reader onend: '+onend);
+    id = reader.get_id();                                                
     iter = reader.iter;
     n_select_type = reader.selecttype;
     

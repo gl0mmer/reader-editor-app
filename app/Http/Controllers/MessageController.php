@@ -6,7 +6,6 @@ use App\Message;
 use App\Connection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-//use vendor\laravel\framework\src\Illuminate\Http\Request;
 class MessageController extends Controller
 {
 	
@@ -31,10 +30,9 @@ class MessageController extends Controller
 				$this->setDraft($request['id_to'], '');
 			}
 		}
-		
 		return redirect()->back() -> with(['msg'=>$msg]);
-		
 	}
+	
 	private function Draft($id_2){
 		$id_1 = Auth::user()->id;
 		$post = Connection::where([ ['user_id_1', $id_1 ], ['user_id_2', $id_2] ]) 
@@ -75,27 +73,6 @@ class MessageController extends Controller
 		
 		$msg = $request['draft'].' | '.$this->Draft($request['id_to']);
 		return redirect()->back() ->with(['msg'=>$msg]);
-		
-	}
-	
-	public function getDeleteMessage($post_id)
-	{
-		$post = Message::where('id', $post_id)->first();
-		//if (Auth::user() != $post->user){}
-		$post->delete();
-		$msg = 'Succeessfully deleted.';
-		return redirect()->back();
-	}
-	
-	public function getDeleteAllMessages()
-	{
-		$user_id = Auth::user()->id;
-		$posts = Message::where('user_id', $user_id)->get();
-		foreach ($posts as $post){
-			$post->delete();
-		}
-		$msg = count($posts);
-		return redirect()->back();
 		
 	}
 	
@@ -228,6 +205,25 @@ class MessageController extends Controller
 		
 	}
 	
+	//-- unused ----------------------------------------------------------
+	public function getDeleteMessage($post_id)
+	{
+		$post = Message::where('id', $post_id)->first();
+		$post->delete();
+		$msg = 'Succeessfully deleted.';
+		return redirect()->back();
+	}
+	
+	public function getDeleteAllMessages()
+	{
+		$user_id = Auth::user()->id;
+		$posts = Message::where('user_id', $user_id)->get();
+		foreach ($posts as $post){
+			$post->delete();
+		}
+		$msg = count($posts);
+		return redirect()->back();
+	}
 		
 	
 }

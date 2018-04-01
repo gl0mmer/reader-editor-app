@@ -104,7 +104,7 @@ function reader_exit(order){
 	if (order==-1){
 		files.in_contacts = false;                                       
 		window.location.href=localStorage.getItem("url");
-	}else if (reader.in_messages){                                             //console.log('U: '+localStorage.getItem("reader_exitpath"));
+	}else if (reader.in_messages){                                       //console.log('U: '+localStorage.getItem("reader_exitpath"));
 		window.location.href=localStorage.getItem("url")+'contacts';
 	}else{
 		files_start();
@@ -113,7 +113,7 @@ function reader_exit(order){
 	
 }
 
-function reader_update(start) {                                          consolelog_func('darkblue');   console.log('UPDATE ischanged: ',common.ischanged_text);                                            
+function reader_update(start) {                                          consolelog_func('darkblue');                                             
 	
 	if (common.ischanged_text){
 		reader_ajax_save();
@@ -135,7 +135,7 @@ function reader_update(start) {                                          console
 	document.getElementById('file_title').innerHTML = title;
         
         
-    var text = document.getElementById('hidden_text').innerHTML;         //console.log('Draft 3: '+text);
+    var text = document.getElementById('hidden_text').innerHTML;         
     if (reader.fname=='Welcome.txt' && !('speechSynthesis' in window) ){
 		text = '<strong class="text_error">'+dict.alert_nospeech +'</strong><br><br>'+ text;
 	}

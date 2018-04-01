@@ -66,7 +66,7 @@ function create_element(id, cl, parent, style, inner){                   //conso
     return (element);
 }
 
-function editor_start(parent, text_raw, destination, iter){                consolelog_func("darkblue"); 
+function editor_start(parent, text_raw, destination, iter){              consolelog_func("darkblue"); 
 	editor.style.nlines_lvl0 = common.editor_nlines_lvl0;
 	editor.style.nlines_lvl1 = common.editor_nlines_lvl1;
 	if (text_raw==undefined) { text_raw=""; }
@@ -133,7 +133,7 @@ function editor_exit(){                                                  console
     input.onkeypress = "";
     common.editor_text = editor.text_raw;
     common.ineditor = false;      
-    utter_stop();                                                //console.log(editor.parent);
+    utter_stop();                                                        //console.log(editor.parent);
     if (editor.parent=="reader"){ 
 		if (editor.text_origin!=editor.text_raw){
 			common.ischanged_text = true;
@@ -177,7 +177,7 @@ function editor_delete(){                                                console
 		editor.text_raw = text_c;	
         editor_set_cursor(); 
     }
-}function editor_set_letter(n, keypress){                                          consolelog_func('darkblue'); 
+}function editor_set_letter(n, keypress){                                consolelog_func('darkblue'); 
 	if (keypress===undefined) { keypress=false; }
 	var letter = "";
 	var iter = editor.iter;

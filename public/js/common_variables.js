@@ -38,7 +38,7 @@ var common = {
 	utter_rate: 1,
 	alert_text: '',
 	
-	cookie_number: 13,         //ERROR!! somehow it gets value of 15 after load_cookie(), cookie_suffix is lost
+	cookie_number: 13,         // !!Error, whatch cookie_suffix
 	//cookie_suffix: "_",                                           
 	name: "common",
 	play_counter: 0,           
@@ -71,7 +71,7 @@ var common = {
 				if (v.indexOf('.')==-1) { v=parseInt(v); }
 				else { v=parseFloat(v); }   
 			}         
-			this[keys[i]] = v;                                           //console.log(keys[i]+' | '+v);
+			this[keys[i]] = v;                                           
 		}
 	},
 	style: {}	
