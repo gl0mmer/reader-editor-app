@@ -59,6 +59,11 @@ Route::post('/connection_add', [
 	'uses' => 'MessageController@postAddConnection',
 	'middleware' => 'auth'
 ]);
+Route::post('/connection_remove', [
+	'as'=> 'connection_remove',
+	'uses' => 'MessageController@getDeleteConnection',
+	'middleware' => 'auth'
+]);
 Route::post('/save_draft', [
 	'as'=> 'save_draft',
 	'uses' => 'MessageController@postSaveDraft',

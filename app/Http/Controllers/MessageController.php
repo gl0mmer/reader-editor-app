@@ -131,6 +131,44 @@ class MessageController extends Controller
 		return redirect()->back()-> with(['msg'=>$msg]);
 	}
 	
+	public function getDeleteConnection(Request $request)
+	{
+		$msg = '';
+		$id = Auth::user()->id;
+		$name = $request['rmcontact_name'];
+		if ( User::where('first_name', $name)->exists() ){ 
+			
+			$id2 = User::where('first_name', $name)->value('id');
+			if (Connection::where([ ['user_id_1',$id], ['user_id_2',$id2] ]) ){
+				$connection = Connection::where([ ['user_id_1',$id], ['user_id_2',$id2] ]) ->first();
+				if ($connection){
+					$connection -> delete();
+					$msg = 'Contact was removed.';
+				}else{
+					$msg = 'Error';
+				}
+			}else if( Connection::where([ ['user_id_1',$id2], ['user_id_2',$id] ]) ){
+				$connection = Connection::where([ ['user_id_1',$id2], ['user_id_2',$id] ]) ->first();
+				if ($connection){
+					$connection -> delete();
+					$msg = 'Contact was removed.';
+				}else{
+					$msg = 'Error';
+				}
+			}else{
+				$msg = 'Error';
+			}
+			//$posts = Message::where([ ['user_id', $id2 ],['user_id_to',$id] ]) -> orWhere([ ['user_id_to', $id2], ['user_id',$id] ]) -> get();
+			//foreach ($posts as $post){
+			//	$post->delete();
+			//}
+		
+		}else{
+			$msg = 'Error: contact does not exists';
+		}
+		
+		return redirect()->back() ->with(['msg'=>$msg]);
+	}
 	
 	public function getShowConnections()
 	{
@@ -161,7 +199,6 @@ class MessageController extends Controller
 			}
 		}
 		
-		//return redirect()->route('dashboard', ['connections'=>$res, 'posts'=>[]]) -> with(['msg'=>$msg]);
 		$username = User::where('id', $user_id) -> value('first_name');
 		return view('index', [
 						'in_contacts' => true, 
@@ -186,9 +223,6 @@ class MessageController extends Controller
 		$posts = Message::where([ ['user_id', $id1 ],['user_id_to',$id] ]) -> orWhere([ ['user_id_to', $id1], ['user_id',$id] ]) -> get();
 		
 		$draft = $this->Draft($id);
-		
-		//$msg = 'Draft: '.$draft;
-		//return view('dashboard', ['posts'=>$posts, 'connections'=>[], 'id_to'=>$id ]) ;
 		return view('index', [
 						'in_contacts' => false, 
 						'in_messages' => true, 

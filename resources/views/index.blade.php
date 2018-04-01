@@ -20,8 +20,8 @@
 	<div hidden> @include('includes.forms') </div>
 		
 	<div id='base_elements'>
-		<div hidden id='content_box' class='content_box ' align='top'> 
-			File icons will be here, or contacts/people icons, or text from the opened file, or messages 
+		<div id='content_box' class='content_box ' align='top'> 
+			<div hidden> File icons will be here, or contacts/people icons, or text from the opened file, or messages</div> 
 		</div>
 		<div hidden id="zoom_box" class="text_zoom_box border">  
 			<div id="zoom_text" class="text_zoom"> Zoom of file name, or selected text in reader </div> 

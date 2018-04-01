@@ -24,13 +24,16 @@ function menu_back(id, foggyoff, ineditor){                              console
 }
 
 function scroll_to(id, id_area, title){                                  consolelog_func(); 
+	var elem;
     if (title==0){ elem = document.getElementById(id);  }
     else { elem= document.querySelectorAll('[id="'+id+'"]')[1]; 
     }
-    area = document.getElementById(id_area).getBoundingClientRect();     
-    rect = elem.getBoundingClientRect();                                 //console.log(rect);
-    if (rect.top+0.5*(rect.bottom-rect.top)>area.bottom || rect.left+0.5*(rect.right-rect.left)>area.right || rect.bottom-0.5*(rect.bottom-rect.top)<area.top || rect.right-0.5*(rect.right-rect.left)<area.left )
-        {elem.scrollIntoView(true);} 
+    if (elem){
+	    var area = document.getElementById(id_area).getBoundingClientRect();     
+	    var rect = elem.getBoundingClientRect();                         //console.log(rect, area);
+	    if (rect.top+0.5*(rect.bottom-rect.top)>area.bottom || rect.left+0.5*(rect.right-rect.left)>area.right || rect.bottom-0.5*(rect.bottom-rect.top)<area.top || rect.right-0.5*(rect.right-rect.left)<area.left )
+	        { elem.scrollIntoView(true); } 
+	}
 }
 
 function common_disable_button(id, disable, todo){
@@ -53,7 +56,7 @@ function common_disable_button(id, disable, todo){
 function button_html(lvl, arr, y_dim, x_dim){                            consolelog_func('grey', true);
 	if (y_dim==undefined){ y_dim = 2; x_dim=4; }                         
 	var class_arr = [["green", "grey", "editor1", "editor2", 'editor1 disabled', 'editor2 disabled', 'editor1'],
-	                 ["editor1", '', 'menu4', "editor1 disabled", '']];
+	                 ["editor1", '', 'menu4', "editor1 disabled", '', 'green', 'menu6']];
 	
 	var html = '';
 	var name = '', tail='', inner='', id='';
@@ -73,9 +76,9 @@ function button_html(lvl, arr, y_dim, x_dim){                            console
 		}else{
 			inner = dict[ name ];
 			id = name;
-		}                                                                //console.log('name: '+name+'|'+tail+'|'+inner);
+		}                                                                
 		var class_name = class_arr[lvl][pos[1]];
-		if (lvl==0){ var style = style_buttonpos(pos[0],pos[1], y_dim, x_dim); }   //console.log(style);
+		if (lvl==0){ var style = style_buttonpos(pos[0],pos[1], y_dim, x_dim); }  
 		if (lvl==1){ var style = style_buttonpos_menu(pos[0],pos[1], y_dim, x_dim); }
 		if (lvl==1 && (pos[1]==2 || pos[1]==4) ){
 			html += '<div id="'+id+'_box" class="button_zoom_box '+class_name+' border" onclick="'+arr[i][1]+'" style="'+style+'"><div id="'+id+'" class="text_zoom">'+inner+'</div></div>';
@@ -106,7 +109,7 @@ function common_create_menu(id, lvl, buttons_html, parent, ineditor, white){    
     return (elem);
 }
 
-function common_show_notification(text, welcome, blur){                        consolelog_func();
+function common_show_notification(text, welcome, blur, confirm){                        consolelog_func();
 	var elem = document.getElementById('menu_back_lvl0');
 	if (elem){ menu_back('menu_back_lvl0',1, 0); }
 	
@@ -115,24 +118,30 @@ function common_show_notification(text, welcome, blur){                        c
 	var id = "notification";
 	common.repeat_text = common_textto_read(text);
 	menu_blur();
+	var attention = '';
+	if (confirm==true){ attention = 'text_attention';}
 	
 	var fontsize = common.style.get_bfontsize();
 	inner_e = '<div id="back_lvl" onclick="menu_back(this.id,'+blur+',false);" class="back_area"> </div>';
 	inner_e+= '<div class="menu_area border" >';
-	inner_e+= '<div class="text_scroll_box" style="position:fixed;'
-			+ 'top:'+18*common.style.ry+'vh; left:14vw;'
-			+ 'width:72vw; height:'+(45)*common.style.ry+'vh;'
-			+ 'font-size:'+fontsize+'vmin;line-height:'+fontsize*1.5+'vmin;'
-			+ 'color: rgba(0,0,0,0.55);">';
+	inner_e+= '<div class="text_notification" style="'
+			+ 'top:'+18*common.style.ry+'vh;'
+			+ 'height:'+(43)*common.style.ry+'vh;'
+			+ 'font-size:'+fontsize+'vmin;line-height:'+fontsize*1.5+'vmin;">';
 	inner_e+= '<div class="text_scroll" align="left" style="top:0%;"> <div class="reader_text" style="'
 			+ 'top:0%;height:'+20*common.style.ry+'vh;'
-			+ '">'+text+' &nbsp </div> </div> </div> </div>' ;
+			+ '"><span class="'+attention+'">'+text+' &nbsp </span></div> </div> </div> </div>' ;
       
-    inner_e += button_html(1, [ ['js_playpause', 'common_play_pause();', [11,0,symbol_play]], ], 3,4);
-                  
+    var buttons_arr =   [ ['js_playpause', 'common_play_pause();', [11,5,symbol_play]] ];
+    if (confirm==true){  
+		buttons_arr.push( ['ajax_confirm',  common.confirm_action, [8,6,symbol_checkbox]] );
+		common.confirm_action = '';
+	}
+	inner_e += button_html(1, buttons_arr, 3,4);
+    
     element = document.createElement('div');
     element.setAttribute('id', id);
-    element.innerHTML=inner_e;
+    element.innerHTML = inner_e;
     document.getElementById(parent).appendChild(element);
     return (element);	
 }

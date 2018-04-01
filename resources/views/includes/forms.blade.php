@@ -5,7 +5,12 @@ Forms:<br>
     Connection: {{ count($connections) }}<br>
 	<form action="{{ route('connection_add') }}" method="post">
 		<input id="addcontact_name" class="form-control" type="text" name="addcontact_name" value=""  > 
-		<button id="addcontact_submit" type="submit" class="btn btn-primary"> Add connection </button>
+		<button id="addcontact_submit" type="submit" class="btn btn-primary"> Add contact </button>
+		<input type="hidden" name="_token" value="{{ Session::token() }}">
+	</form>
+	<form action="{{ route('connection_remove') }}" method="post">
+		<input  id="rmcontact_name" class="form-control" type="text" name="rmcontact_name" value=""  > 
+		<button id="rmcontact_submit" type="submit" class="btn btn-primary"> Remove contact </button>
 		<input type="hidden" name="_token" value="{{ Session::token() }}">
 	</form>
 @endif

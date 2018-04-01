@@ -79,6 +79,7 @@ reader_lang['ru'] = {
 	js_editorback   : 'Назад',
 	ajax_editorexit  : 'Выход',
 	ajax_editorsave  : 'Сохра- нить',
+	ajax_confirm     : 'Да',
 	
 	
 	alert_error      : 'Ошибка',
@@ -88,6 +89,7 @@ reader_lang['ru'] = {
 	alert_newfolder  : 'Новая папка создана',
 	alert_newtxt     : 'Новый файл создан',
 	alert_newcontact : 'Новый контакт создан, имя контакта - ',
+	alert_rmcontact  : 'Контакт удален',
 	alert_waspasted  : 'Файл вставлен',
 	alert_wascopied  : 'Файл скопирован',
 	alert_wasdeleted : 'Файл удален',
@@ -104,6 +106,12 @@ reader_lang['ru'] = {
 					 + "Check 'Welcome.txt' file for details. "
 					 + "You will see it after closing this window. "
 					 + "To open the file click on the file icon and 'check' button to the right. ",
+					 
+	
+	confirm_general  : 'Подтвердите действие',
+	confirm_rmcontact: ' Внимание! <br> При удалении контакта все сообщения будут удалены. <br><br> Вы уверены что хотите продолжить?',
+	confirm_rmuser   : ' Внимание! <br> При удалении аккаунта все файлы и сообщения будут удалены. <br><br> Вы уверены что хотите продолжить?',
+	
 	
 
 }

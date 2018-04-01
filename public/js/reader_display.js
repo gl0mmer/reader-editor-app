@@ -3,21 +3,25 @@ function reader_resize(){
 	style_resize();
 	reader_show_buttons();
 	reader_set_zoomtype(reader.zoomtype);
+	scroll_to(reader.get_id(),'content_box', title=0);
 }
 
 //-- reader scroll functions -------------------------------------------------------------------
  
-function reader_scroll(order,stop,onend){                                consolelog_func('darkblue'); 
-    iter = reader.iter;
-    n_select_type = reader.selecttype;
-    id_arr = reader.get_id_array();
-    max_iter = id_arr.length;
+function reader_scroll(order,stop,onend, iter_new){                                consolelog_func('darkblue'); 
+    var iter          = reader.iter;                
+    var n_select_type = reader.selecttype;
+    var id_arr        = reader.get_id_array();
+    var max_iter      = id_arr.length;
+    
+    if (order==2 && iter_new!=undefined && iter_new < max_iter-1 && iter_new>-1){ iter=iter_new; }
     if (order==1 && iter < max_iter-1 ) { iter += 1; }
     else if (order==0 && iter > -1) { iter -=1; } 
     if (iter==-1){ id='file_title'; } 
     else { id=id_arr[iter]; }
+    
     reader.iter = iter;
-    reader.id_curr = id;                                                
+    reader.id_curr = id;                                                                                      
 
     if (iter>id_arr.length-2){onend=0; common.utter_playall=0;}
     
@@ -26,7 +30,7 @@ function reader_scroll(order,stop,onend){                                console
         reader.latest_s  = id;
         reader.latest_p  = id;
     }
-    if ((order==1|| order==0) && iter>-1){
+    if ( iter>-1 ){
         if (n_select_type==0){ 
             reader.latest_w = id;
             reader.latest_s = id.substr(0,4);
@@ -40,7 +44,7 @@ function reader_scroll(order,stop,onend){                                console
             reader.latest_s = id+"s0";
             reader.latest_p = id;
             }
-    }                                                                    //console.log('scroll: ', iter, common.play_counter, common.utter_recursive_done);
+    }                                                                    //console.log('scroll: ', reader.id_curr, iter, common.play_counter, common.utter_recursive_done);
    
     reader_utter(stop_i=stop); 
     reader_highlite(); 
@@ -51,7 +55,7 @@ function reader_scroll(order,stop,onend){                                console
     if(reader.in_messages && $('#'+id).parents('#mail_editable').length === 0) { mail_noedit=true; } 
                                                                          
     var ifdisable = (iter==-1 || mail_noedit===true); 
-    common_disable_button("js_edit", ifdisable, function(){ reader_editor();});
+    common_disable_button("js_edit", ifdisable, function(){ reader_edittext();});
     
 }    
 function reader_utter(stop_i) {                                          consolelog_func(); 
@@ -84,16 +88,16 @@ function reader_fill_zoom(){                                             console
     var elem=document.getElementById('zoom_text');
     elem.innerHTML=text;                                              
 }
-function reader_highlite(){                                              consolelog_func(); 
+function reader_highlite(){                                              //consolelog_func(); 
     var id_prev = reader.id_prev;                                    
     var id = reader.get_id();                                         
-    var elem = document.getElementById(id_prev);
-    if (elem){
-		elem.className='text';
+    var elem = document.getElementById(id_prev);                         
+    if (elem){                                                           
+		elem.className='text';                                           
     }
-    div = document.getElementById(id);                                   //console.log('Highlite id: '+id_prev+' | ' +id+' | '+reader.iter);                            
-    if (div){
-		div.className='text_highlite';      
+    elem = document.getElementById(id);                                                          
+    if (elem){
+		elem.className='text_highlite';      
 	}                           
     reader.id_prev = id;
 }
@@ -123,8 +127,8 @@ function reader_set_zoomtype(order){                                     //conso
 
 function reader_show_buttons(){                                          consolelog_func(); 
     var buttons_arr = [ 
-		 ['show_menu', 'reader_show_menu();',    [0,1,symbol_menu]],   
-		 ['js_edit',    'reader_editor();',       [1,0, symbol_edit2]],
+		 ['show_menu',  'reader_show_menu();',    [0,1,symbol_menu]],   
+		 ['js_edit',    'reader_edittext();',     [1,0, symbol_edit2]],
 		 ['js_rprev',   'reader_play_single(0);', [3,0,symbol_prev]],   
 		 ['js_rnext',   'reader_play_single(1);', [7,0,symbol_next]],
 		 ['js_selecttype', 'reader_set_selecttype(1,1);', [2,0]],   

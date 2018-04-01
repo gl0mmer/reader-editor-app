@@ -66,7 +66,6 @@ function reader_start(){                                                 console
 	inner_e += "<div id='title_box' > <span id='file_title'></span> </div> ";
 	inner_e += "<div id='text_from_file' class='reader_text' style='top:1vh;'> </div>";
 	inner_e += "</div>";
-	//inner_e += '<div style="position:fixed;left:86vw;top:0vh;width:23vw;height:18.5vh; background-color:rgba(78, 106, 126,0.9); border-radius:0.25vmin; "></div>';
 	document.getElementById("content_box").innerHTML = inner_e;
 	window.onbeforeunload = reader_beforunload;                          
 	
@@ -80,6 +79,11 @@ function reader_start(){                                                 console
 	    common.cookie_save.call(reader);
 	}else{ common.cookie_load.call(reader); }                            
 		
+	if (reader.iter==undefined){                                         // !!Error may occure here
+		reader.iter=0;  
+		reader.id_prev= "p0s0w0";  
+		reader.id_curr= "p0s0w0";                                        //console.log('SET ITER'); 
+	} 
 	reader_update();
 }
 
@@ -87,9 +91,8 @@ function reader_exit(order){
 	var elem = document.getElementById('menu_back_lvl0');                //console.log('Elem: '+elem);
 	if (elem){ menu_back('menu_back_lvl0',1, 0); }
 	var elem = document.getElementById('menu_back_lvl1');                //console.log('Elem: '+elem);
-	if (elem){ menu_back('menu_back_lvl1',1, 0); }
-	
-	if (reader.iter_prev==undefined){ reader.iter=0; reader.iter_prev = 0; reader.id_prev= "p0s0w0";  reader.id_curr= "p0s0w0";}     
+	if (elem){ menu_back('menu_back_lvl1',1, 0); }                       
+	    
 	common.cookie_save.call(reader);
 	common.cookie_save();  
 	localStorage.setItem("in_reader", "no"); 
@@ -138,8 +141,10 @@ function reader_update(start) {                                          console
 	}
                   
 	var parser = reader_parse_html(text);
-	var text_parsed = parser[0];                                         //console.log('false text_parsed: '+text_parsed);                                
-	reader.word_id=parser[1]; reader.sentence_id=parser[2]; reader.paragraph_id=parser[3];
+	var text_parsed     = parser[0];                                     //console.log('false text_parsed: '+text_parsed);                                
+	reader.word_id      = parser[1]; 
+	reader.sentence_id  = parser[2]; 
+	reader.paragraph_id = parser[3];
 																	
 	document.getElementById('text_from_file').innerHTML = text_parsed;  
 	reader.text_parsed = text_parsed;                                    //console.log('Draft 4: '+text_parsed);
@@ -147,14 +152,12 @@ function reader_update(start) {                                          console
     reader_show_buttons();    
     reader_set_selecttype(order=0);                                  
     reader_set_zoomtype(reader.zoomtype);                                       
-    common_set_fontsize(common.r_fontsize_scale, 1);                     console.log('ReaderIter: '+reader.iter+' '+reader.iter_prev);
+    common_set_fontsize(common.r_fontsize_scale, 1);                     console.log('ReaderIter: '+reader.iter);
     if (reader.in_messages){
         reader.iter = reader.get_id_array().length-1;                  
         reader_highlite(); 
-        scroll_to(reader.get_id(),'content_box', title=0);
 	}                                                                    //console.log('Save_inprocess: '+reader.save_inprocess);
     reader_resize();
-    document.getElementById('content_box').style.display='block'; 
 }
 
 //-- ajax function -------------------------------------------------------
@@ -207,23 +210,20 @@ function reader_ajax_send(){
 
 function reader_set_selecttype(order, settype){                          consolelog_func(); 
 	if (settype===undefined){settype=0;}
-    n_select_type = reader.selecttype;
+    var n_select_type = reader.selecttype;
     
-    if (settype==1){
+    if (settype==1){                                                     
         n_select_type = (n_select_type+1)%3;
-        reader.selecttype = n_select_type;
-        id_arr = reader.get_id_array();  latest_id = reader.get_id_backup();      
-        reader.iter = id_arr.indexOf(latest_id);
-    }else if (settype==2){
+    }else if (settype==2){                                               
 		n_select_type = order;
-		reader.selecttype = n_select_type;
-        id_arr = reader.get_id_array();  latest_id = reader.get_id_backup();      
-        reader.iter = id_arr.indexOf(latest_id);
-		}        
-    reader_highlite(); 
-    reader_fill_zoom();                           
-    id=reader.get_id(); 
-    reader.id_curr = id;                                              
+	}
+	reader.selecttype = n_select_type;
+	var id_arr = reader.get_id_array();  
+	reader.iter = id_arr.indexOf( reader.get_id_backup() );              
+    reader.id_curr = reader.get_id();    
+	                
+	reader_highlite(); 
+    reader_fill_zoom();                            
     document.getElementById('js_selecttype').innerHTML=dict.js_selecttype[n_select_type];
 }
    
@@ -245,16 +245,15 @@ function reader_play_single(order){
 }
     
 function reader_navigate(order){                                         consolelog_func(); 
+	reader.selecttype = 2;
+	reader_set_selecttype(2,2); 
 	var len = reader.paragraph_id.length;
 	var nav = {start:'0.0', mid:'0.5', end:'1.0'};                   
 	order = nav[order];                                              
 	reader.iter = Math.floor(len*order);
 	
-	if (reader.iter==len){reader.iter = len-1;}                  
-	var id = reader.get_id();                                       
-    reader.id_curr = id;
-    reader_highlite(); 
-    scroll_to(id,'content_box', title=0);
+	if (reader.iter==len){reader.iter = len-1;}
+	reader_scroll(2,1,0,reader.iter);                  
 }
 
 
@@ -299,7 +298,7 @@ function reader_messages_tohtml(){
 //-- misc ----------------------------------------------------------------
 
 
-function reader_editor(){                                                consolelog_func("darkblue"); 
+function reader_edittext(){                                              consolelog_func("darkblue"); 
 	utter_stop();
     text_all = document.getElementById('text_from_file').innerHTML;
     reader.text_parsed = text_all;
@@ -314,7 +313,5 @@ function reader_beforunload() {                                          console
 	common.ineditor = false;
 	common.cookie_save.call(reader); 
 	common.cookie_save(); 
-	//if (reader.save_inprocess==false){
-	//	reader_exit();
-	//}
+	//if (reader.save_inprocess==false){ reader_exit(); }
 }

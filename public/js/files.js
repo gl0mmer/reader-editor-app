@@ -101,6 +101,8 @@ function files_update(){                                                 console
 			goTo( path );
 		}
 		files_resize();                 
+		
+		
 		var errors = files.php_errors;                                   //console.log(files.php_messages[0]);                
 		if (errors.length>0){ 
 			common.alert_text = '';
@@ -116,9 +118,7 @@ function files_update(){                                                 console
 			common_show_notification(common.alert_text, false, 1);
 			common.alert_text = '';
 		} 
-	}
-	document.getElementById('content_box').style.display='block';    
-	                                                                     //console.log('Parent dir: '+getPreviousDir());
+	}	                                                                     //console.log('Parent dir: '+getPreviousDir());
 }                                                     
 
 //-- ajax functions ------------------------------------------------------
@@ -199,6 +199,12 @@ function files_ajax_addcontact(){
 		document.getElementById('addcontact_submit').click(); 
 		common.alert_text = dict.alert_newcontact+new_contact;
 	}
+}
+function files_ajax_rmcontact(id){
+	if ( !common_ajax_permit() ){ return true; }
+	document.getElementById('rmcontact_name').value = files.get_fname();
+	document.getElementById('rmcontact_submit').click(); 
+	common.alert_text = dict.alert_rmcontact;
 }
 
 function files_ajax_rename(){

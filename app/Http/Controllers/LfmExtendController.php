@@ -36,7 +36,7 @@ class LfmExtendController extends LfmController
         $sort_type = 'alphabetic';
 		
 		$directories = parent::sortFilesAndDirectories(parent::getDirectories($path), $sort_type);
-        //$files = parent::sortFilesAndDirectories(parent::getFilesWithInfo($path), $sort_type);   // !!!!!
+        //$files = parent::sortFilesAndDirectories(parent::getFilesWithInfo($path), $sort_type);   // !!Error was there
         $files = File::files($path);                                     // !!!!!
         
         $fnames_arr = array();

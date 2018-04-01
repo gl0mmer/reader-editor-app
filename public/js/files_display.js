@@ -5,8 +5,8 @@ function files_resize(){                                                 console
 	common_set_fontsize(common.f_fontsize_scale, 0);
 	files_show_buttons();
 	files_show_files(); 
-	files_scroll(files.iter, 'no');
 	files_set_zoom('no');
+	files_scroll(files.iter, 'no');
 }
 
 //-- files scroll functions ----------------------------------------------
@@ -70,14 +70,14 @@ function files_show_buttons(){                                           console
 		 ['show_login', 'files_show_login();',  [4,1,symbol_person]], 
 		 ['ajax_enter', 'files_ajax_enter();',  [2,0, symbol_enter]],   
 		 ['js_fprev',   'files_scroll(-2);',    [3,0, symbol_prev]],
-		 ['js_fnext',   'files_scroll(-1);',    [7,0, symbol_next]]
+		 ['js_fnext',   'files_scroll(-1);',    [7,0, symbol_next]],
+		 ['show_opt',    'files_show_options();', [1,1,symbol_gear2]] 
 		 ];
     if (files.in_contacts){
 		buttons_arr.push( ['show_addcontact', 'files_show_addcontact();', [6,1,symbol_plus]], 
 						  ['ajax_mailexit',   'files_ajax_enter(-1)',     [5,0,symbol_home]] );
 	}else{
-		buttons_arr.push( ['show_opt',    'files_show_options();', [1,1,symbol_gear2]], 
-		                  ['show_create', 'files_show_create();',  [6,1,symbol_plus]],
+		buttons_arr.push( ['show_create', 'files_show_create();',  [6,1,symbol_plus]],
 		                  ['ajax_contacts', 'files_ajax_contacts();', [5,0,symbol_people]]  );
 		                             
         if (user.name=='admin'){
@@ -127,13 +127,20 @@ function files_show_create(){                                            console
 	}
 }
 function files_show_options(){                                           consolelog_func();
-    var inner_e = button_html(1, 
-		[['edit_filename', 'files_edittext(this.id);', [0,2]], 
-		 ['ajax_totrash',  'files_ajax_totrash();',    [4,0]],
-		 ['ajax_rename',   'files_ajax_rename();',     [7,0]], 
-		 ['js_copy',       'files_copy();',            [6,0]],
-		 ['ajax_download', 'files_ajax_download();',   [3,0]],
-		]);
+	if (files.in_contacts){
+		common.confirm_action = 'files_ajax_rmcontact();';
+		var buttons_arr = [ ['edit_filename', '', [0,4]], 
+		                    ['ajax_totrash', 'common_show_notification(dict.confirm_rmcontact,0,1,true);', [4,0]] ];
+	}else{
+		var buttons_arr =  
+			[['edit_filename', 'files_edittext(this.id);', [0,2]], 
+			 ['ajax_totrash',  'files_ajax_totrash();',    [4,0]],
+			 ['ajax_rename',   'files_ajax_rename();',     [7,0]], 
+			 ['js_copy',       'files_copy();',            [6,0]],
+			 ['ajax_download', 'files_ajax_download();',   [3,0]],
+			];
+	}
+	var inner_e = button_html(1, buttons_arr);  
     common_create_menu('files_options', 0, inner_e);
     
     var fname = files.get_fname();

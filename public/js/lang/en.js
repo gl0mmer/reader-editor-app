@@ -79,6 +79,7 @@ reader_lang['en'] = {
 	js_editorback   : 'Back',
 	ajax_editorexit  : 'Exit',
 	ajax_editorsave  : 'Save',
+	ajax_confirm     : 'Yes',
 	
 	
 	alert_error      : 'Error',
@@ -88,6 +89,7 @@ reader_lang['en'] = {
 	alert_newfolder  : 'New folder was created',
 	alert_newtxt     : 'New text file was created',
 	alert_newcontact : 'New contact was created, contact name is ',
+	alert_rmcontact  : 'Contact was removed',
 	alert_waspasted  : 'Item was pasted',
 	alert_wascopied  : 'Item was copied',
 	alert_wasdeleted : 'Item was deleted',
@@ -97,13 +99,17 @@ reader_lang['en'] = {
 	
 	alert_signin     : 'Signed in successfully, user name is ',
 	alert_signup     : 'New account was created, user name is ',
-	alert_logout     : 'Loged out succesfully',
+	alert_logout     : 'Loged out successfully',
 	
-	alert_nospeech  : "This browser does not support speech synthesis! Speech synthesis works in Chrome on Android 6+/Windows/Linux, and in Firefox on Windows.",
-	alert_welcome   : "Hi! This website helps people to read and write. <br><br>"
-					+ "Check 'Welcome.txt' file for details. "
-					+ "You will see it after closing this window. "
-					+ "To open the file click on the file icon and 'check' button to the right. ",
+	alert_nospeech   : "This browser does not support speech synthesis! Speech synthesis works in Chrome on Android 6+/Windows/Linux, and in Firefox on Windows.",
+	alert_welcome    : "Hi! This website helps people to read and write. <br><br>"
+					 + "Check 'Welcome.txt' file for details. "
+					 + "You will see it after closing this window. "
+					 + "To open the file click on the file icon and 'check' button to the right. ",
+					
+	confirm_general  : "Confirm action",
+	confirm_rmcontact: ' Attention! <br> All messages will be deleted when you remove contact. <br><br> Are you sure?',
+	confirm_rmuser   : ' Attention! <br> All files and messages will be destroyed when you delete account. <br><br> Are you sure?',
 	
 
 }
