@@ -10,7 +10,8 @@ function files_resize(){                                                 console
 }
 
 //-- files scroll functions ----------------------------------------------
-function files_scroll(order, i_utter){                                   consolelog_func('darkblue');
+function files_scroll(order, i_utter){                                   consolelog_func('darkblue'); console.log('Length:',files.entries.length);
+	if (files.entries.length<1){return true;}
 	   
     var iter = files.iter;                                               
     var iter_prev = files.iter_prev;                                     
@@ -52,8 +53,9 @@ function files_scroll(order, i_utter){                                   console
 }  
 function files_fill_zoom(){                                              consolelog_func();
     var fname = files.get_fname();
+    if (fname==undefined){fname='';}
     var dir = user.name+'/ '+files.get_subdir();
-    dir = '<em style="font-style:normal;color:black;opacity:0.3;">'+dir+' </em>';
+    dir = '<em style="font-style:normal;color:black;opacity:0.3;">'+dir+' </em>'; 
     var elem = document.getElementById('zoom_text');
     if (elem){
 		document.getElementById('zoom_text').innerHTML = dir+fname;

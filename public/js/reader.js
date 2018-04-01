@@ -73,7 +73,7 @@ function reader_start(){                                                 console
 	window.onresize = function(){ reader_resize(); };
 	reader.cookie_suffix = "_"+reader.fname;                             //console.log('cookie_suffix: '+reader.cookie_suffix);
 	                 
-	console.log('Cookie_isset: '+cookie_get('isset_'+reader.fname)+' = '+reader.fname);
+	                                                                     //console.log('Cookie_isset: '+cookie_get('isset_'+reader.fname)+' = '+reader.fname);
 	if (cookie_get('isset_'+reader.fname)!='isset'){                    
 	    cookie_set("isset_"+reader.fname, "isset");
 	    common.cookie_save.call(reader);

@@ -100,6 +100,7 @@ function files_update(){                                                 console
 			console.log('goTo():', path);                                // Can get stuck here!!     
 			goTo( path );
 		}
+		files_fill_zoom();
 		files_resize();                 
 		
 		

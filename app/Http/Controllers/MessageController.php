@@ -129,8 +129,8 @@ class MessageController extends Controller
 					$msg = 'Contact was removed.';
 				}
 			}
-			//$posts = Message::where([ ['user_id', $id2 ],['user_id_to',$id] ]) -> orWhere([ ['user_id_to', $id2], ['user_id',$id] ]) -> get();
-			//foreach ($posts as $post){ $post->delete(); }
+			$posts = Message::where([ ['user_id', $id2 ],['user_id_to',$id] ]) -> orWhere([ ['user_id_to', $id2], ['user_id',$id] ]) -> get();
+			foreach ($posts as $post){ $post->delete(); }
 		
 		}else{
 			$msg = 'Error: contact does not exists';

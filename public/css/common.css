@@ -108,10 +108,11 @@ body{
 .reader_title{
    left:2%; width:99%; 
   font-style:normal; top:1vmin; position:relative; 
+  white-space:pre-wrap; word-break: normal; word-wrap:break-word;
 }
 .reader_title_mail{
   left:4%; width:96%; font-weight:600;
-  top:2vmin; position:relative; text-align:center; color:rgba(78, 106, 126,0.7); /*color:rgba(157, 107, 21,0.7); */
+  top:2vmin; position:relative; text-align:center; color:rgba(78, 106, 126,0.7); 
 }
 .text_error { font-weight:600; color:rgba(152, 102, 32,0.85)!important; }
 .text_attention { font-weight:500; background-color: rgba(151, 62, 32,0.2); color:rgba(151, 62, 32,0.8)!important; }
@@ -125,10 +126,9 @@ body{
   color:rgba(0,0,0,0.8);
   line-height: 5vh; 
   border-radius: 0.25vmin;  
-  white-space:pre; 
 }.text_scroll{  
   position:relative; left:0vw;top:0vh; height:100%; width:95%;
-  white-space:pre-wrap; overflow-y: scroll; overflow-x: hidden; direction:rtl;
+  overflow-y: scroll; overflow-x: hidden; direction:rtl;
 }.text_scroll::-webkit-scrollbar {  width: 1.6vmin;
   color:black;  border-radius: 0.25vmin; 
 }.text_scroll::-webkit-scrollbar-track {
@@ -137,7 +137,9 @@ body{
   background-color: rgba(0,0,0,0.15); background-color:rgba(199, 202, 209,0.5); 
   border-radius: 0.25vmin; 
 }.reader_text{ 
-  position:relative; left:3vw;top:2vh; width:95%; height:80vh; direction:ltr;
+  position:relative; left:3vw;top:2vh; width:95%; height:80vh; direction:ltr; 
+  white-space:pre-wrap;
+  white-space:pre-wrap; word-break: normal; word-wrap:break-word;
 }
 
 .editor_scroll_box{
@@ -145,7 +147,8 @@ body{
   color:rgba(0,0,0,0.8);
   left:0vw; 
 }.editor_text{
-  position:relative; left:0%;top:0; direction:ltr; white-space:pre-wrap; word-break: normal; word-wrap:break-word;
+  position:relative; left:0%;top:0; direction:ltr; 
+  white-space:pre-wrap; word-break: normal; word-wrap:break-word;
   line-height:115%; color:rgba(0,0,0,0.55); align:left; width:100%; height:100vh; 
 }
 
