@@ -89,18 +89,16 @@ function button_html(lvl, arr, y_dim, x_dim){                            console
 	return html;
 }
 
-function common_create_menu(id, lvl, buttons_html, parent, ineditor, white){    consolelog_func(); 
+function common_create_menu(id, lvl, buttons_html, parent, ineditor){    consolelog_func(); 
 	if (parent==undefined) { parent='created_elements'; }
-	if (white==true) { var style='style="background-color:white;"'; }
-	else{ var style=''; }
     if (lvl==0){                                                         
         menu_blur(ineditor);
         inner_e = '<div id="menu_back_lvl0"  onclick="menu_back(this.id,1,'+ineditor+');" class="back_area"></div>';
-        inner_e+= '<div id="menu_area"  class="menu_area border" '+style+'>';
+        inner_e+= '<div id="menu_area"  class="menu_area border" >';
     }else{                                                               
         inner_e = '<div id="menu_back_lvl2"  onclick="menu_back(this.id,0,'+ineditor+');" class="back_area" style="opacity:0;"></div>';
         inner_e+= '<div id="menu_area1"  class="menu_area menu_area_lvl1 border"></div>';
-        inner_e+= '<div id="menu_area2"  class="menu_area_lvl2 border" '+style+'>';
+        inner_e+= '<div id="menu_area2"  class="menu_area_lvl2 border" >';
         }                                                                
     var elem = document.createElement('div');                            //console.log('elem: '+elem+', parent: '+parent);
     elem.innerHTML = inner_e + buttons_html + '</div>';
@@ -109,28 +107,25 @@ function common_create_menu(id, lvl, buttons_html, parent, ineditor, white){    
     return (elem);
 }
 
-function common_show_notification(text, welcome, blur, confirm){                        consolelog_func();
-	var elem = document.getElementById('menu_back_lvl0');
-	if (elem){ menu_back('menu_back_lvl0',1, 0); }
+//function common_show_notification(text, welcome, blur, lvl, confirm){                        consolelog_func(); console.log('LVL: ',lvl);
+function common_show_notification(text, confirm){                        consolelog_func(); 
 	
-	if (blur==undefined){blur=0;}
-	var parent='created_elements';
-	var id = "notification";
+	var elem = document.getElementById('menu_back_lvl0');
+	if (elem){ lvl=1; }
+	else{ lvl=0; }                                                       //console.log('LVL: ',lvl);
+	
 	common.repeat_text = common_textto_read(text);
-	menu_blur();
 	var attention = '';
 	if (confirm==true){ attention = 'text_attention';}
-	
 	var fontsize = common.style.get_bfontsize();
-	inner_e = '<div id="back_lvl" onclick="menu_back(this.id,'+blur+',false);" class="back_area"> </div>';
-	inner_e+= '<div class="menu_area border" >';
-	inner_e+= '<div class="text_notification" style="'
+	
+	inner_e = '<div class="text_notification" style="'
 			+ 'top:'+18*common.style.ry+'vh;'
 			+ 'height:'+(43)*common.style.ry+'vh;'
-			+ 'font-size:'+fontsize+'vmin;line-height:'+fontsize*1.5+'vmin;">';
-	inner_e+= '<div class="text_scroll" align="left" style="top:0%;"> <div class="reader_text" style="'
-			+ 'top:0%;height:'+20*common.style.ry+'vh;'
-			+ '"><span class="'+attention+'">'+text+' &nbsp </span></div> </div> </div> </div>' ;
+			+ 'font-size:'+fontsize+'vmin;line-height:'+fontsize*1.5+'vmin;">'
+			+ '<div class="text_scroll" align="left" style="top:0%;">'
+			+ '<div class="reader_text" style="top:0%;height:'+20*common.style.ry+'vh; ">'
+			+ '<span class="'+attention+'">'+text+' &nbsp </span></div></div></div>'; 
       
     var buttons_arr =   [ ['js_playpause', 'common_play_pause();', [11,5,symbol_play]] ];
     if (confirm==true){  
@@ -139,11 +134,7 @@ function common_show_notification(text, welcome, blur, confirm){                
 	}
 	inner_e += button_html(1, buttons_arr, 3,4);
     
-    element = document.createElement('div');
-    element.setAttribute('id', id);
-    element.innerHTML = inner_e;
-    document.getElementById(parent).appendChild(element);
-    return (element);	
+    common_create_menu('notification',lvl, inner_e);
 }
 
 

@@ -30,8 +30,13 @@ Forms:<br>
 	</form>
 @endif
 
+<form action="{{ route('delete_user') }}" method="get">
+	<button id="deleteuser_submit" type="submit" class="btn btn-primary">Delete User</button>
+	<input type="hidden" value="{{ Session::token() }}" name="_token">
+</form>
 
 <div id="add-folder" class="btn btn-primary"> Add folder </div> 
+
 <form action="{{ route('unisharp.lfm.upload') }}" role='form' id='uploadForm' name='uploadForm' method='post' enctype='multipart/form-data' class="dropzone">
 	<div class="form-group" id="attachment">
 	  

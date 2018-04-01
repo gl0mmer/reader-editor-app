@@ -16,13 +16,11 @@ class UserController extends Controller
 	{
 		$msg = 'EMPTY';
 		if (!Auth::user()){
-			$user = User::where('first_name','guest')->first();
-			Auth::login($user);
+			$this -> getLogout();
 			$msg = \Request::ip();
 		}
 		$username = User::where('id', Auth::user()->id) -> value('first_name');
 		
-		//return view('test');
 		return view('index', [
 						'in_contacts'=>false, 
 						'in_messages'=>false, 
@@ -73,7 +71,7 @@ class UserController extends Controller
 			'password' => 'required|min:4'
 		]) ) { return redirect()->route('home'); }
 		
-		$email = $request['email'];
+		$email    = $request['email'];
 		$username = $request['first_name'];
 		$password = bcrypt($request['password']);
 		
@@ -109,18 +107,34 @@ class UserController extends Controller
 		}else if (Auth::attempt(['first_name'=>$request['first_name'], 'password'=>$request['password']] )){
 			$msg = 'SignIn success';
 		}
-		//return redirect()->route('login') ->with(['msg'=>$msg]);
 		return redirect()->back() ->with(['msg'=>$msg]);
 	}
 	
 	public function getLogout()
 	{
 		Auth::logout();
-		
-		$user = User::where('first_name','guest')->first();
-		Auth::login($user);
-		//return redirect()->route('login');
+		//$user = User::where('first_name','guest')->first();
+		//Auth::login($user);
+		if (!Auth::attempt(['first_name'=>'guest', 'password'=>'guest']) ){
+			Auth::attempt(['first_name'=>'test', 'password'=>'test']);
+		}
 		return redirect()->route('home');
+	}
+	
+	public function getDeleteUser()
+	{
+		$msg = 'Error';
+		$username    = User::where('id', Auth::user()->id) -> value('first_name');
+		if ($username=='guest'){
+			return redirect()->back() ->with(['msg'=>$msg]);
+		}else{
+			
+			$user = User::find(Auth::user()->id);
+			Auth::logout();
+			$user->delete();
+			
+			return redirect()->route('home');
+		}
 	}
 	
 }

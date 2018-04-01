@@ -77,6 +77,10 @@ Route::post('/signup', [
 	'uses' => 'UserController@postSignUp',
 	'as' => 'signup'
 ]);
+Route::get('/delete_user', [
+	'uses' => 'UserController@getDeleteUser',
+	'as' => 'delete_user'
+]);
 Route::post('/signin', [
 	'uses' => 'UserController@postSignIn',
 	'as' => 'signin'

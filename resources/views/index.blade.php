@@ -24,7 +24,7 @@
 			<div hidden> File icons will be here, or contacts/people icons, or text from the opened file, or messages</div> 
 		</div>
 		<div hidden id="zoom_box" class="text_zoom_box border">  
-			<div id="zoom_text" class="text_zoom"> Zoom of file name, or selected text in reader </div> 
+			<div id="zoom_text" class="text_zoom"> <div hidden>Zoom of file name, or selected text in reader</div> </div> 
 		</div>
 	    <div hidden id='buttons_area' class='buttons_area'> Large accessible buttons             </div>
 	</div>
@@ -52,11 +52,10 @@
     <script language=JavaScript type="text/javascript" src="{{ URL::to('js/plugins/jquery.foggy.min.js') }}"></script>
     
     <script>
-	files_start();
-	contacts = []; contact_names = []; posts = [];
-	user.name = "{{ $username }}";   
-	user.id = "{{ Auth::user()->id }}";  
-	//$.getJSON("https://freegeoip.net/json/"+"{{ $msg }}", function (data) { var country = data.country_name; console.log(country); });
+		files_start();
+		contacts = []; contact_names = []; posts = [];
+		user.name = "{{ $username }}";   
+		user.id = "{{ Auth::user()->id }}";  
 	</script>
 	<div hidden> @include('includes.message_block') </div>
 	

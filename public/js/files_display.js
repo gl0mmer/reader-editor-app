@@ -42,7 +42,7 @@ function files_scroll(order, i_utter){                                   console
     files_fill_zoom();
     scroll_to(files.get_fid(), 'content_box', title=0);
      
-    var fname = files.get_fname().replace(/_/g,' ');;                             
+    var fname = files.get_fname().replace(/_/g,' ');                          
     if (i_utter===undefined){ utter(fname, 1); } 
     
     var name = files.get_subdir()+files.get_fname();                     //console.log('Opt name: '+name);
@@ -130,7 +130,7 @@ function files_show_options(){                                           console
 	if (files.in_contacts){
 		common.confirm_action = 'files_ajax_rmcontact();';
 		var buttons_arr = [ ['edit_filename', '', [0,4]], 
-		                    ['ajax_totrash', 'common_show_notification(dict.confirm_rmcontact,0,1,true);', [4,0]] ];
+		                    ['ajax_totrash', 'common_show_notification(dict.confirm_rmcontact,true);', [4,0]] ];
 	}else{
 		var buttons_arr =  
 			[['edit_filename', 'files_edittext(this.id);', [0,2]], 
@@ -149,11 +149,12 @@ function files_show_options(){                                           console
     document.getElementById('edit_filename').innerHTML = text;
 }
 function files_show_login(){                                             consolelog_func();
-	var pos = [0,4,2,11,9,10,8,6,7];
+	var pos = [4,8,0, 11,7,10, 6,2,3];
 	var wratio = window.innerWidth/window.innerHeight;
 	if (wratio<1 && wratio>0.67){ pos=[0,3,6,11,9,10,8,2,5]; }
+	common.confirm_action = 'files_ajax_rmuser();';
 	
-	var inner_e = button_html(1, 
+	var buttons_arr =  
 		[['edit_username', 'files_edittext(this.id);',  [pos[0],2]], 
 		 ['edit_userpass', 'files_edittext(this.id);',  [pos[1],2]],
 		 ['edit_usermail', 'files_edittext(this.id);',  [pos[2],2]], 
@@ -161,10 +162,12 @@ function files_show_login(){                                             console
 		 ['ajax_signup',   'files_signup();',           [pos[4],0]], 
 		 ['ajax_logout',   'files_logout();',           [pos[5],0]],
 		 ['js_rememberme', 'files_login_remember();',   [pos[6],0]], 
-		 ['ajax_deleteuser', '', [pos[7],3]],
-		 ['ajax_maildata',   '', [pos[8],3]]
-		], 3,4);
-    common_create_menu('files_lodin', 0, inner_e);
+		 ['js_help',   'common_show_notification(dict.info_login);', [pos[8],5, symbol_help]]
+		];
+	if (user.name!='guest'){
+		buttons_arr.push( ['ajax_deleteuser', 'common_show_notification(dict.confirm_rmuser,true);',    [pos[7],0]] );
+		}
+    common_create_menu('files_login', 0, button_html(1, buttons_arr, 3,4) );
     
     var name="name", pass="password";                                    // !!Error if change placeholders
 	if (files.userremember) {name = files.username; pass = files.userpass; }
@@ -182,13 +185,13 @@ function files_show_fontsize(){
 		]);
     common_create_menu('common_fontsize',1, inner_e);
     
-    var alpha=common.style.f_fontalpha, font_def = common.style.f_fontsize, scale = common.f_fontsize_scale; //console.log(scale, font_def, common.style.rmin);
+    var alpha=common.style.f_fontalpha, font_def = common.style.f_fontsize, scale = common.f_fontsize_scale; 
     common_set_fontsize(common.f_fontsize_scale,0);
 }  
 
 function files_show_addcontact(){                                        consolelog_func(); console.log('Show_add_contact');
 	if (user.name=="guest"){
-		common_show_notification(dict.alert_guest, 0,1);
+		common_show_notification(dict.alert_guest);
 	}else{
 		var inner_e = button_html(1, 
 			[['edit_contactname', 'files_edittext(this.id);', [0,2]], 

@@ -96,6 +96,7 @@ reader_lang['ru'] = {
 	alert_wasrenamed : 'Файл переименован',
 	alert_namewrong  : 'Неправильное имя',
 	alert_contactexists : 'Контакт с данным именем уже существует',
+	alert_rmuser     : 'Аккаунт был удален',
 	
 	alert_signin     : 'Вход совершен, имя пользователя - ',
 	alert_signup     : 'Новый аккаунт создан, имя пользователя - ',
@@ -112,6 +113,7 @@ reader_lang['ru'] = {
 	confirm_rmcontact: ' Внимание! <br> При удалении контакта все сообщения будут удалены. <br><br> Вы уверены что хотите продолжить?',
 	confirm_rmuser   : ' Внимание! <br> При удалении аккаунта все файлы и сообщения будут удалены. <br><br> Вы уверены что хотите продолжить?',
 	
+	info_login       : 'Email is not required!<br><br>Name and password must be at least 4 characters.<br><br>',
 	
 
 }

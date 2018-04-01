@@ -109,13 +109,10 @@ class LfmExtendController extends LfmController
 	
 		if(!File::exists($new_file_path)) {
 			if (!$this->proceedSingleUpload($new_file_path, $filetext)) {
-				//return $this->errors;
 				$msg = $msg.' Error ';
 			}
 		}
-        return redirect()->back() ->with(['msg'=>$msg]);
-		//return redirect()->back();
-         
+        return redirect()->back() ->with(['msg'=>$msg]);         
     }
     
     public function update()
@@ -125,7 +122,6 @@ class LfmExtendController extends LfmController
         $new_file_path = parent::getCurrentPath($filename);
 
 		if (!$this->proceedSingleUpload($new_file_path, $filetext)) {
-			//return $this->errors;
 			$msg = $msg.' Error ';
 		}
 		$msg = '';

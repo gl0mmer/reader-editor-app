@@ -133,7 +133,7 @@ class MessageController extends Controller
 	
 	public function getDeleteConnection(Request $request)
 	{
-		$msg = '';
+		$msg = 'Error';
 		$id = Auth::user()->id;
 		$name = $request['rmcontact_name'];
 		if ( User::where('first_name', $name)->exists() ){ 
@@ -144,24 +144,16 @@ class MessageController extends Controller
 				if ($connection){
 					$connection -> delete();
 					$msg = 'Contact was removed.';
-				}else{
-					$msg = 'Error';
 				}
 			}else if( Connection::where([ ['user_id_1',$id2], ['user_id_2',$id] ]) ){
 				$connection = Connection::where([ ['user_id_1',$id2], ['user_id_2',$id] ]) ->first();
 				if ($connection){
 					$connection -> delete();
 					$msg = 'Contact was removed.';
-				}else{
-					$msg = 'Error';
 				}
-			}else{
-				$msg = 'Error';
 			}
 			//$posts = Message::where([ ['user_id', $id2 ],['user_id_to',$id] ]) -> orWhere([ ['user_id_to', $id2], ['user_id',$id] ]) -> get();
-			//foreach ($posts as $post){
-			//	$post->delete();
-			//}
+			//foreach ($posts as $post){ $post->delete(); }
 		
 		}else{
 			$msg = 'Error: contact does not exists';

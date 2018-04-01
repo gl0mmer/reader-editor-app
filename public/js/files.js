@@ -58,9 +58,9 @@ var files = {
 		return dir+this.entries[i];
 	},
 	get_subdir: function(){
-		var dir = this.dir.substring(1);                                 //console.log('Savepath: ',dir);
+		var dir = this.dir.substring(1);                                 
 		if (dir.indexOf('/')==-1){ dir = ''; }
-		else{ dir = dir.substring(dir.indexOf('/')+1)+'/'; }         //console.log('Savepath: ',dir, this.entries[i]);
+		else{ dir = dir.substring(dir.indexOf('/')+1)+'/'; }             
 		return dir;
 	},
 }                                                        
@@ -112,10 +112,10 @@ function files_update(){                                                 console
 		}
 		                                                                 //console.log('files.dir: '+files.dir+',  get_subdir(): '+files.get_subdir());
 		if (common.welcome=='do' && localStorage.getItem("show_welcome")==="yes" ){ 
-			common_show_notification(dict.alert_welcome, false, 1);
+			common_show_notification(dict.alert_welcome);
 			localStorage.setItem("show_welcome",'no');
 		}else if (common.alert_text!=''){
-			common_show_notification(common.alert_text, false, 1);
+			common_show_notification(common.alert_text);
 			common.alert_text = '';
 		} 
 	}	                                                                     //console.log('Parent dir: '+getPreviousDir());
@@ -184,7 +184,7 @@ function files_ajax_create(type){
 			alert = dict.alert_newtxt;	
 		}
 	}
-	common_show_notification(alert,0,1);
+	common_show_notification(alert);
 	common.editor_text = '';
 }
 
@@ -192,8 +192,8 @@ function files_ajax_addcontact(){
 	if ( !common_ajax_permit() ){ return true; }
 	
 	var new_contact = document.getElementById('edit_contactname').innerHTML; 
-	if (new_contact==user.name){ common_show_notification(dict.alert_namewrong,0,1); }
-	else if( files.entries.indexOf(new_contact)>-1 ){ common_show_notification(dict.alert_contactexists,0,1); }
+	if (new_contact==user.name){ common_show_notification(dict.alert_namewrong); }
+	else if( files.entries.indexOf(new_contact)>-1 ){ common_show_notification(dict.alert_contactexists); }
 	else{
 		document.getElementById('addcontact_name').value = new_contact;
 		document.getElementById('addcontact_submit').click(); 
@@ -201,10 +201,15 @@ function files_ajax_addcontact(){
 	}
 }
 function files_ajax_rmcontact(id){
-	if ( !common_ajax_permit() ){ return true; }
-	document.getElementById('rmcontact_name').value = files.get_fname();
+	if ( !common_ajax_permit() || files.get_fname()==undefined){ return true; }
+	document.getElementById('rmcontact_name').value = files.get_fname(); 
 	document.getElementById('rmcontact_submit').click(); 
 	common.alert_text = dict.alert_rmcontact;
+}
+function files_ajax_rmuser(id){
+	if ( !common_ajax_permit() ){ return true; }
+	document.getElementById('deleteuser_submit').click(); 
+	common.alert_text = dict.alert_rmuser;
 }
 
 function files_ajax_rename(){
@@ -227,7 +232,7 @@ function files_ajax_rename(){
 		    alert = dict.alert_wasrenamed;
 		}
 	}
-	common_show_notification(alert,0,1);
+	common_show_notification(alert);
 }
 
 function files_ajax_delete(sync, fname){
@@ -248,7 +253,7 @@ function files_ajax_delete(sync, fname){
 		.done( refreshFoldersAndItems('OK') );
 	    alert = dict.alert_wasdeleted;
 	}
-	common_show_notification(alert,0,1);
+	common_show_notification(alert);
 }      
 function files_ajax_totrash(){
 	if ( !common_ajax_permit() ){ return true; }
@@ -292,7 +297,7 @@ function files_ajax_past(sync){                                          console
 	.done(refreshFoldersAndItems('OK'));
 	alert = dict.alert_waspasted;
 		
-	common_show_notification(alert,0,1);
+	common_show_notification(alert);
 }    
 function files_copy(){                                                   consolelog_func();
 	var alert = dict.alert_error;
@@ -301,7 +306,7 @@ function files_copy(){                                                   console
 		localStorage.setItem("copy_shortpath", short_path);              //console.log('Copy short_path: '+short_path);
 		alert = dict.alert_wascopied;
 	}
-	common_show_notification(alert, 0,1);
+	common_show_notification(alert);
 }
 
 function files_ajax_createinit(){
@@ -315,7 +320,7 @@ function common_ajax_permit(){
 	if (user.name=='guest'){                                             console.log('Permittion denied: '+user.name);
 		permit = false;
 		permit = true;
-		//common_show_notification(dict.alert_guest, 0,1);
+		//common_show_notification(dict.alert_guest);
 	}
 	return permit;
 }
@@ -345,7 +350,7 @@ function files_signup(){                                                 console
 
 
 function files_logout(){                                                 consolelog_func();
-	common.alert_text = dict.alert_logout;
+	//common.alert_text = dict.alert_logout;
 	localStorage.setItem("folder_path", ''); 
     document.getElementById('logout_submit').click();
 }
