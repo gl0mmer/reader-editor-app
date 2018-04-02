@@ -16,6 +16,11 @@ Messages: <br>
 	</div>	
 @endif
 
+<script>
+	console.log("PHP_MSG_____: "+"{{ $msg }}" );  
+	console.log("PHP_IFREAD__: "+"{{ $ifread }}" );  
+	console.log("PHP_USERNAME: "+"{{ $username }}" );  
+</script>
 @if(Session::has('msg'))
 	<div class="row">
 		<div class="col-md-5 success">

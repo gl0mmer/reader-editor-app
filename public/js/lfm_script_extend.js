@@ -2,19 +2,23 @@
 //-- Extend --------------------------------------------------------------
 var  show_list = 0;
 
-function loadContacts(ids, names){
+function loadContacts(ids, names, ifreads){
 	localStorage.setItem("in_reader", "no");                             
 	files.in_contacts =true;
 	
 	// sort contacts by name 
-	var d = {};
-	for (var i=0; i<names.length; i++){ d[names[i]]=ids[i]; }            //console.log('Entries 1: ',names, ids);   
-	names.sort(); ids=[];
+	var d={}; var r={};
+	for (var i=0; i<names.length; i++){ d[names[i]]=ids[i]; }              
+	for (var i=0; i<names.length; i++){ r[names[i]]=ifreads[i]; }              
+	names.sort(); 
+	ids=[]; ifreads=[];
 	for (var i=0; i<names.length; i++){ ids.push(d[names[i]]); }
+	for (var i=0; i<names.length; i++){ ifreads.push(r[names[i]]); }
 	
 	files.entries = names;                                               //console.log('Entries 2: ',names, ids);                       
-	files.paths = ids;      
-	files.entrytype = Array(ids.length).fill('file');     
+	files.paths = ids;                                                   //console.log('Ifreads: ', ifreads);    
+	files.entrytype = Array(ids.length).fill('file'); 
+	files.ifreads = ifreads;    
 	files_update();     
 }
 function loadMessages(messages) {                                               

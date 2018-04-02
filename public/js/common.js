@@ -8,8 +8,7 @@ var dict = {};
 document.addEventListener("click",handler,true);
 if ('speechSynthesis' in window) {
 	var msg = new SpeechSynthesisUtterance();
-	console.log('Browser supports speech synthesis');
-}else {console.log('Browser does not support speech synthesis!'); }
+}
 
 //-- init functions ------------------------------------------------------
 

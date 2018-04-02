@@ -10,7 +10,8 @@ function files_resize(){                                                 console
 }
 
 //-- files scroll functions ----------------------------------------------
-function files_scroll(order, i_utter){                                   consolelog_func('darkblue'); console.log('Length:',files.entries.length);
+function files_scroll(order, i_utter){                                   consolelog_func('darkblue'); 
+	                                                                     //console.log('Length:',files.entries.length);
 	if (files.entries.length<1){return true;}
 	   
     var iter = files.iter;                                               
@@ -28,7 +29,7 @@ function files_scroll(order, i_utter){                                   console
 	}
 	if (typeof files.iter != 'number'){ files.iter=0; files.iter_prev=0; } 
 	
-                                                                         console.log('scroll iter: '+files.iter+' | '+files.iter_prev);
+                                                                         console.log('Scroll-iter: '+files.iter+' | '+files.iter_prev);
     var hover = '_hover';
     var elem = document.getElementById(files.get_fid()+'_pic');
     var cname = elem.className;
@@ -192,7 +193,7 @@ function files_show_fontsize(){
 }  
 
 function files_show_addcontact(){                                        consolelog_func(); console.log('Show_add_contact');
-	if (user.name=="guest"){
+	if (user.name==""){
 		common_show_notification(dict.alert_guest);
 	}else{
 		var inner_e = button_html(1, 

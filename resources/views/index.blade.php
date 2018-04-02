@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="Hedgehogappp.com helps people with cerebral palsy and other vision and motor skills problems to read, write and communicate. All buttons are large here, all text is playable. It contains text-reader with speech synthesis and easy scalable text, text editor, simplified file system, simplified messenger. " >
-  <meta name="keywords" content="reader, editor, speech synthesis, cerebral palsy, file manager, messenger, account, user, read, write, large buttons, scalable text">
+  <meta name="description" content="Hedgehogappp.com helps people with cerebral palsy and other vision and motor skills problems to read, write and communicate. It contains text-reader with speech synthesis and easy scalable text, text editor, simplified file system and messenger. Buttons are large here, text is playable." >
+  <meta name="keywords" content="reader, editor, speech synthesis, cerebral palsy, file manager, messenger, account, read, write, large buttons, disability, narrate">
   <title>Reader-editor-messenger for serabral palsy</title>
   
   <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-  <link rel="stylesheet"  href="{{ URL::to('css/common.css')}}" />
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+  <link rel="stylesheet"  href="{{ URL::to('css/common.css')}}" />
   
 </head>
 
@@ -53,7 +53,7 @@
     
     <script>
 		files_start();
-		contacts = []; contact_names = []; posts = [];
+		var contacts = [], contact_names = [], posts = [], contact_ifreads=[];
 		user.name = "{{ $username }}";   
 		user.id = "{{ Auth::user()->id }}";  
 	</script>
@@ -65,6 +65,7 @@
 			<script>
 				contacts.push("{{ $connection }}");
 				contact_names.push("{{ $names[$i] }}");
+				contact_ifreads.push("{{ $ifreads[$i] }}");
 			</script>
 			<?php $i+=1; ?>
 		@endforeach
@@ -103,7 +104,7 @@
 		</script>
 	@elseif ($in_contacts)
 		<script>
-			loadContacts(contacts, contact_names);
+			loadContacts(contacts, contact_names, contact_ifreads);
 		</script>
 	@else
 		<script>

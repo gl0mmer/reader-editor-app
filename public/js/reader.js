@@ -124,7 +124,8 @@ function reader_update(start) {                                          console
 		reader_messages_tohtml();
 		var title = reader.fname.substring(reader.fname.lastIndexOf('/')+1);
 		elem.className = 'reader_title_mail';
-		elem.style.fontSize = 1.5*common.style.get_bfontsize()+'vmin';
+		elem.style.fontSize   = 1.5*common.style.get_bfontsize()+'vmin';
+		elem.style.lineHeight = 2.0*common.style.get_bfontsize()+'vmin';
 	}else{
 		var name = localStorage.getItem("reader_savepath");
 		var i = name.lastIndexOf('/');

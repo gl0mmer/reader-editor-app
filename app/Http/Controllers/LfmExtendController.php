@@ -12,9 +12,7 @@ use Unisharp\Laravelfilemanager\Events\ImageIsUploading;
 use Unisharp\Laravelfilemanager\Events\ImageWasUploaded;
 
 use Unisharp\Laravelfilemanager\controllers\LfmController as LfmController;
-/**
- * Class CreateController.
- */
+
 class LfmExtendController extends LfmController
 {
     protected $errors;

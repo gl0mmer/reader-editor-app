@@ -180,7 +180,7 @@ body{
 .button_zoom_box{ 
   position:fixed; 
   border-radius: 0.5vmin; 
-  box-sizing:border-box; opacity: 0.8;
+  box-sizing:border-box; color: rgba(0,0,0,0.5);
   display:flex; justify-content:center; align-items:center; 
 }
 

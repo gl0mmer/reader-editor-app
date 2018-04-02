@@ -17,6 +17,7 @@ var files = {
 	entries: [],
 	paths: [],
 	entrytype: [],
+	ifreads: [],
 	dir: "",
 	url: '',
 	in_contacts: false,
@@ -115,6 +116,10 @@ function files_update(){                                                 console
 		if (common.welcome=='do' && localStorage.getItem("show_welcome")=="yes" ){ 
 			common_show_notification(dict.alert_welcome);
 			localStorage.setItem("show_welcome",'no');
+			if ('speechSynthesis' in window) {
+				console.log('Browser supports speech synthesis');
+			}else {console.log('Browser does not support speech synthesis!'); }
+			
 		}else if (common.alert_text!=''){
 			common_show_notification(common.alert_text);
 			common.alert_text = '';

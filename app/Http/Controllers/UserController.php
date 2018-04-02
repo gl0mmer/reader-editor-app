@@ -19,20 +19,25 @@ class UserController extends Controller
 			$this -> getLogout();
 			$msg = \Request::ip();
 		}
-		$username = User::where('id', Auth::user()->id) -> value('first_name');
+		$user = User::where('id', Auth::user()->id);
+		$username = $user -> value('first_name');
+		$ifread   = $user -> value('read');
+		if (gettype($ifread)!='integer'){ $ifread=0; }
 		
 		return view('index', [
-						'in_contacts'=>false, 
-						'in_messages'=>false, 
-						'create'=>'no', 
-						'username'=>$username 
+						'in_contacts'=> false, 
+						'in_messages'=> false, 
+						'create'     => 'no', 
+						'username'   => $username,
+						'ifreads'    => '', 
+						'ifread'     => (string)$ifread, 
 		] ) ->with(['msg'=>$msg]);
 		
 	}
 	
 	public function getLoginPage()
 	{
-		return redirect()->route('home');
+		return redirect()->route('home') ->with(['msg'=>'empty']);
 	}
 	
 	
@@ -85,11 +90,13 @@ class UserController extends Controller
 		Auth::login($user);
 		
 		return view('index', [
-						'in_contacts'=>false, 
-						'in_messages'=>false, 
-						'create'=>'yes', 
-						'username'=>$username 
-		] );
+						'in_contacts'=> false, 
+						'in_messages'=> false, 
+						'create'     => 'yes', 
+						'username'   => $username, 
+						'ifread'     => '', 
+						'ifreads'    => '', 
+		] ) ->with(['msg'=>$msg]);
 
 	}
 	
@@ -113,8 +120,6 @@ class UserController extends Controller
 	public function getLogout()
 	{
 		Auth::logout();
-		//$user = User::where('first_name','guest')->first();
-		//Auth::login($user);
 		if (!Auth::attempt(['first_name'=>'guest', 'password'=>'guest']) ){
 			Auth::attempt(['first_name'=>'test', 'password'=>'test']);
 		}
