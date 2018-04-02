@@ -8,10 +8,14 @@
   
   <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  
+  <!--
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+  -->
+  <link rel="stylesheet"  href="{{ URL::to('css/googleapis_Open+Sans.css')}}" />
+  <link rel="stylesheet"  href="{{ URL::to('css/3.3.4.bootstrap.min.css')}}" />
   <link rel="stylesheet"  href="{{ URL::to('css/common.css')}}" />
+
   
 </head>
 
