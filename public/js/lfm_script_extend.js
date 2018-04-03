@@ -93,12 +93,22 @@ function useFile(file_url) {                                             //conso
   
     var type = url.substring(url.lastIndexOf('.'));                      //console.log('type: '+type);
     if (type.replace(' ','')=='.txt'){
-		var text_i = $.ajax({type: "GET", url: url, async: false}).responseText;   //console.log('text: '+text_i);
 		
-		document.getElementById('hidden_text').innerHTML = text_i;
-		document.getElementById('created_elements').innerHTML = '';
-		localStorage.setItem("reader_url", url);                       //console.log("USE");	 
-		reader_start();
+		$.ajax({type: "GET", url: url})
+		.done(function (data){
+			var text_i = data;                                           //console.log('text: '+text_i);
+			document.getElementById('hidden_text').innerHTML = text_i;
+			document.getElementById('created_elements').innerHTML = '';
+			localStorage.setItem("reader_url", url);                         	 
+			reader_start();
+			
+		});   
+		
+		//var text_i = $.ajax({type: "GET", url: url, async: false}).responseText;   //console.log('text: '+text_i);
+		//document.getElementById('hidden_text').innerHTML = text_i;
+		//document.getElementById('created_elements').innerHTML = '';
+		//localStorage.setItem("reader_url", url);                       //console.log("USE");	 
+		//reader_start();
 		
 	}else{
 		window.open(url);
