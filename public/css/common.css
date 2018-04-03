@@ -237,8 +237,11 @@ body{
 /*-- mail ----------------------------------------------------------------*/
 .message{ position:relative; width:75%; top:0vh; box-sizing:border-box; color:rgba(0,0,0,0.6); border: solid 1.5vh white; border-radius: 0.25vmin;}
 .mail_out{  width:75%; left:0.%; text-align:left; /*background-color:#ddeaee; border-color:#ddeaee;*/  }
-.mail_in{   width:75%; text-align:right; background-color:#e6eedd; border-color:#e6eedd; 
-  border-radius: 1.5vmin; border-top-right-radius:0.25vmin; width: max-content; position:relative; margin-left:auto; margin-right:0; }
+.mail_in{   background-color:#e6eedd; border-color:#e6eedd; 
+  width:max-content; width:75%;
+  position:relative; margin-left:auto; margin-right:0; text-align:right;
+  border-radius: 1.5vmin; border-top-right-radius:0.25vmin;
+}
 .mail_title{ background-color:white; border-color:white; color:rgba(0,0,0,0.3); border-bottom-width:0vmin; }
 .mail_temp{ background-color:#ffe6cc; background-color:#f7f7d4; background-color:#ddeaee; background-color: rgb(237, 238, 240); border-color:rgb(237, 238, 240); 
   border-radius: 1.5vmin; border-top-left-radius:0.25vmin; }
