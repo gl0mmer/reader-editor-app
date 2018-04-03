@@ -18,6 +18,7 @@ var files = {
 	paths: [],
 	entrytype: [],
 	unreads: [],
+	unread: 0,
 	dir: "",
 	url: '',
 	in_contacts: false,
@@ -123,7 +124,8 @@ function files_update(){                                                 console
 		}else if (common.alert_text!=''){
 			common_show_notification(common.alert_text);
 			common.alert_text = '';
-		} 
+		}
+		
 	}	                                                                     //console.log('Parent dir: '+getPreviousDir());
 }                                                     
 

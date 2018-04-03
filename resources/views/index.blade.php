@@ -62,6 +62,7 @@
 		var contacts = [], contact_names = [], posts = [], contact_unreads=[];
 		user.name = "{{ $username }}";   
 		user.id = "{{ Auth::user()->id }}";  
+		files.unread = "{{ $unread }}";  
 	</script>
 	<div hidden> @include('includes.message_block') </div>
 	

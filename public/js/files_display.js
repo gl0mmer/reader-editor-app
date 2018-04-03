@@ -89,6 +89,10 @@ function files_show_buttons(){                                           console
 	}
     elem.innerHTML = button_html(0, buttons_arr, 4,2);  
     elem.style.display='block';      
+    if (files.in_contacts==false && files.unread>0){
+		elem = document.getElementById('ajax_contacts');
+		if (elem){ elem.innerHTML = elem.innerHTML+'<div class="mark_box2">'+symbol_alert+'</div>'; }
+	}
 }
 
 function files_show_menu(){                                              consolelog_func();
@@ -245,7 +249,7 @@ function files_show_files(){                                             console
 	var wratio = window.innerWidth/window.innerHeight;                   //console.log('wratio: '+wratio+' '+window.innerWidth+' '+window.innerHeight);              
 	
 	var left_pc = -1; 
-	var top_pc=-5.4; 
+	var top_pc=-1.4; 
     var ywidth_pc=22; var yspace_pc=3.7;
     
     var r = 1;
@@ -273,12 +277,14 @@ function files_show_files(){                                             console
 	    var x = left+ xspace*0.5 + (xspace+xwidth)* (i%xn);
 	    var y = top + (ywidth+yspace)*n_y;                               //console.log(i, x,y, xwidth, ywidth);
 	    
+	    var alert = '';
+	    if (files.unreads[i]>0){ alert='<div class="mark_box1">'+symbol_alert+'</div>'; }
 	    if (files.entrytype[i]=="folder") { symbol = symbol_folder2; } 
 		else { symbol = symbol_file3; }
 		var style = 'position:absolute;top:'+y+'px; left:'+x+'px; height:'+ywidth+'px; width:'+xwidth+'px;';
 		inner_e+= '<div id="fileid_'+i+'" onclick="files_scroll('+i+');"  class="files" style="'+style+'">';
 		inner_e+= '<div id="fileid_'+i+'_name"  class="files_name" >'+files.entries[i]+'</div> ' ;     
-		inner_e+= '<div id="fileid_'+i+'_pic"  class="files_symbol '+files.get_ftype(i)+'" >'+symbol+'</div>';
+		inner_e+= '<div id="fileid_'+i+'_pic"  class="files_symbol '+files.get_ftype(i)+'" >'+symbol+alert+'</div>';
 		inner_e+= '</div>';
 	}
 	document.getElementById('files_array').style.visibility = 'visible';
