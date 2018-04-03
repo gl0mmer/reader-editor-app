@@ -86,30 +86,38 @@ function editor_start(parent, text_raw, destination, iter){              console
 	elem = create_element('editor_buttons_area', 'buttons_area_editor', 'editor_area'); 
 	window.onresize = function(){ editor_resize(); };
 	
-	var input = document.getElementsByTagName('body')[0];
-    if (common.browser=="Firefox"){ 
-		var a=0;
-		// todo
-	}
-	else{
-	    input.onkeypress = function(event) {
-			var key = event.keyCode;                                     // Get the Unicode value
-			if ( (key >= 32 && key <= 59 ) || key == 61 ||  (key >= 63 && key <= 125) || (key >= 1040 && key <= 1103) ) {
-				var y = String.fromCharCode(key);                        //console.log('keypress '+key+' '+y);  
-				editor_set_letter(y, true);
+		
+	var ctrlDown = false, ctrlKey = 17, cmdKey = 91, vKey = 86, cKey = 67;
+    $(document).keydown(function(event) {                                
+		if (!document.getElementById('editor_text_area')){ return true; }
+		var key = event.keyCode;                                         //console.log(event.keyCode, event.key);
+        if (key == ctrlKey || key == cmdKey) {ctrlDown = true; }
+        
+        var key = event.keyCode; 
+		if (ctrlDown && key==vKey){
+			console.log('Ctrl+V is not ready');
+		}else if (ctrlDown && key==cKey){
+			console.log('Ctrl+C is not ready');
+		}else if (event.key.length==1){                                  // key 0 is for Firefox(cyrillic)   // '190 >, '188 <, 192 ~, 220 \, 219 (ru)х, 
+			if ( [0,32, 219,220,221,222].indexOf(key)>-1 || (key>=48 && key<=59 ) || (key>=63 && key<=125) || (key>=186 && key<=192) || (key>=1040 && key<=1103)) {
+				var letter_number = /^[0-9a-zA-Z]+$/;
+				if (editor.parent=='reader' || (['-','+','_','!'].indexOf(event.key)>-1 || event.key.match(letter_number)) ){
+					editor_set_letter(event.key, true);                  //console.log('set '+event.key); 
+				}
 			}
-		};
+		}else{
+			if ( key == 8 || key == 46 ){ editor_delete(); }
+		    else if( key == 37 ){ editor_scroll(0); }
+		    else if( key == 39 ){ editor_scroll(1); }
+		    else if( key == 38 && editor.parent=='reader' ){ editor_scrollvert(0); }
+		    else if( key == 40 && editor.parent=='reader' ){ editor_scrollvert(1); }
+		    else if( key == 13 && editor.parent=='reader' ){ editor_set_letter(92); }
+		}
 			
-	    input.onkeydown = function(event) {
-		    var key = event.keyCode;                                     //console.log('keydown: '+key);
-		    if( key == 8 || key == 46 ){ editor_delete(); }
-		    if( key == 13 ){ editor_set_letter(92); }
-		    if( key == 37 ){ editor_scroll(0); }
-		    if( key == 39 ){ editor_scroll(1); }
-		    if( key == 38 ){ editor_scrollvert(0); }
-		    if( key == 40 ){ editor_scrollvert(1); }
-		};
-	}
+    }).keyup(function(e) {
+        if (e.keyCode == ctrlKey || e.keyCode == cmdKey) {ctrlDown = false; }
+    }); 
+	
 	
 	editor.style.set_nrow(2,0);
 	document.getElementById('editor_text_area').innerHTML=editor.text_raw;  
@@ -178,12 +186,13 @@ function editor_delete(){                                                console
         editor_set_cursor(); 
     }
 }function editor_set_letter(n, keypress){                                consolelog_func('darkblue'); 
-	if (keypress===undefined) { keypress=false; }
+	if (keypress==undefined) { keypress=false; }
 	var letter = "";
 	var iter = editor.iter;
 	var text = editor.text_raw;
 	
-	if (keypress===true){
+	if (keypress==true){
+		n = editor_textto_paste(n);
 		letter = n.toString();
 	}else{
 	    var allchar = editor_get_allchar()[0];

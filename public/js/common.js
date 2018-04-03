@@ -358,3 +358,10 @@ function common_textto_read(text){                                       console
 	text = text.replace(/\n/g,' ');   
 	return(text);
 }
+function editor_textto_paste(text){
+	//text = text.replace(/>/g, '&gt;'); 
+	//text = text.replace(/</g, '&lt;'); 
+	text = text.replace(/>/g, ''); 
+	text = text.replace(/</g, ''); 
+	return(text);
+}
