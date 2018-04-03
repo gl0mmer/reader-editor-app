@@ -18,7 +18,7 @@ Messages: <br>
 
 <script>
 	console.log("PHP_MSG_____: "+"{{ $msg }}" );  
-	console.log("PHP_IFREAD__: "+"{{ $ifread }}" );  
+	console.log("PHP_UNREAD__: "+"{{ $unread }}" );  
 	console.log("PHP_USERNAME: "+"{{ $username }}" );  
 </script>
 @if(Session::has('msg'))

@@ -21,16 +21,16 @@ class UserController extends Controller
 		}
 		$user = User::where('id', Auth::user()->id);
 		$username = $user -> value('first_name');
-		$ifread   = $user -> value('read');
-		if (gettype($ifread)!='integer'){ $ifread=0; }
+		$unread   = $user -> value('read');
+		if (gettype($unread)!='integer'){ $unread=0; }
 		
 		return view('index', [
 						'in_contacts'=> false, 
 						'in_messages'=> false, 
 						'create'     => 'no', 
 						'username'   => $username,
-						'ifreads'    => '', 
-						'ifread'     => (string)$ifread, 
+						'unreads'    => '', 
+						'unread'     => (string)$unread, 
 		] ) ->with(['msg'=>$msg]);
 		
 	}
@@ -94,8 +94,8 @@ class UserController extends Controller
 						'in_messages'=> false, 
 						'create'     => 'yes', 
 						'username'   => $username, 
-						'ifread'     => '', 
-						'ifreads'    => '', 
+						'unread'     => '', 
+						'unreads'    => '', 
 		] ) ->with(['msg'=>$msg]);
 
 	}

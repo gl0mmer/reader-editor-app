@@ -2,23 +2,23 @@
 //-- Extend --------------------------------------------------------------
 var  show_list = 0;
 
-function loadContacts(ids, names, ifreads){
+function loadContacts(ids, names, unreads){
 	localStorage.setItem("in_reader", "no");                             
 	files.in_contacts =true;
 	
 	// sort contacts by name 
 	var d={}; var r={};
 	for (var i=0; i<names.length; i++){ d[names[i]]=ids[i]; }              
-	for (var i=0; i<names.length; i++){ r[names[i]]=ifreads[i]; }              
+	for (var i=0; i<names.length; i++){ r[names[i]]=unreads[i]; }              
 	names.sort(); 
-	ids=[]; ifreads=[];
+	ids=[]; unreads=[];
 	for (var i=0; i<names.length; i++){ ids.push(d[names[i]]); }
-	for (var i=0; i<names.length; i++){ ifreads.push(r[names[i]]); }
+	for (var i=0; i<names.length; i++){ unreads.push(r[names[i]]); }
 	
 	files.entries = names;                                               //console.log('Entries 2: ',names, ids);                       
-	files.paths = ids;                                                   //console.log('Ifreads: ', ifreads);    
+	files.paths = ids;                                                   //console.log('Unreads: ', unreads);    
 	files.entrytype = Array(ids.length).fill('file'); 
-	files.ifreads = ifreads;    
+	files.unreads = unreads;    
 	files_update();     
 }
 function loadMessages(messages) {                                               
@@ -101,14 +101,7 @@ function useFile(file_url) {                                             //conso
 			document.getElementById('created_elements').innerHTML = '';
 			localStorage.setItem("reader_url", url);                         	 
 			reader_start();
-			
 		});   
-		
-		//var text_i = $.ajax({type: "GET", url: url, async: false}).responseText;   //console.log('text: '+text_i);
-		//document.getElementById('hidden_text').innerHTML = text_i;
-		//document.getElementById('created_elements').innerHTML = '';
-		//localStorage.setItem("reader_url", url);                       //console.log("USE");	 
-		//reader_start();
 		
 	}else{
 		window.open(url);

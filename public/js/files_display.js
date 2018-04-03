@@ -48,7 +48,7 @@ function files_scroll(order, i_utter){                                   console
     if (i_utter===undefined){ utter(fname, 1); } 
     
     var name = files.get_subdir()+files.get_fname();                     
-    var ifdisable = !(files.items_protected.indexOf(name)==-1 && files.iter!=0);
+    var ifdisable = !(files.items_protected.indexOf(name)==-1 && (files.iter!=0 || files.in_contacts));
     common_disable_button("show_opt", ifdisable, function(){ files_show_options();} );   
          
 }  

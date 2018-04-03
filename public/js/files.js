@@ -17,7 +17,7 @@ var files = {
 	entries: [],
 	paths: [],
 	entrytype: [],
-	ifreads: [],
+	unreads: [],
 	dir: "",
 	url: '',
 	in_contacts: false,

@@ -59,7 +59,7 @@
     
     <script>
 		files_start();
-		var contacts = [], contact_names = [], posts = [], contact_ifreads=[];
+		var contacts = [], contact_names = [], posts = [], contact_unreads=[];
 		user.name = "{{ $username }}";   
 		user.id = "{{ Auth::user()->id }}";  
 	</script>
@@ -71,7 +71,7 @@
 			<script>
 				contacts.push("{{ $connection }}");
 				contact_names.push("{{ $names[$i] }}");
-				contact_ifreads.push("{{ $ifreads[$i] }}");
+				contact_unreads.push("{{ $unreads[$i] }}");
 			</script>
 			<?php $i+=1; ?>
 		@endforeach
@@ -110,7 +110,7 @@
 		</script>
 	@elseif ($in_contacts)
 		<script>
-			loadContacts(contacts, contact_names, contact_ifreads);
+			loadContacts(contacts, contact_names, contact_unreads);
 		</script>
 	@else
 		<script>

@@ -29,8 +29,8 @@ class MessageController extends Controller
 			if ( $request->user()->message()->save($post) ){
 				$msg = 'Succeess!';
 				$this->setDraft($id_to, '');
-				$this->setConnectionIfread(True, $id_to);
-				$this->setUserIfread($id_to);
+				$this->setConnectionUnread(True, $id_to);
+				$this->setUserUnread($id_to);
 				
 			}
 		}
@@ -147,7 +147,7 @@ class MessageController extends Controller
 	{
 		$res = array();
 		$names = array();
-		$ifreads = array();
+		$unreads = array();
 		$msg = '';
 		
 		$items_1 = Connection::where('user_id_1', $user_id)->get();
@@ -160,8 +160,8 @@ class MessageController extends Controller
 			$i=0;
 			foreach ($items as $item){
 				
-				if ($i<count($items_1)){ $id = $item->user_id_2; $ifread = $item -> read1; }
-				else                   { $id = $item->user_id_1; $ifread = $item -> read2; }
+				if ($i<count($items_1)){ $id = $item->user_id_2; $unread = $item -> read1; }
+				else                   { $id = $item->user_id_1; $unread = $item -> read2; }
 				
 				if (User::where('id',$id)->first()){                     // check if user exists
 					$name   = User::where('id',$id)->value('first_name');
@@ -169,15 +169,15 @@ class MessageController extends Controller
 					array_push($names, $name);
 					$msg = $msg.', '.$id;
 					
-					if ($ifread==FALSE){$ifread=0; }
-					else               {$ifread=1; }
-					array_push($ifreads, $ifread);
+					if ($unread==FALSE){$unread=0; }
+					else               {$unread=1; }
+					array_push($unreads, $unread);
 				}
 				$i =$i+1;
 			}
 		}
 		
-		return [$res, $names, $ifreads, $msg];
+		return [$res, $names, $unreads, $msg];
 	}
 	
 	
@@ -187,8 +187,10 @@ class MessageController extends Controller
 			return redirect()->route('home');
 		}
 		$user_id = Auth::user()->id;
-		list( $res, $names, $ifreads, $msg ) = $this->connectionArray($user_id);
+		list( $res, $names, $unreads, $msg ) = $this->connectionArray($user_id);
 		
+		$unread   = User::where('id', $user_id) -> value('read');
+		if (gettype($unread)!='integer'){ $unread=0; }
 		return view('index', [
 						'in_contacts' => true, 
 						'in_messages' => false, 
@@ -196,8 +198,8 @@ class MessageController extends Controller
 						'connections' => $res, 
 						'create'      => 'no', 
 						'username'    => User::where('id', Auth::user() ->id) -> value('first_name'),
-						'ifread'      => '', 
-						'ifreads'     => $ifreads, 
+						'unread'      => $unread, 
+						'unreads'     => $unreads, 
 			]) -> with(['msg'=>$msg]);
 		
 	}
@@ -213,8 +215,8 @@ class MessageController extends Controller
 		
 		$posts = Message::where([ ['user_id', $id_from ],['user_id_to',$id_to] ]) -> orWhere([ ['user_id_to', $id_from], ['user_id',$id_to] ]) -> get();
 		
-		$this->setConnectionIfread(False, $id_to);
-		$ifread = $this->setUserIfread($id_from);
+		$this->setConnectionUnread(False, $id_to);
+		$unread = $this->setUserUnread($id_from);
 		$draft = $this->Draft($id_to);
 		return view('index', [
 						'in_contacts' => false, 
@@ -225,13 +227,13 @@ class MessageController extends Controller
 						'username'    => $username, 
 						'contactname' => $contactname, 
 						'draft'       => $draft,
-						'ifread'      => $ifread, 
-						'ifreads'     => '',  
+						'unread'      => $unread, 
+						'unreads'     => '',  
 			]) -> with(['msg'=>$msg]);
 		
 	}
 	
-	public function setConnectionIfread($value, $id_to){
+	public function setConnectionUnread($value, $id_to){
 		$msg = 'ERROR';
 		$id_from = Auth::user()->id;
 		$c1 = Connection::where([ ['user_id_1', $id_from ], ['user_id_2', $id_to] ]) ->first();
@@ -246,13 +248,13 @@ class MessageController extends Controller
 		return ($msg);
 	
 	}	
-	public function setUserIfread($id){
-		$ifread = array_sum( $this->connectionArray($id)[2] );
+	public function setUserUnread($id){
+		$unread = array_sum( $this->connectionArray($id)[2] );
 		$user = User::where('id', $id) -> first();
-		$user->read = $ifread;
+		$user->read = $unread;
 		$user->save();
 		return $user->read;
-		//return $ifread;
+		//return $unread;
 	}
 	
 	//-- unused ----------------------------------------------------------

@@ -88,10 +88,12 @@ function reader_start(){                                                 console
 }
 
 function reader_exit(order){
-	var elem = document.getElementById('menu_back_lvl0');                //console.log('Elem: '+elem);
-	if (elem){ menu_back('menu_back_lvl0',1, 0); }
-	var elem = document.getElementById('menu_back_lvl1');                //console.log('Elem: '+elem);
-	if (elem){ menu_back('menu_back_lvl1',1, 0); }                       
+	if (reader.in_messages==false){
+		var elem = document.getElementById('menu_back_lvl0');                //console.log('Elem: '+elem);
+		if (elem){ menu_back('menu_back_lvl0',1, 0); }
+		var elem = document.getElementById('menu_back_lvl1');                //console.log('Elem: '+elem);
+		if (elem){ menu_back('menu_back_lvl1',1, 0); } 
+	}                      
 	    
 	common.cookie_save.call(reader);
 	common.cookie_save();  
