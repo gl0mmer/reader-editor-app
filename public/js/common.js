@@ -10,6 +10,13 @@ if ('speechSynthesis' in window) {
 	var msg = new SpeechSynthesisUtterance();
 }
 
+var ctrlDown = false, ctrlKey = 17, cmdKey = 91, vKey = 86, cKey = 67;
+$(document).keydown(function(e) {                                
+	if (e.keyCode == ctrlKey || e.keyCode == cmdKey) {ctrlDown = true; }
+ }).keyup(function(e) {
+	if (e.keyCode == ctrlKey || e.keyCode == cmdKey) {ctrlDown = false; }
+}); 
+
 //-- init functions ------------------------------------------------------
 
 function handler(e){                                                     consolelog_func('orange'); 

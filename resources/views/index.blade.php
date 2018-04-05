@@ -8,6 +8,7 @@
   
   <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="shortcut icon" href="{{ URL::to('favicon.ico')}}">
   
   <!--
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -41,6 +42,9 @@
 	<div hidden id='tmp' > After editor text will be updated here then merged and saved to server   </div>
 	<div hidden id='hidden_text' > Text from file, before parsing </div>
 	
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <script language=JavaScript type="text/javascript" src="{{ URL::to('js/plugins/jquery.foggy.min.js') }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/lang/en.js') }}"></script> 
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/lang/ru.js') }}"></script> 
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/common_variables.js') }}"></script> 
@@ -53,9 +57,6 @@
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/editor_display.js') }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader_display.js') }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader_parse.js') }}"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
-    <script language=JavaScript type="text/javascript" src="{{ URL::to('js/plugins/jquery.foggy.min.js') }}"></script>
     
     <script>
 		files_start();
