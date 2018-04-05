@@ -44,19 +44,19 @@
 	
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
-    <script language=JavaScript type="text/javascript" src="{{ URL::to('js/plugins/jquery.foggy.min.js') }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/lang/en.js') }}"></script> 
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/lang/ru.js') }}"></script> 
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/common_variables.js') }}"></script> 
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/common.js') }}"></script> 
-	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/files.js') }}"></script>
-	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/editor.js') }}"></script>
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/files.js')  }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader.js') }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/common_display.js') }}"></script>
-	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/files_display.js') }}"></script>
-	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/editor_display.js') }}"></script>
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/files_display.js')  }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader_display.js') }}"></script>
-	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader_parse.js') }}"></script>
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader_parse.js')   }}"></script>
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/editor.js') }}"        defer></script>
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/editor_display.js') }}"defer></script>
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/plugins/jquery.foggy.min.js') }}"></script>
     
     <script>
 		files_start();
