@@ -112,7 +112,7 @@ function common_create_menu(id, lvl, buttons_html, parent, ineditor){    console
 
 function common_show_notification(text, confirm){                        consolelog_func(); 
 	
-	var elem = document.getElementById('menu_back_lvl0');
+	var elem = document.getElementById('menu_back_lvl0');                //console.log('A: ',text);
 	if (elem){ lvl=1; }
 	else{ lvl=0; }                                                       //console.log('LVL: ',lvl);
 	
@@ -135,6 +135,7 @@ function common_show_notification(text, confirm){                        console
 		common.confirm_action = '';
 	}
 	inner_e += button_html(1, buttons_arr, 3,4);
+	common.alert_text = '';
     
     common_create_menu('notification',lvl, inner_e);
 }

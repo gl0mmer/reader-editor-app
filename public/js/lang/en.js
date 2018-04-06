@@ -22,7 +22,7 @@ reader_lang['en'] = {
 	ajax_readerexit : 'Exit',
 	
 	js_copy         : 'Copy',
-	ajax_past       : 'Past',
+	ajax_paste      : 'Paste',
 	ajax_rename     : 'Rename',
 	ajax_rm         : 'Delete',
 	ajax_totrash    : 'Delete',
@@ -113,6 +113,9 @@ reader_lang['en'] = {
 	confirm_rmuser   : ' Attention! <br> All files and messages will be destroyed when you delete account. <br><br> Are you sure?',
 	
 	info_login       : 'Email is not required!<br><br>Name and password must be at least 4 characters.<br><br>',
+	
+	error_start      : 'Error! ',
+	error_nospace    : 'Not enough space in user folder. Maximum size is 20 MB',
 
 }
 

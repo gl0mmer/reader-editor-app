@@ -16,18 +16,22 @@ use Unisharp\Laravelfilemanager\controllers\LfmController as LfmController;
 class LfmExtendController extends LfmController
 {
     protected $errors;
+    protected $msg;
+    protected $log;
 
 	
     public function __construct()
     {
         parent::__construct();
         $this->errors = [];
+        $this->msg = [];
+        $this->log = [];
     }
 
 	//-- Override ItemsController@getItems -------------------------------
 	public function getItems()
     {
-		$msg = 'getItems() ';    
+		array_push($this->log, 'GetItems:');
 		$homedir = parent::getFileUrl($image_name = null, $is_thumb = null);
 		$path0 = parent::getRootFolderPath('user');
         $path = parent::getCurrentPath().$_GET['path']; 
@@ -56,13 +60,14 @@ class LfmExtendController extends LfmController
 			array_push($names_arr, $f);
 		}
         
-           
-        return [ 'html' =>$msg,
-                'entries'   => $names_arr,
-                'entrytype' => $types_arr,
-            'working_dir' => parent::getInternalPath($path),
-            'path' => $path0,
-            'homedir' => $homedir,
+        //$size = $this-> folderSize(parent::getCurrentPath("").'/') / 1000000;
+        //array_push($this->log, $size);
+        return ['entries'    => $names_arr,
+                'entrytype'  => $types_arr,
+                'working_dir'=> parent::getInternalPath($path),
+                'path'       => $path0,
+                'homedir'    => $homedir,
+                'errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log
         ];
     }
     
@@ -73,71 +78,67 @@ class LfmExtendController extends LfmController
 	{
 		$path = parent::getCurrentPath("");
         $new_path = $path.'/Welcome.txt';
-        $msg = '';
         
         $old_path = substr($path, 0,strrpos($path,'/'));
         $old_path = $old_path.'/shares/Welcome.txt';
-        $msg = $msg.$old_path;
         
         if (!File::copy($old_path, $new_path)) {
-			$msg = $msg.' Error ';
+			array_push($this->log, 'not_copied');
 		}
 		
 		$path = parent::getCurrentPath('trash');
 		if (!File::exists($path)) {
 			if (!parent::createFolderByPath($path)){
-				$msg = $msg.' Error ';
-			}else{ 
-				$msg = $msg.' | '.$path.' Created ';
+				array_push($this->errors, 'error');	
 			}
 		}
-        return redirect()->route('home') ->with(['msg'=>$msg]);
+		return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
 	} 
     
     
     public function create()
     {
-		$msg = 'Create: ';
+		array_push($this->log, 'Create:');
         $filename = request()->file_name.'.txt';
         $filetext = request()->file_text;
         $new_file_path = parent::getCurrentPath($filename);
 
-        // single file
-        $msg = $msg.$filename.' | '.$new_file_path;
-	
 		if(!File::exists($new_file_path)) {
 			if (!$this->proceedSingleUpload($new_file_path, $filetext)) {
-				$msg = $msg.' Error ';
+				array_push($this->errors, 'error');
 			}
 		}
-        return redirect()->back() ->with(['msg'=>$msg]);         
+		return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
     }
     
     public function update()
     {
+		array_push($this->log, 'Update:');
         $filename = request()->file_name;
         $filetext = request()->file_text;
         $new_file_path = parent::getCurrentPath($filename);
+        $this->checkSpace($new_file_path);
 
 		if (!$this->proceedSingleUpload($new_file_path, $filetext)) {
-			$msg = $msg.' Error ';
+			array_push($this->errors, 'error');
 		}
-		$msg = '';
-		foreach ($this->errors as $err){
-			$msg = $msg. $err;
-		}
-		return redirect()->back()-> with(['msg'=>$msg]);
-
+		return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
     }
     
     public function copyItem()
     {
-		$msg = 'copy';
+		array_push($this->log, 'Copy:');
         $dir = request()->past_dir;
         $filename = request()->copy_shortpath;
         
         $path = parent::getCurrentPath("");
         $old_path = $path.'/'.$filename;
+        if (request()->to_trash!='yes'){
+			$res = $this->checkSpace($old_path);
+			if ($res==false){ 
+				return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
+			}
+		}
         
         if ( request()->copy_misc=='sync' ){
 			$guest_id = User::where('first_name','guest')->first()->id;
@@ -166,22 +167,22 @@ class LfmExtendController extends LfmController
 		
 		if(!File::exists($new_path)) {
 			if (is_dir($old_path)){
-				if (!File::copyDirectory($old_path, $new_path)) {
-					$msg = $msg.' Copy Folder Error ';
-				}
+				if (File::copyDirectory($old_path, $new_path)) { 
+					if (request()->to_trash!='yes'){ array_push($this->msg, 'alert_waspasted'); }
+				}else{  array_push($this->errors, 'Copy Folder Error'); }
+				
 			}else{
-				if (!File::copy($old_path, $new_path)) {
-					$msg = $msg.' Copy File Error ';
-				}
+				if (File::copy($old_path, $new_path)) { 
+					if (request()->to_trash!='yes'){ array_push($this->msg, 'alert_waspasted'); }
+				}else { array_push($this->errors, 'Copy File Error'); }
 			}
 		}
-        //return $msg;
-		return redirect()->back() ->with(['msg'=>$msg]);     
+        return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
     }
     
     public function deleteDir()
     {
-		$msg = 'delete';
+		array_push($this->log, 'Delete:');
 		
 		$filename = request()->delete_name;
 		$path = parent::getCurrentPath("");
@@ -198,7 +199,8 @@ class LfmExtendController extends LfmController
         }else{
 			unlink($new_path); 
 		}
-        return redirect()->back() ->with(['msg'=>$msg]);
+		array_push($this->msg, 'alert_wasdeleted'); 
+		return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
 	}
 
     private function proceedSingleUpload($new_file_path, $content)
@@ -229,20 +231,56 @@ class LfmExtendController extends LfmController
 	
     private function rrmdir($dir) 
     {
-		$msg = '';
-		
-	     $objects = scandir($dir); 
-	     foreach ($objects as $object) { 
-	       if ($object != "." && $object != "..") {
-			   if (is_dir($dir."/".$object))
+		$objects = scandir($dir); 
+		foreach ($objects as $object) { 
+			if ($object != "." && $object != "..") {
+				if (is_dir($dir."/".$object))
 					$this->rrmdir($dir."/".$object);
-			   else
-	                unlink($dir."/".$object); 
-	       } 
-	     }
-	     rmdir($dir); 
-	   
-		return $msg;
+				else
+					unlink($dir."/".$object); 
+			} 
+		}
+		rmdir($dir); 
 	}
+    
+    
+    public function folderSize($dir) 
+    {
+		$size = 0;
+		$objects = scandir($dir); 
+		foreach ($objects as $object) { 
+			if ($object != "." && $object != "..") {
+				if (is_dir($dir."/".$object)){
+					$s = $this->folderSize($dir."/".$object);
+					$size += $s;
+				}else{
+					$size += filesize($dir."/".$object);
+				}
+			} 
+		}
+		return $size;
+	}
+	
+	public function checkSpace($path){
+		$ok = true;
+		$home = parent::getCurrentPath("");
+        $obj = $path;
+		
+		$size1 = $this-> folderSize($home);
+		if (is_dir($obj)){ $size2 = $this-> folderSize($obj); }
+		else{ $size2 = filesize($obj); }
+		
+		$maxsize = 20;
+        if ($size1+$size2>$maxsize*1000000){
+			array_push($this->errors, 'error_nospace');
+			array_push($this->log, 'Error: not enough space in user folder. Maximum size is '.$maxsize.' MB');
+			$ok = false;
+		}else{
+			array_push($this->log, 'Size: '.$size1);
+		}
+		return $ok;
+		
+	}
+
 
 }

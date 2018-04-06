@@ -66,20 +66,22 @@ function loadItems(dir) {
   $.ajax( {type: 'GET', dataType: 'text', url: 'jsonitems', cache: false, data: {path: path}} )
     .done(function (data) {
       var response = JSON.parse(data);
-      $('#content').html(response.html);                                 //console.log('Resp.html: '+response.html);
-      files.entries = response.entries;                                  //console.log('Paths: '+response.paths);
+      files.entries   = response.entries;                                
       files.entrytype = response.entrytype;                              
-      files.dir = response.working_dir;
-      files.url = response.homedir.substring(0,response.homedir.lastIndexOf('/'));   //console.log('Homedir: ', files.url, response.homedir);
-      $('#working_dir').val(response.working_dir);                       
-      $('#current_dir').text(response.working_dir);                      //console.log('Current working_dir : ' + $('#working_dir').val());
+      files.dir       = response.working_dir;
+      files.url       = response.homedir.substring(0,response.homedir.lastIndexOf('/'));   
+      $('#working_dir').val(response.working_dir);                       // from the default script
+      $('#current_dir').text(response.working_dir);                      //console.log('Homedir: ', files.url, response.homedir);
+      
+      // move trash to the 1st position
       var i = files.entries.indexOf('trash');                            //console.log(files.entries,i);
       if (i>-1){
 		  files.entries.splice(i, 1);
 		  files.entries.splice(1,0, 'trash');                            //console.log(files.entries);
-		  }
+	  }
       setOpenFolders();                                                  	
       files_update();
+      common_phpresponse(data);
     });
 }
 

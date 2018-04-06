@@ -22,7 +22,7 @@ reader_lang['ru'] = {
 	ajax_readerexit : 'Выход',
 	
 	js_copy         : 'Копи- ровать',
-	ajax_past       : 'Вставить',
+	ajax_paste      : 'Вставить',
 	ajax_rename     : 'Переиме новать',
 	ajax_rm         : 'Удалить',
 	ajax_totrash    : 'Удалить',
@@ -115,6 +115,8 @@ reader_lang['ru'] = {
 	
 	info_login       : 'Email is not required!<br><br>Name and password must be at least 4 characters.<br><br>',
 	
+	error_start      : 'Ошибка! ',
+	error_nospace    : 'Недостаточно места в папке пользователя. Максимальный размер папки - 20 MB',
 
 }
 

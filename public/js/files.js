@@ -112,6 +112,7 @@ function files_update(){                                                 console
 			for (i=0; i<errors.length; i++){ common.alert_text += errors[i]+'<br>'; }
 		}else if(files.php_messages.length>0){
 			if (files.php_messages[0].toLowerCase().indexOf('error')>-1){ common.alert_text = dict.alert_error; }
+			//if (files.php_messages[0].toLowerCase().indexOf('error')>-1){ common.alert_text = files.php_messages[0]; }
 		}
 		                                                                 
 		if (common.welcome=='do' && localStorage.getItem("show_welcome")=="yes" ){ 
@@ -175,24 +176,21 @@ function files_ajax_create(type){
 	var new_name = files.get_subdir()+common.editor_text;                console.log('New fname: '+new_name);
 	
 	var types = ['folder','file'];
-	var alert = dict.alert_error;
 	if (new_name==''){
-		alert = dict.alert_nameempty;
+		common_show_notification(dict.alert_nameempty);
 	}else if( files_exists(common.editor_text, types[type]) ){
-		alert = dict.alert_nameexists;
+		common_show_notification(dict.alert_nameexists);
 	}else{
 		if (type == 0){
 			new_name = common.editor_text;
 			performLfmRequest('newfolder', {name: new_name})
 			.done(refreshFoldersAndItems);                               
-			alert = dict.alert_newfolder;
+			common_show_notification(dict.alert_newfolder);
 		}else if (type == 1){
 			$.ajax( {type: 'GET', dataType: 'text', url: 'create', cache: false, data: {file_name: new_name, file_text:''}} )
-			.done( refreshFoldersAndItems('OK') );  
-			alert = dict.alert_newtxt;	
+			.done(function(data){ common_phpresponse(data, true) });
 		}
 	}
-	common_show_notification(alert);
 	common.editor_text = '';
 }
 
@@ -223,7 +221,6 @@ function files_ajax_rmuser(id){
 function files_ajax_rename(){
 	if ( !common_ajax_permit() ){ return true; }
 	
-	var alert = dict.alert_error;
 	var item_name = files.get_fname(); 
 	if ( files.items_protected.indexOf(item_name)==-1){
 		
@@ -232,15 +229,13 @@ function files_ajax_rename(){
 		var i = files.entries.indexOf(new_name);
 		
 		if (files_exists(common.editor_text, files.get_ftype()) ){
-			alert = dict.alert_nameexists;
+			common_show_notification(dict.alert_nameexists);
 		}else{
 			performLfmRequest('rename', {file: item_name, new_name: new_name})
-			.done(refreshFoldersAndItems);
+			.done(function(data){ refreshFoldersAndItems('OK'); common_show_notification(dict.alert_wasrenamed); });
 		    common.editor_text = '';
-		    alert = dict.alert_wasrenamed;
 		}
 	}
-	common_show_notification(alert);
 }
 
 function files_ajax_delete(sync, fname){
@@ -253,27 +248,24 @@ function files_ajax_delete(sync, fname){
 		i = 'something';
 	}
 	
-	var alert = dict.alert_error;                                     
 	if ( i!=0 && files.items_protected.indexOf(item_name)==-1){
 		var misc = 'empty';
 		if (sync==1){ misc = 'sync';}
 		$.ajax( {type: 'GET', dataType: 'text', url: 'delete_dir', cache: false, data: {delete_name: item_name, delete_misc: misc}} )
-		.done( refreshFoldersAndItems('OK') );
-	    alert = dict.alert_wasdeleted;
+		.done(function(data){ common_phpresponse(data, true); });
 	}
-	common_show_notification(alert);
 }      
 function files_ajax_totrash(){
 	if ( !common_ajax_permit() ){ return true; }
 	
-	var alert = dict.alert_error;
 	if ( files.get_savepath(files.iter)!='' ){
 		var short_path = files.get_savepath(files.iter); 
 		var fname = files.get_subdir()+files.get_fname();
 		localStorage.setItem("delete_fname", fname);  
 		
-		$.ajax( {type: 'GET', dataType: 'text', url: 'copyitem', cache: false, data: {copy_shortpath: short_path, past_dir: "trash/"}} )
-		.done( function () {
+		$.ajax( {type: 'GET', dataType: 'text', url: 'copyitem', cache: false, data: {copy_shortpath: short_path, past_dir: "trash/", to_trash:'yes'}} )
+		.done( function (data) {
+			common_phpresponse(data);
 			files_ajax_delete( 0,localStorage.getItem("delete_fname"));
 		} );
 	}
@@ -291,19 +283,14 @@ function files_ajax_download(){                                          console
 	} 
 }
 
-function files_ajax_past(sync){                                          consolelog_func();
+function files_ajax_paste(sync){                                consolelog_func();
 	if ( !common_ajax_permit() ){ return true; }
-	
-	var alert = dict.alert_error;
-	
+		
 	var misc = 'empty';
 	if (sync==1){ misc = 'sync'; }
 	$.ajax( {type: 'GET', dataType: 'text', url: 'copyitem', cache: false, 
-		data: {copy_shortpath: localStorage.getItem("copy_shortpath"), past_dir:files.get_subdir(), copy_misc:misc}} )
-	.done(refreshFoldersAndItems('OK'));
-	alert = dict.alert_waspasted;
-		
-	common_show_notification(alert);
+		data: {copy_shortpath: localStorage.getItem("copy_shortpath"), past_dir:files.get_subdir(), copy_misc:misc, to_trash:'no'}} )
+	.done(function(data){ common_phpresponse(data, true); });
 }    
 function files_copy(){                                                    consolelog_func();
 	var alert = dict.alert_error;
@@ -318,7 +305,7 @@ function files_copy(){                                                    consol
 function files_ajax_createinit(){
 	if ( !common_ajax_permit() ){ return true; }
 	$.ajax( {type: 'GET', dataType: 'text', url: 'create_init', cache: false} )
-	.done(refreshFoldersAndItems('OK'));     
+	.done(function(data){refreshFoldersAndItems('OK'); console.log('LFM_REINIT: ',data); });
 }
 
 function common_ajax_permit(){

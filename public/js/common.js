@@ -372,3 +372,41 @@ function editor_textto_paste(text){
 	text = text.replace(/</g, ''); 
 	return(text);
 }
+
+function common_phpresponse(data, refresh){
+	if (refresh){ refreshFoldersAndItems('OK'); }                        //console.log('R: ',data);
+	if (data[0]!='{'){ console.log('Error:notJSON'); return true; }
+	
+	var response = JSON.parse(data);                                     
+	//if (response.msg){ console.log('PHP_LOG ', response.log, response.log.length); }
+	
+	var alert_text = '';
+	var msg='';
+	if (response.msg){                                                   //console.log('PHP_MSG: ', response.msg, response.msg.length); 
+		alert_text = '';
+		var arr = response.msg;
+		if (arr.length>0){
+			for (i=0; i<arr.length; i++){
+				msg = arr[i];
+				if (dict[msg]){ alert_text += dict[msg]+'<br>'; }
+			}
+			common.alert_text += alert_text;
+		}
+	}
+	
+	if (response.errors){                                                //console.log('PHP_ERR: ', response.errors, response.errors.length); 
+		var arr = response.errors;                                       
+		if (arr.length>0){
+			alert_text = '';
+			var msg='';
+			for (i=0; i<arr.length; i++){
+				msg = arr[i];
+				alert_text+= dict['error_start'];
+				if (dict[msg]){ alert_text+= dict[msg]+'<br>'; }
+			}
+			common.alert_text += alert_text;
+		}
+	}
+	if (common.alert_text!=''){ common_show_notification(common.alert_text); }
+	
+}

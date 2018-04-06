@@ -124,13 +124,13 @@ function files_show_create(){                                            console
 		 ['ajax_newtxt', 'files_ajax_create(1);',    [5,0]],
 		 ['ajax_newdir', 'files_ajax_create(0);',    [4,0]], 
 		 ['ajax_upload', 'files_ajax_upload();',     [3,0]],
-		 ['ajax_past',   'files_ajax_past();',       [7,0]], 
+		 ['ajax_paste',   'files_ajax_paste();',       [7,0]], 
 		]);
     common_create_menu('files_create', 0, inner_e);
     
     var copy_path = localStorage.getItem("copy_shortpath");
     if (["", undefined, null].indexOf(copy_path)!=-1 ){
-		common_disable_button("ajax_past", true, function(){ files_ajax_past();});
+		common_disable_button("ajax_paste", true, function(){ files_ajax_paste();});
 	}
 }
 function files_show_options(){                                           consolelog_func();
@@ -209,13 +209,13 @@ function files_show_addcontact(){                                        console
 
 function files_show_sync(){                                              consolelog_func();
 	var inner_e = button_html(1, 
-		[['ajax_sync_past', 'files_ajax_past(1);',   [4,0, 'past']], 
+		[['ajax_sync_paste', 'files_ajax_paste(1);',   [4,0, 'past']], 
 		 ['ajax_sync_rm',   'files_ajax_delete(1);', [6,0, 'rm']] ]);    // !!Error here
 	
 	common_create_menu('files_sync', 0, inner_e);
 	var copy_path = localStorage.getItem("copy_shortpath");              
     if (["", undefined, null].indexOf(copy_path)!=-1 ){
-		common_disable_button("ajax_sync_past", true, function(){ files_ajax_past(1);});
+		common_disable_button("ajax_sync_past", true, function(){ files_ajax_paste(1);});
 	}
 }
 
