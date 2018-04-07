@@ -28,7 +28,7 @@ function files_scroll(order, i_utter){                                   console
 		files.iter_prev = 0;
 	}
 	if (typeof files.iter != 'number'){ files.iter=0; files.iter_prev=0; } 
-	
+	                                                                     
                                                                          console.log('Scroll-iter: '+files.iter+' | '+files.iter_prev);
     var hover = '_hover';
     var elem = document.getElementById(files.get_fid()+'_pic');
@@ -48,14 +48,14 @@ function files_scroll(order, i_utter){                                   console
     if (i_utter===undefined){ utter(fname, 1); } 
     
     var name = files.get_subdir()+files.get_fname();                     
-    var ifdisable = !(files.items_protected.indexOf(name)==-1 && (files.iter!=0 || files.in_contacts));
+    var ifdisable = !(files.items_protected.indexOf(name)==-1 && (files.iter!=0 || common.in_contacts));
     common_disable_button("show_opt", ifdisable, function(){ files_show_options();} );   
          
 }  
 function files_fill_zoom(){                                              consolelog_func();
     var fname = files.get_fname();
     if (fname==undefined){fname='';}
-    var dir = user.name+'/ '+files.get_subdir();
+    var dir = user.name+' '+files.get_subdir()+'/';
     dir = '<em style="font-style:normal;color:black;opacity:0.3;">'+dir+' </em>'; 
     var elem = document.getElementById('zoom_text');
     if (elem){
@@ -76,7 +76,7 @@ function files_show_buttons(){                                           console
 		 ['js_fnext',   'files_scroll(-1);',    [7,0, symbol_next]],
 		 ['show_opt',    'files_show_options();', [1,1,symbol_gear2]] 
 		 ];
-    if (files.in_contacts){
+    if (common.in_contacts){
 		buttons_arr.push( ['show_addcontact', 'files_show_addcontact();', [6,1,symbol_plus]], 
 						  ['ajax_mailexit',   'files_ajax_enter(-1)',     [5,0,symbol_home]] );
 	}else{
@@ -89,7 +89,7 @@ function files_show_buttons(){                                           console
 	}
     elem.innerHTML = button_html(0, buttons_arr, 4,2);  
     elem.style.display='block';      
-    if (files.in_contacts==false && files.unread>0){
+    if (common.in_contacts==false && files.unread>0){
 		elem = document.getElementById('ajax_contacts');
 		if (elem){ elem.innerHTML = elem.innerHTML+'<div class="mark_box2">'+symbol_alert+'</div>'; }
 	}
@@ -134,7 +134,7 @@ function files_show_create(){                                            console
 	}
 }
 function files_show_options(){                                           consolelog_func();
-	if (files.in_contacts){
+	if (common.in_contacts){
 		common.confirm_action = 'files_ajax_rmcontact();';
 		var buttons_arr = [ ['edit_filename', '', [0,4]], 
 		                    ['ajax_totrash', 'common_show_notification(dict.confirm_rmcontact,true);', [4,0]] ];

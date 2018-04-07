@@ -5,13 +5,11 @@ if (localStorage.getItem("isset")!="true"){
 	localStorage.setItem("copy_shortpath", "");
 	localStorage.setItem("show_welcome", "yes");
 	localStorage.setItem("delete_fname", "");       // remember fname after copying to trash
-	localStorage.setItem("folder_path", "");        // to remember folder after reload
 	localStorage.setItem("url", "");                // base url, for window.href
 	
 	localStorage.setItem("in_reader", "no");
 	localStorage.setItem("reader_fname", "");
 	localStorage.setItem("reader_url", "");         // to stay in reader after reload
-	localStorage.setItem("reader_savepath", "");
 }else{
 	localStorage.setItem("show_welcome", "no");
 }
@@ -37,8 +35,9 @@ var common = {
 	ischanged_text: false,
 	utter_rate: 1,
 	alert_text: '',
+	in_contacts: false,
 	
-	cookie_number: 13,         // !!Error, whatch cookie_suffix
+	cookie_number: 14,         // !!Error, whatch cookie_suffix
 	//cookie_suffix: "_",                                           
 	name: "common",
 	play_counter: 0,           

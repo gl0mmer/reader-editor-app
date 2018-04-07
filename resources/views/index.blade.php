@@ -18,7 +18,7 @@
   <link rel="stylesheet"  href="{{ URL::to('css/3.3.4.bootstrap.min.css')}}" />
   <link rel="stylesheet"  href="{{ URL::to('css/common.css')}}" />
 
-
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   
 </head>
 
@@ -54,37 +54,17 @@
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/files_display.js')  }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader_display.js') }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/reader_parse.js')   }}"></script>
-	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/editor.js') }}"        defer></script>
-	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/editor_display.js') }}"defer></script>
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/editor.js') }}"        ></script>
+	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/editor_display.js') }}"></script>
 	<script language=JavaScript type="text/javascript" src="{{ URL::to('js/plugins/jquery.foggy.min.js') }}"></script>
     
     <script>
-		files_start();
-		var contacts = [], contact_names = [], posts = [], contact_unreads=[];
 		user.name = "{{ $username }}";   
 		user.id = "{{ Auth::user()->id }}";  
-		files.unread = "{{ $unread }}";  
+		files.unread = "{{ $unread }}"; 
+		files_start(); 
 	</script>
 	<div hidden> @include('includes.message_block') </div>
-	
-	@if ($in_contacts)
-		<?php $i=0; ?>
-		@foreach($connections as $connection)
-			<script>
-				contacts.push("{{ $connection }}");
-				contact_names.push("{{ $names[$i] }}");
-				contact_unreads.push("{{ $unreads[$i] }}");
-			</script>
-			<?php $i+=1; ?>
-		@endforeach
-	@endif
-	@if ($in_messages)
-		@foreach($posts as $post)
-			<script>
-				posts.push(["{{ $post->id }}", "{{ $post->user_id }}", "{{ $post->created_at }}",  "{{ $post->message }}"]);
-			</script>
-		@endforeach
-	@endif
 	
 
   <script>
@@ -92,33 +72,15 @@
     var lfm_route = "{{ url(config('lfm.url_prefix', config('lfm.prefix'))) }}";
     var lang = {!! json_encode(trans('laravel-filemanager::lfm')) !!};
   </script>
-  <script>{!! \File::get(base_path('vendor/unisharp/laravel-filemanager/public/js/script.js')) !!}</script>
-  <script>{!! \File::get(base_path('vendor/unisharp/laravel-filemanager/public/js/dropzone.min.js')) !!}</script>
-  <script>{!! \File::get(base_path('public/js/lfm_script_extend.js')) !!}</script>
- 
+  <script>{!! \File::get(base_path('vendor/unisharp/laravel-filemanager/public/js/dropzone.min.js')) !!}</script> 
   
 	@if ($create=='yes')
 	<script>              
-		performLfmRequest('newfolder', {name: 'trash'});
-		$.ajax( {type: 'GET', dataType: 'text', url: 'create_init', cache: false} )
-		.done(refreshFoldersAndItems('OK'));
+		//var a=0;
+		files_ajax_createinit();
 	</script>
-	@elseif ($in_messages)
-		<script>
-			reader.draft = '{{ $draft }}';                               //console.log('Draft: '+reader.draft);
-			user.contact_name = '{{ $contactname }}';
-			user.contact_id = '{{ $id_to }}';
-			loadMessages(posts);
-		</script>
-	@elseif ($in_contacts)
-		<script>
-			loadContacts(contacts, contact_names, contact_unreads);
-		</script>
-	@else
-		<script>
-			loadItems();
-		</script>
 	@endif
+	
 	<script>
 	    Dropzone.options.uploadForm = {
 	      paramName: "upload[]", // The name that will be used to transfer the file
@@ -130,9 +92,9 @@
 			fff = "{{ lcfirst(str_singular(request('type'))) == 'image' ? implode(',', config('lfm.valid_image_mimetypes')) : implode(',', config('lfm.valid_file_mimetypes')) }}";
 	        maxfff = ({{ lcfirst(str_singular(request('type'))) == 'image' ? config('lfm.max_image_size') : config('lfm.max_file_size') }} / 1000);
 	        var _this = this; // For the closure
-	        this.on("addedfile", function(file) { refreshFoldersAndItems('OK'); });
+	        this.on("addedfile", function(file) { files_ajax_items(); });
 	        this.on('success', function(file, response) {                console.log('RESP: ',response, fff, maxfff);
-	          
+	          files_ajax_items();
 	          if(response != 'OK'){   console.log('RESP: ',response);
 	            this.defaultOptions.error(file, response.join('\n'));
 	          }  

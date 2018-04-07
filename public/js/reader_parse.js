@@ -171,8 +171,8 @@ function text_clean(text_origin){                                        //conso
 }
 
 function reader_parse_images(txt){
-	var fname = localStorage.getItem("reader_savepath"); 
-	//var image_dir = fname.substring(0,fname.lastIndexOf('.'))+'_files/'; 
+	//var fname = localStorage.getItem("reader_savepath");
+	var fname = files.get_subdir()+'/'+files.get_fname();                // !! fix this
 	
 	if (fname.indexOf('/')!=-1 ){
 		var name = fname.substring(fname.lastIndexOf('/')+1);

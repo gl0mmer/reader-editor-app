@@ -9,8 +9,9 @@ var files = {
 	username: "",
 	userpass: "",
 	userremember: false,
+	folder_path: '',                    // to remember folder after reload
 	
-	cookie_number: 6,
+	cookie_number: 7,
 	cookie_suffix: "_f",
 	name: "files",
 	
@@ -21,7 +22,6 @@ var files = {
 	unread: 0,
 	dir: "",
 	url: '',
-	in_contacts: false,
 	items_protected: ['..','trash'],
 	php_errors: [],
 	php_messages: [],
@@ -42,12 +42,23 @@ var files = {
 		if (i===undefined) {i=this.iter;} 
 		return files.entrytype[i];
 	},
-	get_enterpath: function(i){                                       
-		var path = '';                                                   // for folders same as   files.dir+'/'+files.get_fname()
+	get_enterpath: function(i){      
+		if (i==undefined){i=this.iter;}                                  // for folders same as   files.dir+'/'+files.get_fname()                    
+		var path = '';   
+		
 		if (this.entrytype[i]=='file'){
-			path = this.url;
-		}
-		path += this.dir+'/'+this.entries[i];                            
+			path = this.url+this.dir+'/'+this.entries[i];
+		}else if (this.entries.length<1){
+			path = '';
+		}else{
+			var dir = this.get_subdir();
+			if (i==0){ 
+				if (dir==''){path=dir;}
+				else{ path = dir.substring(0,dir.lastIndexOf('/'));	}			
+			}
+			else{     
+				path = dir+'/'+this.entries[i]; }                        console.log('PP:',this.dir,'|',dir,'|',path,'|',i,'|',this.entries);  
+		}   
 		return path;
 	},
 	get_savepath: function(i){
@@ -55,15 +66,16 @@ var files = {
 		
 		var path = '';
 		var dir = this.dir.substring(1);                                 
-		if (dir.indexOf('/')==-1){ dir = ''; }
-		else{ dir = dir.substring(dir.indexOf('/')+1)+'/'; }             
+		if (dir.indexOf('/')==-1){ dir = '/'; }
+		else{ dir = dir.substring(dir.indexOf('/')+1); }             
 		return dir+this.entries[i];
 	},
 	get_subdir: function(){
 		var dir = this.dir.substring(1);                                 
 		if (dir.indexOf('/')==-1){ dir = ''; }
-		else{ dir = dir.substring(dir.indexOf('/')+1)+'/'; }             
-		return dir;
+		else{ dir = dir.substring(dir.indexOf('/')+1); }                 //console.log('Subdir:',dir);
+		if (dir!=''){dir = '/'+dir;}
+		return dir;                                                      
 	},
 }                                                        
 
@@ -88,19 +100,23 @@ function files_start(){                                                  console
 	window.onbeforeunload = files_beforunload;
 	window.onresize = function(){ files_resize(); };	                 
 	
+	if (common.in_contacts){ files_ajax_contacts();
+	}else{ files_ajax_items(files.folder_path); }
 	if (typeof common.utter_rate != 'number'){ common.utter_rate=1; }
 }
 
 function files_update(){                                                 consolelog_func('darkblue');                                                                              
 	                                                                     
 	if (localStorage.getItem("in_reader")=='yes'){
-		useFile( localStorage.getItem("reader_url") ); 
+		files_ajax_openfile( localStorage.getItem("reader_url") ); 
 		reader_resize(); 		
-	}else{		
-		var path = localStorage.getItem("folder_path");                    
-		if ( [files.dir,"", undefined, null, 'mail'].indexOf(path)==-1 ){  
-			console.log('goTo():', path);                                // Can get stuck here!!     
-			goTo( path );
+	}else{		                                                         
+		
+		if (common.in_contacts==false){                                        
+			if ( [files.dir,"", undefined, null].indexOf(files.folder_path)==-1 
+			     && files.folder_path!=files.get_subdir() ){             // Can get stuck here!!     
+				files_ajax_items(files.folder_path);                     console.log('!!!!goTo():', files.folder_path,files.get_subdir());
+			}
 		}
 		files_fill_zoom();
 		files_resize();                 
@@ -112,7 +128,6 @@ function files_update(){                                                 console
 			for (i=0; i<errors.length; i++){ common.alert_text += errors[i]+'<br>'; }
 		}else if(files.php_messages.length>0){
 			if (files.php_messages[0].toLowerCase().indexOf('error')>-1){ common.alert_text = dict.alert_error; }
-			//if (files.php_messages[0].toLowerCase().indexOf('error')>-1){ common.alert_text = files.php_messages[0]; }
 		}
 		                                                                 
 		if (common.welcome=='do' && localStorage.getItem("show_welcome")=="yes" ){ 
@@ -134,111 +149,210 @@ function files_update(){                                                 console
 
 function files_ajax_enter(path){                                         consolelog_func("orange");  
 	if (path==undefined){
-		var path = files.get_enterpath(files.iter);                              
-	}
-	if (path==-1 && files.in_contacts ){
-		files.in_contacts = false;                                       
-		window.location.href=localStorage.getItem("url");
+		var path = files.get_enterpath(files.iter);                      //console.log('AjaxEnter:',path,files.iter,files.get_ftype());        
+	}                                   
+	                               
+	if (path==-1 && common.in_contacts ){                                // exit from contacts
+		common.in_contacts = false;                                  
+		files.iter = 0;
+		files_ajax_items();                                              
 	}else if (files.get_ftype()=='file'){                                // open file
-		if (files.in_contacts){                                          
-			window.location.href=localStorage.getItem("url")+'messages/'+files.paths[files.iter];
+		common.cookie_save.call(files); 
+		common.cookie_save(); 
+			
+		if (common.in_contacts){                                          
+			files_ajax_messages();
 		}else{
 			localStorage.setItem("reader_savepath", files.get_savepath(files.iter));  
 			localStorage.setItem("reader_fname", files.get_savepath(files.iter));
-			useFile( path );                                             
+			files_ajax_openfile( path );                                             
 		}
-	}else{                                                               // open folder
-		if (files.iter==0){
-			var previous_dir = getPreviousDir();                         
-			if (previous_dir == '') return;
-			path = previous_dir;
-		}
-		localStorage.setItem("folder_path", path);                       console.log('SET PATH');                      
-		goTo( path );
-		files.iter_prev = 0;
-		files.iter = 0;
+	}else{            console.log('BACK');                                                   // open folder
+		files.iter = 0; 
+		files.folder_path = path;                                        console.log('SET PATH', path);
+		files_ajax_items(path);                      
 	}
 	utter_stop();
 }  
 
-function files_ajax_contacts(){
+function files_ajax_messages(){                                          consolelog_func('orange');
+	$.ajax( {type: 'GET', dataType: 'text', url: 'messages', cache: false, data: {contact_id: files.paths[files.iter]}, 
+		 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } } )
+	.done(function(data){ files_load_messages(data); });
+}
+function files_ajax_items(path){                                         consolelog_func('orange'); 
+	if (path==undefined){
+		if (files.get_ftype()=='file'){ path=files.folder_path; }
+		else{ path = files.get_enterpath(); }
+	}                                                                    
+	$.ajax( {type: 'GET', dataType: 'text', url: 'jsonitems', cache: false, data: {path: path}} )
+    .done(function (data) { files_load_items(data); });
+}
+function files_ajax_openfile(url) {                                      consolelog_func('orange');
+  
+    var type = url.substring(url.lastIndexOf('.'));                      //console.log('type: '+type);
+    if (type.replace(' ','')=='.txt'){                                   console.log('File url: '+url);
+		
+		$.ajax({type: "GET", url: url})
+		.done(function (data){
+			var text_i = data;                                           //console.log('text: '+text_i);
+			document.getElementById('hidden_text').innerHTML = text_i;
+			document.getElementById('created_elements').innerHTML = '';
+			localStorage.setItem("reader_url", url);     
+		                    	 
+			reader_start();
+		});   	
+	}else{
+		window.open(url);
+	}
+}
+
+function files_load_items(data){                                          consolelog_func('darkblue');
+	var response = JSON.parse(data);
+	common_phpresponse(response);
+	
+	files.entries   = response.entries;                                
+	files.entrytype = response.entrytype;                              
+	files.dir       = response.working_dir;                            
+	files.url       = response.homedir.substring(0,response.homedir.lastIndexOf('/'));   
+	
+	// move trash to the 1st position
+	var i = files.entries.indexOf('trash');                              
+	if (i>-1){
+	  files.entries.splice(i, 1);
+	  files.entries.splice(1,0, 'trash');                                
+	}                                                                    //console.log('Items:',files.entries,i);
+	files_update();
+}         
+
+function files_load_messages(data){                                      consolelog_func('darkblue');       
+	var response = JSON.parse(data);                                     console.log(response.posts.length);
+	common_phpresponse(response);
+	
+	var messages = [];
+	var msg = [];
+	for (i=0; i<response.posts.length; i++){
+		msg = response.posts[i];
+		messages.push( [msg.id, msg.user_id, msg.created_at, msg.message] );  console.log([msg.id, msg.user_id, msg.create_at, msg.message]);
+	}
+	reader.draft = response.draft;                                       console.log('Draft: '+reader.draft);
+	user.contact_name = response.contactname;
+	user.contact_id = response.id_to;
+	
+	common.in_messages =true;                                            console.log('User and contact: '+user.name+' | '+user.contact_name);
+	reader.messages_arr = messages;
+	var text_i = messages;
+	document.getElementById('hidden_text').innerHTML = text_i;
+	document.getElementById('created_elements').innerHTML = '';
+	localStorage.setItem("reader_fname", 'mail/'+user.contact_name); 
+	localStorage.setItem("reader_fpath", '');                            
+	reader_start();
+}
+
+function files_load_contacts(data){                                      consolelog_func('darkblue');
+	                                                                              
+	var response = JSON.parse(data);                                     console.log(response);
+	var ids=response.connections, names=response.names, unreads=response.unreads;
+	common_phpresponse(response);
+	
+	localStorage.setItem("in_reader", "no");                             
+	common.in_contacts = true;
+	
+	// sort contacts by name 
+	var d={}; var r={};
+	for (var i=0; i<names.length; i++){ d[names[i]]=ids[i]; }              
+	for (var i=0; i<names.length; i++){ r[names[i]]=unreads[i]; }              
+	names.sort(); 
+	ids=[]; unreads=[];
+	for (var i=0; i<names.length; i++){ ids.push(d[names[i]]); }
+	for (var i=0; i<names.length; i++){ unreads.push(r[names[i]]); }
+	
+	files.entries = names;                                               //console.log('Entries 2: ',names, ids);                       
+	files.paths = ids;                                                   //console.log('Unreads: ', unreads);    
+	files.entrytype = Array(ids.length).fill('file'); 
+	files.unreads = unreads;    
+	files_update();     
+}
+	
+function files_ajax_contacts(){                                          consolelog_func('orange');                                                                              
 	var url = files.url;
 	url = url.substring(0, url.indexOf('/', url.indexOf('://')+3)+1);
 	
-	localStorage.setItem("folder_path", 'mail');                         //console.log('Url: '+files.get_url());
+	files.iter = 0;
 	localStorage.setItem("url", url);
-	window.location.href=url+'contacts';
+	$.ajax( {type: 'GET', dataType: 'text', url: 'contacts', cache: false, data: {contact_id: files.paths[files.iter]}, 
+			 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } } )
+			.done(function(data){ files_load_contacts(data); });
 }
 
-function files_ajax_create(type){
+function files_ajax_create(type){                                        consolelog_func('orange');
 	if ( !common_ajax_permit() ){ return true; }
 	
 	var new_name = files.get_subdir()+common.editor_text;                console.log('New fname: '+new_name);
-	
 	var types = ['folder','file'];
+	type = types[type];
+	
 	if (new_name==''){
 		common_show_notification(dict.alert_nameempty);
-	}else if( files_exists(common.editor_text, types[type]) ){
+	}else if( files_exists(common.editor_text, type) ){
 		common_show_notification(dict.alert_nameexists);
 	}else{
-		if (type == 0){
-			new_name = common.editor_text;
-			performLfmRequest('newfolder', {name: new_name})
-			.done(refreshFoldersAndItems);                               
-			common_show_notification(dict.alert_newfolder);
-		}else if (type == 1){
-			$.ajax( {type: 'GET', dataType: 'text', url: 'create', cache: false, data: {file_name: new_name, file_text:''}} )
-			.done(function(data){ common_phpresponse(data, true) });
-		}
+		$.ajax( {type: 'GET', dataType: 'text', url: 'create', cache: false, data: {file_name: new_name, file_text:'', create_type:type}} )
+		.done(function(data){ files_load_items(data); });
 	}
 	common.editor_text = '';
 }
 
-function files_ajax_addcontact(){
+function files_ajax_addcontact(){                                        consolelog_func('orange');
 	if ( !common_ajax_permit() ){ return true; }
 	
 	var new_contact = document.getElementById('edit_contactname').innerHTML; 
 	if (new_contact==user.name){ common_show_notification(dict.alert_namewrong); }
 	else if( files.entries.indexOf(new_contact)>-1 ){ common_show_notification(dict.alert_contactexists); }
 	else{
-		document.getElementById('addcontact_name').value = new_contact;
-		document.getElementById('addcontact_submit').click(); 
+		$.ajax( {type: 'POST', dataType: 'text', url: 'connection_add', cache: false, data: {addcontact_name: new_contact}, 
+			 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } } )
+			.done(function(data){ files_load_contacts(data); });
 		common.alert_text = dict.alert_newcontact+new_contact;
 	}
 }
-function files_ajax_rmcontact(id){
+function files_ajax_rmcontact(id){                                       consolelog_func('orange');
 	if ( !common_ajax_permit() || files.get_fname()==undefined){ return true; }
-	document.getElementById('rmcontact_name').value = files.get_fname(); 
-	document.getElementById('rmcontact_submit').click(); 
+	
+	$.ajax( {type: 'POST', dataType: 'text', url: 'connection_remove', cache: false, data: {rmcontact_name: files.get_fname()}, 
+			 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } } )
+			.done(function(data){ files_load_contacts(data); });
 	common.alert_text = dict.alert_rmcontact;
 }
-function files_ajax_rmuser(id){
+function files_ajax_rmuser(id){                                          consolelog_func('orange');
 	if ( !common_ajax_permit() ){ return true; }
 	document.getElementById('deleteuser_submit').click(); 
 	common.alert_text = dict.alert_rmuser;
 }
 
-function files_ajax_rename(){
+function files_ajax_rename(){                                            consolelog_func('orange');
 	if ( !common_ajax_permit() ){ return true; }
 	
+	var new_name = common.editor_text;
 	var item_name = files.get_fname(); 
-	if ( files.items_protected.indexOf(item_name)==-1){
-		
-		var item_name = files.get_fname();
-		var new_name = common.editor_text;
-		var i = files.entries.indexOf(new_name);
-		
-		if (files_exists(common.editor_text, files.get_ftype()) ){
-			common_show_notification(dict.alert_nameexists);
-		}else{
-			performLfmRequest('rename', {file: item_name, new_name: new_name})
-			.done(function(data){ refreshFoldersAndItems('OK'); common_show_notification(dict.alert_wasrenamed); });
-		    common.editor_text = '';
-		}
+	
+	if (new_name==''){
+		common_show_notification(dict.alert_nameempty);
+	
+	}else if ( files.items_protected.indexOf(item_name)>-1 ){
+		common_show_notification(dict.alert_error);
+	
+	}else if (files_exists(new_name, files.get_ftype()) ){
+		common_show_notification(dict.alert_nameexists);
+	
+	}else{                                                               console.log('NEWNAME|'+new_name+'|');
+		$.ajax( {type: 'GET', dataType: 'text', url: 'rename', cache: false, data: {subdir: files.get_subdir(), old_name: files.get_fname(), new_name:new_name}} )
+		.done(function(data){ files_load_items(data); });
+	    common.editor_text = '';
 	}
 }
 
-function files_ajax_delete(sync, fname){
+function files_ajax_delete(sync, fname){                                 consolelog_func('orange');
 	if ( !common_ajax_permit() ){ return true; }
 	
 	var item_name = files.get_subdir()+files.get_fname();
@@ -252,10 +366,10 @@ function files_ajax_delete(sync, fname){
 		var misc = 'empty';
 		if (sync==1){ misc = 'sync';}
 		$.ajax( {type: 'GET', dataType: 'text', url: 'delete_dir', cache: false, data: {delete_name: item_name, delete_misc: misc}} )
-		.done(function(data){ common_phpresponse(data, true); });
+		.done(function(data){ files_load_items(data); });
 	}
 }      
-function files_ajax_totrash(){
+function files_ajax_totrash(){                                           consolelog_func('orange');
 	if ( !common_ajax_permit() ){ return true; }
 	
 	if ( files.get_savepath(files.iter)!='' ){
@@ -265,34 +379,35 @@ function files_ajax_totrash(){
 		
 		$.ajax( {type: 'GET', dataType: 'text', url: 'copyitem', cache: false, data: {copy_shortpath: short_path, past_dir: "trash/", to_trash:'yes'}} )
 		.done( function (data) {
-			common_phpresponse(data);
+			common_phpresponse(JSON.parse(data));
 			files_ajax_delete( 0,localStorage.getItem("delete_fname"));
 		} );
 	}
 }      
-function files_ajax_upload(id){
+function files_ajax_upload(id){                                          consolelog_func('orange');
 	if ( !common_ajax_permit() ){ return true; }	
-	document.getElementById('upload-button').click();
-	loadFolders(true);
+	document.getElementById('upload-button').click();                    // copied from LFM
 	menu_back('menu_back_lvl0',1, 0);
+	var data = { working_dir: $('#working_dir').val(),
+			   type: $('#type').val() };                                 console.log('DATA:',files.get_subdir(), data);
 }
-function files_ajax_download(){                                          consolelog_func();
+function files_ajax_download(){                                          consolelog_func('orange');
 	if (files.get_ftype()=='file' && files.get_savepath(files.iter)!=''){
 		var fname = files.get_fname(); 
 		download(fname);
 	} 
 }
 
-function files_ajax_paste(sync){                                consolelog_func();
+function files_ajax_paste(sync){                                         consolelog_func('orange');
 	if ( !common_ajax_permit() ){ return true; }
 		
 	var misc = 'empty';
 	if (sync==1){ misc = 'sync'; }
 	$.ajax( {type: 'GET', dataType: 'text', url: 'copyitem', cache: false, 
 		data: {copy_shortpath: localStorage.getItem("copy_shortpath"), past_dir:files.get_subdir(), copy_misc:misc, to_trash:'no'}} )
-	.done(function(data){ common_phpresponse(data, true); });
+	.done(function(data){ files_load_items(data); });
 }    
-function files_copy(){                                                    consolelog_func();
+function files_copy(){                                                   consolelog_func('orange');
 	var alert = dict.alert_error;
 	if (files.get_savepath(files.iter)!='' ){
 		var short_path = files.get_savepath(files.iter);
@@ -302,10 +417,10 @@ function files_copy(){                                                    consol
 	common_show_notification(alert);
 }
 
-function files_ajax_createinit(){
+function files_ajax_createinit(){                                        consolelog_func('orange');
 	if ( !common_ajax_permit() ){ return true; }
 	$.ajax( {type: 'GET', dataType: 'text', url: 'create_init', cache: false} )
-	.done(function(data){refreshFoldersAndItems('OK'); console.log('LFM_REINIT: ',data); });
+	.done(function(data){ files_load_items(data); });
 }
 
 function common_ajax_permit(){
@@ -325,8 +440,8 @@ function files_signin(){                                                 console
     document.getElementById('signin_username').value = name;
     document.getElementById('signin_password').value = pass;
     
-    common.alert_text = dict.alert_signin+name;
-    localStorage.setItem("folder_path", '');                             console.log('SignIn:',name, pass);
+    common.alert_text = dict.alert_signin+name;                          console.log('SignIn:',name, pass);
+    files.folder_path = '';
     document.getElementById('signin_submit').click();  
 }
 function files_signup(){                                                 consolelog_func();
@@ -338,13 +453,14 @@ function files_signup(){                                                 console
 	document.getElementById('signup_username').value = name;
     document.getElementById('signup_password').value = pass;
     common.alert_text = dict.alert_signup+name;
+    files.folder_path = '';
     document.getElementById('signup_submit').click();  
 }
 
 
 function files_logout(){                                                 consolelog_func();
 	//common.alert_text = dict.alert_logout;
-	localStorage.setItem("folder_path", ''); 
+	files.folder_path = '';
     document.getElementById('logout_submit').click();
 }
 function files_login_remember(){                                         consolelog_func();
@@ -366,7 +482,7 @@ function files_edittext(id){                                             console
 	var text = "";                
 	common.ineditor = true;                                    
 	if (id=="edit_filename_box"){
-		var fname = files.get_fname();                                   
+		var fname = files.get_fname();                                   console.log('FNAME',fname);                            
 		if (files.get_ftype()!='folder'){
 			text = fname.substring(0,fname.lastIndexOf('.'));
 		}else{
@@ -384,6 +500,30 @@ function files_cleancookie(){                                            console
 	cookie_delete_all(); 
 	files.iter = 0;
 	files.iter_prev = 0;
-	loadFolders(true);
+	files_ajax_items();
 }
+
+
+
+//-- copied from lfm, used for upload only -------------------------------
+function performLfmRequest(url, parameter, type) {
+  var data = { working_dir: files.get_subdir(), type: 'POST' };                               
+
+  if (parameter != null) {
+    $.each(parameter, function (key, value) {
+      data[key] = value;
+    });
+  }
+
+  return $.ajax({
+    type: 'GET',
+    dataType: type || 'text',
+    url: lfm_route + '/' + url,
+    data: data,
+    cache: false
+  }).fail(function (jqXHR, textStatus, errorThrown) {
+    displayErrorResponse(jqXHR);
+  });
+}
+
 

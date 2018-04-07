@@ -1,19 +1,5 @@
 
 Forms:<br>	
-		
-@if ($in_contacts)
-    Connection: {{ count($connections) }}<br>
-	<form action="{{ route('connection_add') }}" method="post">
-		<input id="addcontact_name" class="form-control" type="text" name="addcontact_name" value=""  > 
-		<button id="addcontact_submit" type="submit" class="btn btn-primary"> Add contact </button>
-		<input type="hidden" name="_token" value="{{ Session::token() }}">
-	</form>
-	<form action="{{ route('connection_remove') }}" method="post">
-		<input  id="rmcontact_name" class="form-control" type="text" name="rmcontact_name" value=""  > 
-		<button id="rmcontact_submit" type="submit" class="btn btn-primary"> Remove contact </button>
-		<input type="hidden" name="_token" value="{{ Session::token() }}">
-	</form>
-@endif
 
 @if ($in_messages)
 	<form action="{{ route('message_create') }}" method="post">
@@ -34,8 +20,6 @@ Forms:<br>
 	<button id="deleteuser_submit" type="submit" class="btn btn-primary">Delete User</button>
 	<input type="hidden" value="{{ Session::token() }}" name="_token">
 </form>
-
-<div id="add-folder" class="btn btn-primary"> Add folder </div> 
 
 <form action="{{ route('unisharp.lfm.upload') }}" role='form' id='uploadForm' name='uploadForm' method='post' enctype='multipart/form-data' class="dropzone">
 	<div class="form-group" id="attachment">

@@ -34,7 +34,8 @@ Route::get('/contacts', [
 	'uses' => 'MessageController@getShowConnections',
 	'middleware' => 'auth'
 ]);
-Route::get('/messages/{name}', [
+Route::get('/messages/', [
+//Route::get('/messages/{name}', [
 	'as'=> 'messages',
 	'uses' => 'MessageController@getShowMessages',
 	'middleware' => 'auth'
@@ -108,7 +109,8 @@ Route::get('test',
 
 Route::get('/jsonitems', [
 	'uses' => 'LfmExtendController@getItems',
-	'as' => 'getItems',
+	//'as' => 'getItems',
+	'as' => 'jsonitems',
 ]);
 
 Route::any('/create_init', [
@@ -127,6 +129,10 @@ Route::any('/create', [
 Route::any('/update', [
 	'uses' => 'LfmExtendController@update',
 	'as' => 'update',
+]);
+Route::any('/rename', [
+	'uses' => 'LfmExtendController@rename',
+	'as' => 'rename',
 ]);
 Route::any('/copyitem', [
 	'uses' => 'LfmExtendController@copyItem',

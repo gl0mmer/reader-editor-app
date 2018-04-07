@@ -31,10 +31,20 @@ class LfmExtendController extends LfmController
 	//-- Override ItemsController@getItems -------------------------------
 	public function getItems()
     {
-		array_push($this->log, 'GetItems:');
+		array_push($this->log, 'GetItems:|'.request()->path.'|');
+		$path0 = parent::getRootFolderPath('user');
+		array_push($this->log, 'Path:|'.$path0);
+		if (!File::exists($path0)){
+			array_push($this->log, 'Path does not exist');
+			if (mkdir($path0, 0755)){ 
+				array_push($this->log, 'Path was created'); 
+				$this->checkMissingFiles();	
+			}else{ array_push($this->log, 'Error creating user dir'); }
+		}
+		
 		$homedir = parent::getFileUrl($image_name = null, $is_thumb = null);
 		$path0 = parent::getRootFolderPath('user');
-        $path = parent::getCurrentPath().$_GET['path']; 
+        $path = parent::getCurrentPath().request()->path; 
         $sort_type = 'alphabetic';
 		
 		$directories = parent::sortFilesAndDirectories(parent::getDirectories($path), $sort_type);
@@ -51,6 +61,7 @@ class LfmExtendController extends LfmController
         
         $types_arr = array('folder');
         $names_arr = array('..');
+        
         foreach($directories as $f){ 
 			array_push($types_arr, 'folder');
 			array_push($names_arr, $f->name);
@@ -60,8 +71,6 @@ class LfmExtendController extends LfmController
 			array_push($names_arr, $f);
 		}
         
-        //$size = $this-> folderSize(parent::getCurrentPath("").'/') / 1000000;
-        //array_push($this->log, $size);
         return ['entries'    => $names_arr,
                 'entrytype'  => $types_arr,
                 'working_dir'=> parent::getInternalPath($path),
@@ -76,6 +85,7 @@ class LfmExtendController extends LfmController
     
     public function checkMissingFiles()
 	{
+		array_push($this->log, 'CreateInit');
 		$path = parent::getCurrentPath("");
         $new_path = $path.'/Welcome.txt';
         
@@ -89,26 +99,35 @@ class LfmExtendController extends LfmController
 		$path = parent::getCurrentPath('trash');
 		if (!File::exists($path)) {
 			if (!parent::createFolderByPath($path)){
-				array_push($this->errors, 'error');	
+				array_push($this->errors, 'Cannot create trash');	
 			}
 		}
-		return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
+		return $this->getItems();
 	} 
     
     
     public function create()
     {
-		array_push($this->log, 'Create:');
-        $filename = request()->file_name.'.txt';
+		$type = request()->create_type;
+		array_push($this->log, 'Create '.$type.':');
+		$filename = request()->file_name;
+		if ($type=='file'){ $filename = $filename.'.txt'; }
+		
         $filetext = request()->file_text;
         $new_file_path = parent::getCurrentPath($filename);
 
 		if(!File::exists($new_file_path)) {
-			if (!$this->proceedSingleUpload($new_file_path, $filetext)) {
-				array_push($this->errors, 'error');
+			if ($type=='folder'){
+				array_push($this->log, $new_file_path);
+				if (mkdir($new_file_path, 0755)){ array_push($this->msg, 'alert_newfolder'); }
+				else{ array_push($this->errors, 'Cannot create folder'); }
+			}else if ($type=='file'){
+				if ($this->proceedSingleUpload($new_file_path, $filetext)) {
+					array_push($this->msg, 'alert_newtxt');
+				}else{ array_push($this->errors, 'Cannot create file'); }
 			}
-		}
-		return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
+		}else{ array_push($this->errors, 'exists'); }
+		return $this->getItems();
     }
     
     public function update()
@@ -118,11 +137,31 @@ class LfmExtendController extends LfmController
         $filetext = request()->file_text;
         $new_file_path = parent::getCurrentPath($filename);
         $this->checkSpace($new_file_path);
-
+		array_push($this->log, $new_file_path);
 		if (!$this->proceedSingleUpload($new_file_path, $filetext)) {
-			array_push($this->errors, 'error');
+			array_push($this->errors, 'ErrorUpdate');
 		}
-		return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
+		return $this->getItems();
+    }
+    public function rename()
+    {
+		array_push($this->log, 'Rename:');
+        $old_name = request()->old_name;
+        $new_name = request()->new_name;
+        $path = parent::getCurrentPath("").request()->subdir.'/';
+        
+        if (!is_dir($path.$old_name)){
+			$i = strrpos($old_name,'.');
+			$new_name = $new_name.substr($old_name, $i);
+		}
+        
+        array_push($this->log, $path.$old_name);
+        array_push($this->log, $path.$new_name);
+        if (rename($path.$old_name, $path.$new_name)){ 
+			array_push($this->msg, 'alert_wasrenamed');
+		}else{ array_push($this->errors, 'Error Rename'); }
+        
+		return $this->getItems();
     }
     
     public function copyItem()
@@ -177,7 +216,7 @@ class LfmExtendController extends LfmController
 				}else { array_push($this->errors, 'Copy File Error'); }
 			}
 		}
-        return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
+		return $this->getItems();
     }
     
     public function deleteDir()
@@ -200,7 +239,7 @@ class LfmExtendController extends LfmController
 			unlink($new_path); 
 		}
 		array_push($this->msg, 'alert_wasdeleted'); 
-		return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
+		return $this->getItems();
 	}
 
     private function proceedSingleUpload($new_file_path, $content)

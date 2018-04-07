@@ -9,6 +9,18 @@ use Illuminate\Support\Facades\Auth;
 class MessageController extends Controller
 {
 	
+	protected $errors;
+    protected $msg;
+    protected $log;
+
+	
+    public function __construct()
+    {
+        $this->errors = [];
+        $this->msg = [];
+        $this->log = [];
+    }
+	
 	public function postCreateMessage(Request $request)
 	{
 		
@@ -80,12 +92,10 @@ class MessageController extends Controller
 		
 	}
 	
-	public function postAddConnection(Request $request)
+	public function postAddConnection()
 	{
-		$this->validate($request, [
-			'addcontact_name' => 'required|min:4'
-		]);
-		$name = $request['addcontact_name'];
+		$name = request()->addcontact_name;
+		array_push($this->log, 'AddContact:');
 		
 		$msg = 'Connection failed ';
 		if ( User::where('first_name', $name)->exists() ){
@@ -109,14 +119,17 @@ class MessageController extends Controller
 		}else{
 			$msg = 'Error: User does not exist';
 		}
-		return redirect()->back()-> with(['msg'=>$msg]);
+		 
+		return $this->getShowConnections();
 	}
 	
-	public function getDeleteConnection(Request $request)
+	public function getDeleteConnection()
 	{
+		array_push($this->log, 'DeleteContact:');
 		$msg = 'Error';
 		$id = Auth::user()->id;
-		$name = $request['rmcontact_name'];
+		$name = request()->rmcontact_name;
+		//$name = $request['rmcontact_name'];
 		if ( User::where('first_name', $name)->exists() ){ 
 			
 			$id2 = User::where('first_name', $name)->value('id');
@@ -140,7 +153,8 @@ class MessageController extends Controller
 			$msg = 'Error: contact does not exists';
 		}
 		
-		return redirect()->back() ->with(['msg'=>$msg]);
+		return $this->getShowConnections();
+		//return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
 	}
 	
 	public function connectionArray($user_id)
@@ -183,6 +197,7 @@ class MessageController extends Controller
 	
 	public function getShowConnections()
 	{
+		array_push($this->log, 'ShowContacts:');
 		if (!Auth::user()){
 			return redirect()->route('home');
 		}
@@ -191,7 +206,9 @@ class MessageController extends Controller
 		
 		$unread   = User::where('id', $user_id) -> value('read');
 		if (gettype($unread)!='integer'){ $unread=0; }
-		return view('index', [
+		
+		return [
+		//return view('index', [
 						'in_contacts' => true, 
 						'in_messages' => false, 
 						'names'       => $names, 
@@ -200,11 +217,16 @@ class MessageController extends Controller
 						'username'    => User::where('id', Auth::user() ->id) -> value('first_name'),
 						'unread'      => $unread, 
 						'unreads'     => $unreads, 
-			]) -> with(['msg'=>$msg]);
+						'errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log
+			//]) -> with(['msg'=>$msg]);
+			];
 		
 	}
 	
-	public function getShowMessages($id_to){
+	//public function getShowMessages($id_to){
+	public function getShowMessages(){
+		$id_to = request()->contact_id;
+		array_push($this->log, 'ShowMessages:');
 		if (!Auth::user()){
 			return redirect()->route('home');
 		}
@@ -218,7 +240,8 @@ class MessageController extends Controller
 		$this->setConnectionUnread(False, $id_to);
 		$unread = $this->setUserUnread($id_from);
 		$draft = $this->Draft($id_to);
-		return view('index', [
+		return [
+		//return view('index', [
 						'in_contacts' => false, 
 						'in_messages' => true, 
 						'id_to'       => $id_to, 
@@ -228,8 +251,11 @@ class MessageController extends Controller
 						'contactname' => $contactname, 
 						'draft'       => $draft,
 						'unread'      => $unread, 
-						'unreads'     => '',  
-			]) -> with(['msg'=>$msg]);
+						'unreads'     => '', 
+						'errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log 
+			//]) -> with(['msg'=>$msg]);
+			];
+		return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
 		
 	}
 	

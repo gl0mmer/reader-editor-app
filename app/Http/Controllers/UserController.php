@@ -24,6 +24,7 @@ class UserController extends Controller
 		$unread   = $user -> value('read');
 		if (gettype($unread)!='integer'){ $unread=0; }
 		
+		$msg = $msg.Auth::user()->id;
 		return view('index', [
 						'in_contacts'=> false, 
 						'in_messages'=> false, 
@@ -112,7 +113,9 @@ class UserController extends Controller
 		if ( $request['first_name']=='name' ){
 			$msg = 'SignIn Error wrong name';
 		}else if (Auth::attempt(['first_name'=>$request['first_name'], 'password'=>$request['password']] )){
-			$msg = 'SignIn success';
+			$name = User::where('id', Auth::user()->id)-> value('first_name');
+			$id = User::where('first_name', $name)->value('id');
+			$msg = 'SignIn success_'.(string)$name.'_'.$id;
 		}
 		return redirect()->back() ->with(['msg'=>$msg]);
 	}

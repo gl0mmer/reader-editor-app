@@ -371,12 +371,9 @@ function editor_textto_paste(text){
 	return(text);
 }
 
-function common_phpresponse(data, refresh){
-	if (refresh){ refreshFoldersAndItems('OK'); }                        //console.log('R: ',data);
-	if (data[0]!='{'){ console.log('Error:notJSON'); return true; }
+function common_phpresponse(response){
 	
-	var response = JSON.parse(data);                                     
-	//if (response.msg){ console.log('PHP_LOG ', response.log, response.log.length); }
+	if (response.msg){ console.log('PHP_LOG ', response.log, response.log.length); }
 	
 	var alert_text = '';
 	var msg='';
@@ -392,7 +389,7 @@ function common_phpresponse(data, refresh){
 		}
 	}
 	
-	if (response.errors){                                                //console.log('PHP_ERR: ', response.errors, response.errors.length); 
+	if (response.errors){                                                console.log('PHP_ERR: ', response.errors, response.errors.length); 
 		var arr = response.errors;                                       
 		if (arr.length>0){
 			alert_text = '';

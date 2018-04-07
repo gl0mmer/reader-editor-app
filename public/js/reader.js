@@ -88,31 +88,22 @@ function reader_start(){                                                 console
 }
 
 function reader_exit(order){
-	if (reader.in_messages==false){
-		var elem = document.getElementById('menu_back_lvl0');                //console.log('Elem: '+elem);
-		if (elem){ menu_back('menu_back_lvl0',1, 0); }
-		var elem = document.getElementById('menu_back_lvl1');                //console.log('Elem: '+elem);
-		if (elem){ menu_back('menu_back_lvl1',1, 0); } 
-	}                      
+	var elem = document.getElementById('menu_back_lvl0');                //console.log('Elem: '+elem);
+	if (elem){ menu_back('menu_back_lvl0',1, 0); }
+	var elem = document.getElementById('menu_back_lvl1');                //console.log('Elem: '+elem);
+	if (elem){ menu_back('menu_back_lvl1',1, 0); } 
 	    
-	common.cookie_save.call(reader);
-	common.cookie_save();  
 	localStorage.setItem("in_reader", "no"); 
 	document.getElementById('created_elements').innerHTML = '';
 	
 	common.style.content_border = false;
 	$("#content_box").removeClass("border");
 	utter_stop();
-	if (order==-1){
-		files.in_contacts = false;                                       
-		window.location.href=localStorage.getItem("url");
-	}else if (reader.in_messages){                                       //console.log('U: '+localStorage.getItem("reader_exitpath"));
-		window.location.href=localStorage.getItem("url")+'contacts';
-	}else{
-		files_start();
-		files_update();
-	}
 	
+	if (order==-1){ common.in_contacts = false; }                        console.log('F:',files.folder_path);
+	common.cookie_save.call(reader);
+	common.cookie_save();  
+	files_start(); 	
 }
 
 function reader_update(start) {                                          consolelog_func('darkblue');                                             
@@ -129,9 +120,9 @@ function reader_update(start) {                                          console
 		elem.style.fontSize   = 1.5*common.style.get_bfontsize()+'vmin';
 		elem.style.lineHeight = 2.0*common.style.get_bfontsize()+'vmin';
 	}else{
-		var name = localStorage.getItem("reader_savepath");
+		var name = files.get_subdir()+'/'+files.get_fname(); 
 		var i = name.lastIndexOf('/');
-	    var fname = [ user.name +'/'+ name.substring(0,i+1),  name.substring(i+1) ];
+	    var fname = [ user.name + name.substring(0,i+1),  name.substring(i+1) ];
 	    var title = '<span><span style="opacity:0.4;">'+fname[0]+' </span>'+fname[1]+'</span>';
 	    elem.className = 'reader_title';
 	}
@@ -195,7 +186,7 @@ function reader_ajax_save(){                                             console
 			document.getElementById('savedraft_submit').click();
 		}else{
 			if (editor.if_addtag && common.ineditor){ editor_exit(); }
-			var fname = localStorage.getItem("reader_savepath");         //console.log('Fname: '+fname);
+			var fname = files.get_subdir()+'/'+files.get_fname();        //console.log('Fname: '+fname);
 			$.ajax( {type: 'GET', dataType: 'text', url: 'update', cache: false, data: {file_name: fname, file_text: text_all_origin}} )
 			.done( function () { reader_update(); } );
 			alert = 'File was saved.';     
