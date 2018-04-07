@@ -9,6 +9,7 @@ var editor = {
 	iter: 0,
 	text_raw: "",
 	text_origin: "",
+	if_addtag:false,
 	
 	sound_navigator: 1,
 	sound_buttons: 0,
@@ -177,6 +178,7 @@ function editor_delete(){                                                console
             }else{iter_l=iter-1;}    
         }
         
+        if (text.substr(iter_l, iter).indexOf('<')>-1 ){editor.if_addtag=true;}
         text_c = text.substr(0, iter_l)+text.substr(iter);
         editor.iter = iter_l;
 		editor.text_raw = text_c;	
@@ -200,6 +202,7 @@ function editor_delete(){                                                console
 			if (/^[a-zA-Z]+$/.test(letter) || /^[а-яА-Я]+$/.test(letter)) { letter = letter.toUpperCase(); }
 		}
 	}
+	if (letter.indexOf('<')>-1 || text.substr(0, iter).indexOf('<')>-1 ){editor.if_addtag=true;}
     var text_c = text.substr(0, iter)+letter+text.substr(iter);
     editor.text_raw = text_c;
     iter_new = iter+letter.length;

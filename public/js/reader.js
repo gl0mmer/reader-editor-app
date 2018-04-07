@@ -185,7 +185,8 @@ function reader_ajax_save(){                                             console
 		document.getElementById(id).innerHTML = text;                    
 		
 		var text_all_parsed = document.getElementById('tmp').innerHTML; 
-		var text_all_origin = merge_text(text_all_parsed);               
+		var text_all_origin = merge_text(text_all_parsed); 
+		document.getElementById('hidden_text').innerHTML = text_all_origin;              
 	
 		common.ischanged_text = false;                                   //console.log('NEW TEXT: '+text_all_origin);
 		
@@ -193,9 +194,10 @@ function reader_ajax_save(){                                             console
 			document.getElementById('savedraft_text').value = text_all_origin;
 			document.getElementById('savedraft_submit').click();
 		}else{
+			if (editor.if_addtag && common.ineditor){ editor_exit(); }
 			var fname = localStorage.getItem("reader_savepath");         //console.log('Fname: '+fname);
 			$.ajax( {type: 'GET', dataType: 'text', url: 'update', cache: false, data: {file_name: fname, file_text: text_all_origin}} )
-			.done( function () { location.reload(); } );
+			.done( function () { reader_update(); } );
 			alert = 'File was saved.';     
 		}
 	}

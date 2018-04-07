@@ -108,7 +108,6 @@ reader_lang['ru'] = {
 					 + "You will see it after closing this window. "
 					 + "To open the file click on the file icon and 'check' button to the right. ",
 					 
-	
 	confirm_general  : 'Подтвердите действие',
 	confirm_rmcontact: ' Внимание! <br> При удалении контакта все сообщения будут удалены. <br><br> Вы уверены что хотите продолжить?',
 	confirm_rmuser   : ' Внимание! <br> При удалении аккаунта все файлы и сообщения будут удалены. <br><br> Вы уверены что хотите продолжить?',

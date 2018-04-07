@@ -247,8 +247,6 @@ function common_set_lang(lang){                                          console
 	document.getElementById('place_lang').innerHTML = lang;	  
 	dict = lang[common.langbase];        
 	location.reload();
-	//files_start();
-	//files_resize();
 }
 function common_set_utterrate(rate){                                     consolelog_func();
 	console.log('rate: '+rate);
