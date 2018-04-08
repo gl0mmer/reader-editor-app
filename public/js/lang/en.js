@@ -96,10 +96,12 @@ reader_lang['en'] = {
 	alert_wasrenamed : 'Item was renamed',
 	alert_namewrong  : 'Wrong name',
 	alert_contactexists : 'Contact already exists',
+	alert_nouser     : 'User with this name does not exists',
+	alert_wrongpass  : 'Wrong password',
 	alert_rmuser     : 'Account was deleted',
 	
-	alert_signin     : 'Signed in successfully, user name is ',
-	alert_signup     : 'New account was created, user name is ',
+	alert_signin     : 'Signed in successfully',
+	alert_signup     : 'New account was created',
 	alert_logout     : 'Loged out successfully',
 	
 	alert_nospeech   : "This browser does not support speech synthesis! Speech synthesis works in Chrome on Android 6+/Windows/Linux, and in Firefox on Windows.",

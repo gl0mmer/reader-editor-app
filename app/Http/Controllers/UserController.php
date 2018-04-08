@@ -6,34 +6,29 @@ use App\Message;
 use App\Connection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-//use vendor\laravel\framework\src\Illuminate\Http\Request;
 class UserController extends Controller
 {
+	protected $errors;
+    protected $msg;
+    protected $log;
+
+	
+    public function __construct()
+    {
+        $this->errors = [];
+        $this->msg = [];
+        $this->log = [];
+    }
 
 	
 	// Start here
 	public function getHomePage()
 	{
-		$msg = 'EMPTY';
 		if (!Auth::user()){
 			$this -> getLogout();
-			$msg = \Request::ip();
+			//$msg = \Request::ip();
 		}
-		$user = User::where('id', Auth::user()->id);
-		$username = $user -> value('first_name');
-		$unread   = $user -> value('read');
-		if (gettype($unread)!='integer'){ $unread=0; }
-		
-		$msg = $msg.Auth::user()->id;
-		return view('index', [
-						'in_contacts'=> false, 
-						'in_messages'=> false, 
-						'create'     => 'no', 
-						'username'   => $username,
-						'unreads'    => '', 
-						'unread'     => (string)$unread, 
-		] ) ->with(['msg'=>$msg]);
-		
+		return view('index', $this->response() );
 	}
 	
 	public function getLoginPage()
@@ -42,105 +37,99 @@ class UserController extends Controller
 	}
 	
 	
-	public function getDashboard()
+	public function response() 
 	{
-		$res = array();
-		$user_id = Auth::user()->id;
-		$msg = 'Connections: ';
-		
-		$items = Connection::where('user_id_1', $user_id)->get();
-		foreach ($items as $item){
-			$i = $item->user_id_2;
-			array_push($res, $i);
-			$msg = $msg.', '.$i;
-		}
-		$items = Connection::where('user_id_2', $user_id)->get();
-		foreach ($items as $item){
-			$i = $item->user_id_1;
-			array_push($res, $i);
-			$msg = $msg.', '.$i;
-		}
-		
-		
-		$posts = Message::where('user_id', Auth::user()->id )->get();
-		return view('dashboard', ['posts'=>[], 'connections'=>$res, 'id_to'=>-1]);
-		
+		$id = Auth::user()->id;
+		$user = User::where('id', $id);
+		$unread = $user -> value('read');
+		if (gettype($unread)!='integer'){ $unread=0; }
+		return ['errors'  => $this->errors, 
+		        'msg'     => $this->msg, 
+		        'log'     => $this->log,
+		        'userid'  => $id, 
+		        'username'=> $user -> value('first_name'),
+		        'unread'  => $unread,
+		        'in_contacts'=> false, 
+				'in_messages'=> false, 
+		       ];
 	}
 	
 	
-	
-	public function postSignUp(Request $request) 
+	public function postSignUp() 
 	{	
-		$msg = 'Success';
-		if (!$this->validate($request, [
-			'first_name' => 'required|max:20|unique:users',
-			'password' => 'required|min:4'
-		]) ) { return redirect()->route('home'); }
+		$email    = request()->email;
+		$username = request()->first_name;
+		$password = request()->password;
 		
-		$email    = $request['email'];
-		$username = $request['first_name'];
-		$password = bcrypt($request['password']);
+		array_push($this->log, 'SignUp:');
+		if ( User::where('first_name', $username)->exists() ){
+			array_push($this->errors, 'alert_userexists');
+		}else if( strlen($username)<4 || strlen($username)>20 ){
+			array_push($this->errors, 'alert_username');
+		}else if( strlen($password)<4 || strlen($password)>20 ){
+			array_push($this->errors, 'alert_userpass');
+		}else{
 		
-		$user = new User();
-		$user->email = $email;
-		$user->first_name = $username;
-		$user->password = $password;
+			$user = new User();
+			$user->email = $email;
+			$user->first_name = $username;
+			$user->password = bcrypt($password);
+			
+			$user-> save();
+			
+			Auth::login($user);
+			array_push($this->msg, 'alert_signup');
+		}
 		
-		$user-> save();
-		
-		Auth::login($user);
-		
-		return view('index', [
-						'in_contacts'=> false, 
-						'in_messages'=> false, 
-						'create'     => 'yes', 
-						'username'   => $username, 
-						'unread'     => '', 
-						'unreads'    => '', 
-		] ) ->with(['msg'=>$msg]);
-
+		return $this->response();
 	}
 	
-	public function postSignIn(Request $request)
+	
+	public function postSignIn()
 	{
-		$msg = 'SignIn Error';
+		array_push($this->log, 'SignIn:');
 		
-		if (!$this->validate($request, [
-			'first_name' => 'required',
-			'password' => 'required'
-		]) ){ return redirect()->route('home'); }
+		$name = request()->first_name;
+		$pass = request()->password;
 		
-		if ( $request['first_name']=='name' ){
-			$msg = 'SignIn Error wrong name';
-		}else if (Auth::attempt(['first_name'=>$request['first_name'], 'password'=>$request['password']] )){
+		if ( $name=='name' || strlen($name)<4 ){
+			array_push($this->log, 'Wrong name');
+		}else if (Auth::attempt(['first_name'=>$name, 'password'=>$pass] )){
 			$name = User::where('id', Auth::user()->id)-> value('first_name');
-			$id = User::where('first_name', $name)->value('id');
-			$msg = 'SignIn success_'.(string)$name.'_'.$id;
+			array_push($this->log, 'OK_'.$name);
+			array_push($this->msg, 'alert_signin');
+		}else{
+			if (User::where('first_name', $name)->exists() ){
+				array_push($this->errors, 'alert_wrongpass');
+			}else{
+				array_push($this->errors, 'alert_nouser');
+			}
 		}
-		return redirect()->back() ->with(['msg'=>$msg]);
+		return $this->response();
 	}
 	
 	public function getLogout()
 	{
 		Auth::logout();
 		if (!Auth::attempt(['first_name'=>'guest', 'password'=>'guest']) ){
+			array_push($this->log, 'Cannot log into Guest, try Test');
 			Auth::attempt(['first_name'=>'test', 'password'=>'test']);
 		}
-		return redirect()->route('home');
+		return $this->response();
 	}
 	
 	public function getDeleteUser()
 	{
-		$msg = 'Error';
 		$username    = User::where('id', Auth::user()->id) -> value('first_name');
 		if ($username=='guest'){
-			return redirect()->back() ->with(['msg'=>$msg]);
+			array_push($this->log, 'Not allowed to delete Guest');
 		}else{
 			$user = User::find(Auth::user()->id);
 			Auth::logout();
 			$user->delete();
-			return redirect()->route('home');
+			array_push($this->msg, 'alert_rmcontact');
 		}
+		return $this->response();
 	}
 	
 }

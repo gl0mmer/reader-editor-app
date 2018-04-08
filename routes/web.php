@@ -35,7 +35,6 @@ Route::get('/contacts', [
 	'middleware' => 'auth'
 ]);
 Route::get('/messages/', [
-//Route::get('/messages/{name}', [
 	'as'=> 'messages',
 	'uses' => 'MessageController@getShowMessages',
 	'middleware' => 'auth'
@@ -91,19 +90,6 @@ Route::get('/logout', [
 	'as' => 'logout'
 ]);
 
-Route::get('/dashboard', [
-	'uses' => 'UserController@getDashboard',
-	'as' => 'dashboard',
-	'middleware' => 'auth'
-]);
-
-
-
-Route::get('test', 
-[
-	'as'=> 'test',
-	'uses' => 'PageController@getTest',
-]);
 	
 // unisharp --------------------------------------------------------------
 

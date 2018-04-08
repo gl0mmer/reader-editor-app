@@ -52,7 +52,7 @@ function reader_scroll(order,stop,onend, iter_new){                      console
     reader_fill_zoom();  
     
     var mail_noedit = false;
-    if(reader.in_messages && $('#'+id).parents('#mail_editable').length === 0) { mail_noedit=true; } 
+    if(common.in_messages && $('#'+id).parents('#mail_editable').length === 0) { mail_noedit=true; } 
                                                                          
     var ifdisable = (iter==-1 || mail_noedit===true); 
     common_disable_button("js_edit", ifdisable, function(){ reader_edittext();});
@@ -135,7 +135,7 @@ function reader_show_buttons(){                                          console
 		 ['js_playpause',  'common_play_pause();',        [6,0,symbol_play]],
 		 ['show_navigate', 'reader_show_navigate();',     [5,1,symbol_up_down]],   
 		 ];
-	if (reader.in_messages){
+	if (common.in_messages){
 		buttons_arr.push( ['show_mail', 'reader_show_mail();',  [4,1,symbol_send]] );
 	}else{
 		buttons_arr.push( ['js_readall', 'reader_play_all();',  [4,0]] );
@@ -158,13 +158,13 @@ function reader_show_menu(){                                             console
 		 ['show_clickdelay', 'common_show_clickdelay();', [4,0]], 
 		 //['ajax_refresh',    'location.reload();',       [1,0]], 
 		]);
-	if (reader.in_messages){ 
+	if (common.in_messages){ 
 		inner_e+= button_html(1, [['ajax_readerexit', 'reader_exit();',   [7,0,symbol_people]] ]);   
 	}else{
 		inner_e+= button_html(1, [['ajax_readerexit', 'reader_exit();',   [7,0,symbol_home]] ]); 
 	}
     common_create_menu('reader_menu', 0, inner_e);
-    if (reader.in_messages){ 
+    if (common.in_messages){ 
 		 document.getElementById('ajax_readerexit').innerHTML = symbol_people;
 	}
 }

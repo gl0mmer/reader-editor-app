@@ -10,10 +10,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="shortcut icon" href="{{ URL::to('favicon.ico')}}">
   
-  <!--
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
-  -->
   <link rel="stylesheet"  href="{{ URL::to('css/googleapis_Open+Sans.css')}}" />
   <link rel="stylesheet"  href="{{ URL::to('css/3.3.4.bootstrap.min.css')}}" />
   <link rel="stylesheet"  href="{{ URL::to('css/common.css')}}" />
@@ -23,8 +19,6 @@
 </head>
 
 <body>
-	<div hidden> @include('includes.login') </div>
-	<div hidden> @include('includes.forms') </div>
 		
 	<div id='base_elements'>
 		<div id='content_box' class='content_box ' align='top'> 
@@ -64,23 +58,30 @@
 		files.unread = "{{ $unread }}"; 
 		files_start(); 
 	</script>
-	<div hidden> @include('includes.message_block') </div>
 	
 
-  <script>
-    var route_prefix = "{{ url('/') }}";
-    var lfm_route = "{{ url(config('lfm.url_prefix', config('lfm.prefix'))) }}";
-    var lang = {!! json_encode(trans('laravel-filemanager::lfm')) !!};
-  </script>
-  <script>{!! \File::get(base_path('vendor/unisharp/laravel-filemanager/public/js/dropzone.min.js')) !!}</script> 
-  
-	@if ($create=='yes')
-	<script>              
-		//var a=0;
-		files_ajax_createinit();
+	<form hidden action="{{ route('unisharp.lfm.upload') }}" role='form' id='uploadForm' name='uploadForm' method='post' enctype='multipart/form-data' class="dropzone">
+		<div class="form-group" id="attachment">
+		  
+		  <div class="controls text-center">
+			<div class="input-group" style="width: 100%">
+			  <a class="btn btn-primary" id="upload-button">{{ trans('laravel-filemanager::lfm.message-choose') }}</a>
+			</div>
+		  </div>
+		</div>
+		<input type='hidden' name='working_dir' id='working_dir'>
+		<input type='hidden' name='type' value='{{ request("type") }}'>
+		<input type='hidden' name='_token' value='{{csrf_token()}}'>
+	</form>
+
+
+	<script>
+		var route_prefix = "{{ url('/') }}";
+		var lfm_route = "{{ url(config('lfm.url_prefix', config('lfm.prefix'))) }}";
+		var lang = {!! json_encode(trans('laravel-filemanager::lfm')) !!};
 	</script>
-	@endif
-	
+	<script>{!! \File::get(base_path('vendor/unisharp/laravel-filemanager/public/js/dropzone.min.js')) !!}</script> 
+  	
 	<script>
 	    Dropzone.options.uploadForm = {
 	      paramName: "upload[]", // The name that will be used to transfer the file

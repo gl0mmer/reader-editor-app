@@ -96,6 +96,8 @@ reader_lang['ru'] = {
 	alert_wasrenamed : 'Файл переименован',
 	alert_namewrong  : 'Неправильное имя',
 	alert_contactexists : 'Контакт с данным именем уже существует',
+	alert_nouser     : 'User does not exists',
+	alert_wrongpass  : 'Wrong password',
 	alert_rmuser     : 'Аккаунт был удален',
 	
 	alert_signin     : 'Вход совершен, имя пользователя - ',

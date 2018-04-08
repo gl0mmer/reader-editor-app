@@ -91,6 +91,9 @@ function files_start(){                                                  console
 		common.cookie_load();
 	}                                                                    
 	dict = reader_lang[common.langbase];                                 
+	if (localStorage.getItem("in_reader")==null){ localStorage.setItem("in_reader", ""); }
+	if (localStorage.getItem("in_messages")==null){ localStorage.setItem("in_messages", ""); }
+	
 	
 	var inner_e = "";
 	inner_e += "<div id='files_scroll' class='text_scroll' style='top:0vh;left:0vw;' align='left' > ";
@@ -100,15 +103,27 @@ function files_start(){                                                  console
 	window.onbeforeunload = files_beforunload;
 	window.onresize = function(){ files_resize(); };	                 
 	
-	if (common.in_contacts){ files_ajax_contacts();
-	}else{ files_ajax_items(files.folder_path); }
+
+	var in_reader = localStorage.getItem("in_reader");
+	var in_messages = localStorage.getItem("in_messages");               console.log('IN: |'+in_messages+'|'+in_reader+'|'+common.in_contacts+'|');
+	
+	if (in_reader!=''){ 
+		files_ajax_items(files.folder_path); 
+		files_ajax_openfile( in_reader ); 
+	}
+	else if (in_messages!=''){ 
+		files_ajax_contacts(); 
+		files_ajax_messages( in_messages ); 
+	}
+	else if (common.in_contacts){ files_ajax_contacts(); }
+	else { files_ajax_items(files.folder_path); }
+	
 	if (typeof common.utter_rate != 'number'){ common.utter_rate=1; }
 }
 
 function files_update(){                                                 consolelog_func('darkblue');                                                                              
-	                                                                     
-	if (localStorage.getItem("in_reader")=='yes'){
-		files_ajax_openfile( localStorage.getItem("reader_url") ); 
+	                                                                     console.log('UIN: |'+localStorage.getItem("in_reader")+'|'+common.in_contacts+'|'+common.in_messages);
+	if (localStorage.getItem("in_reader")!=''){
 		reader_resize(); 		
 	}else{		                                                         
 		
@@ -167,7 +182,7 @@ function files_ajax_enter(path){                                         console
 			localStorage.setItem("reader_fname", files.get_savepath(files.iter));
 			files_ajax_openfile( path );                                             
 		}
-	}else{            console.log('BACK');                                                   // open folder
+	}else{                                                               // open folder
 		files.iter = 0; 
 		files.folder_path = path;                                        console.log('SET PATH', path);
 		files_ajax_items(path);                      
@@ -175,10 +190,15 @@ function files_ajax_enter(path){                                         console
 	utter_stop();
 }  
 
-function files_ajax_messages(){                                          consolelog_func('orange');
-	$.ajax( {type: 'GET', dataType: 'text', url: 'messages', cache: false, data: {contact_id: files.paths[files.iter]}, 
+function files_ajax_messages(id){                                          consolelog_func('orange');
+	if (id==undefined) { id = files.paths[files.iter]; }
+	$.ajax( {type: 'GET', dataType: 'text', url: 'messages', cache: false, data: {contact_id: id}, 
 		 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } } )
-	.done(function(data){ files_load_messages(data); });
+	.done(function(data){ 
+		localStorage.setItem("in_messages", id); 
+		//reader_start();
+		files_load_messages(data); 
+	});
 }
 function files_ajax_items(path){                                         consolelog_func('orange'); 
 	if (path==undefined){
@@ -198,7 +218,7 @@ function files_ajax_openfile(url) {                                      console
 			var text_i = data;                                           //console.log('text: '+text_i);
 			document.getElementById('hidden_text').innerHTML = text_i;
 			document.getElementById('created_elements').innerHTML = '';
-			localStorage.setItem("reader_url", url);     
+			localStorage.setItem("in_reader", url);     
 		                    	 
 			reader_start();
 		});   	
@@ -214,7 +234,8 @@ function files_load_items(data){                                          consol
 	files.entries   = response.entries;                                
 	files.entrytype = response.entrytype;                              
 	files.dir       = response.working_dir;                            
-	files.url       = response.homedir.substring(0,response.homedir.lastIndexOf('/'));   
+	files.url       = response.homedir.substring(0,response.homedir.lastIndexOf('/'));  
+	//files.unread    = response.unread; 
 	
 	// move trash to the 1st position
 	var i = files.entries.indexOf('trash');                              
@@ -226,7 +247,7 @@ function files_load_items(data){                                          consol
 }         
 
 function files_load_messages(data){                                      consolelog_func('darkblue');       
-	var response = JSON.parse(data);                                     console.log(response.posts.length);
+	var response = JSON.parse(data);                                     
 	common_phpresponse(response);
 	
 	var messages = [];
@@ -255,7 +276,7 @@ function files_load_contacts(data){                                      console
 	var ids=response.connections, names=response.names, unreads=response.unreads;
 	common_phpresponse(response);
 	
-	localStorage.setItem("in_reader", "no");                             
+	localStorage.setItem("in_reader", '');                             
 	common.in_contacts = true;
 	
 	// sort contacts by name 
@@ -326,8 +347,12 @@ function files_ajax_rmcontact(id){                                       console
 }
 function files_ajax_rmuser(id){                                          consolelog_func('orange');
 	if ( !common_ajax_permit() ){ return true; }
-	document.getElementById('deleteuser_submit').click(); 
-	common.alert_text = dict.alert_rmuser;
+	
+	$.ajax( {type: 'GET', dataType: 'text', url: 'delete_user', cache: false, 
+			 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } } ) 
+    .done(function (data) { 
+		location.reload(); common_phpresponse(JSON.parse(data)); 
+	});
 }
 
 function files_ajax_rename(){                                            consolelog_func('orange');
@@ -436,39 +461,51 @@ function common_ajax_permit(){
 //-- account functions ---------------------------------------------------
 function files_signin(){                                                 consolelog_func();
     var name = document.getElementById('edit_username').innerHTML;
-    var pass = document.getElementById('edit_userpass').innerHTML;
-    document.getElementById('signin_username').value = name;
-    document.getElementById('signin_password').value = pass;
-    
-    common.alert_text = dict.alert_signin+name;                          console.log('SignIn:',name, pass);
+    var pass = document.getElementById('edit_userpass').innerHTML;       console.log('SignIn:',name, pass);    
     files.folder_path = '';
-    document.getElementById('signin_submit').click();  
+    
+    $.ajax( {type: 'POST', dataType: 'text', url: 'signin', cache: false, data: {first_name:name, password:pass}, 
+			 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } } ) 
+    .done(function (data) { 
+		files_load_user(data);
+		files_ajax_items();
+	});
 }
 function files_signup(){                                                 consolelog_func();
     var name = document.getElementById('edit_username').innerHTML;
     var pass = document.getElementById('edit_userpass').innerHTML;   
-    var email = document.getElementById('edit_usermail').innerHTML;   
-	
-	document.getElementById('signup_email').value = email;
-	document.getElementById('signup_username').value = name;
-    document.getElementById('signup_password').value = pass;
-    common.alert_text = dict.alert_signup+name;
+    var email = document.getElementById('edit_usermail').innerHTML;   	
     files.folder_path = '';
-    document.getElementById('signup_submit').click();  
+    
+    $.ajax( {type: 'POST', dataType: 'text', url: 'signup', cache: false, data: {first_name:name, password:pass, email:email}, 
+			 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } } ) 
+    .done(function (data) { 
+		files_load_user(data);
+		files_ajax_items();
+	}); 
 }
-
-
 function files_logout(){                                                 consolelog_func();
-	//common.alert_text = dict.alert_logout;
 	files.folder_path = '';
-    document.getElementById('logout_submit').click();
+    
+    $.ajax( {type: 'GET', dataType: 'text', url: 'logout', cache: false, 
+		     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } } ) 
+    .done(function (data) { 
+		files_load_user(data);
+		files_ajax_items();
+	});
 }
 function files_login_remember(){                                         consolelog_func();
     files.username = document.getElementById('edit_username').innerHTML;
     files.userpass = document.getElementById('edit_userpass').innerHTML;  
     files.userremember = true;
 }
-
+function files_load_user(data){
+	var response = JSON.parse(data);
+	common_phpresponse(response);
+	user.name = response.username;
+	user.id = response.userid;
+	files.unread = response.unread;
+}
 
 //-- misc ----------------------------------------------------------------
 

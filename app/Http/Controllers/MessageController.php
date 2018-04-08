@@ -23,18 +23,24 @@ class MessageController extends Controller
 	
 	public function postCreateMessage(Request $request)
 	{
+		array_push($this->log, 'Send:');
 		
-		$this->validate($request, [
-			'message' => 'required|max:1000',
-		]);
-		$msg = 'There was an error';
+		$id_to = request()->id_to;
+		$message = request()->message;
+		array_push($this->log, $message);
+		array_push($this->log, $id_to);
 		
-		if ($request['id_to']<0){
-			$msg = 'Wrong user_to id!';
+		if (strlen($message)==0){ 
+			array_push($this->log, 'empty');
+		}else if (strlen($message)>1000){ 
+			array_push($this->error, 'alert_message');
+		}else if ($id_to<0){
+			array_push($this->error, 'error');
 		}else{
-			$id_to = $request['id_to'];
+			array_push($this->log, 'Save: '.$message);
+			
 			$post = new Message();
-			$post->message = $request['message'];
+			$post->message = $message;
 			$post->user_id_to = $id_to;
 			$post->sent = 0;
 			
@@ -44,9 +50,10 @@ class MessageController extends Controller
 				$this->setConnectionUnread(True, $id_to);
 				$this->setUserUnread($id_to);
 				
-			}
+			}	
 		}
-		return redirect()->back() -> with(['msg'=>$msg]);
+		return $this->getShowMessages($id_to);		
+		
 	}
 	
 	private function Draft($id_2){
@@ -75,36 +82,37 @@ class MessageController extends Controller
 		
 	}
 	
-	public function postSaveDraft(Request $request){
-		$this->validate($request, [
-			'draft' => 'required|max:1000',
-		]);
-		$msg = 'There was an error';
+	public function postSaveDraft(){
+		array_push($this->log, 'SaveDraft');
 		
-		if ($request['id_to']<0){
-			$msg = 'Wrong user_to id!';
+		$id_to = request()->id_to;
+		$draft = request()->draft;
+		if (strlen($draft)>1000){ 
+			array_push($this->error, 'alert_message');
+		}else if ($id_to<0){
+			array_push($this->error, 'error');
 		}else{
-			$this->setDraft($request['id_to'], $request['draft']);
+			array_push($this->log, 'Save: '.$draft);
+			$this->setDraft($id_to, $draft);
 		}
-		
-		$msg = $request['draft'].' | '.$this->Draft($request['id_to']);
-		return redirect()->back() ->with(['msg'=>$msg]);
-		
+		return $this->getShowMessages($id_to);		
 	}
 	
 	public function postAddConnection()
 	{
 		$name = request()->addcontact_name;
 		array_push($this->log, 'AddContact:');
+		array_push($this->log, $name);
 		
-		$msg = 'Connection failed ';
-		if ( User::where('first_name', $name)->exists() ){
+		$user = User::where('first_name', '=', $name)->first();
+		if ($user != null) {
 		
+			array_push($this->log, 'exists');
 			$id_1 = Auth::user()->id;
 			$id_2 = User::where('first_name', $name)->value('id');
 			
 			if (Connection::where([ ['user_id_1',$id_1], ['user_id_2',$id_2] ]) -> orWhere([ ['user_id_1',$id_2], ['user_id_2',$id_1] ]) ->exists()  ){
-				$msg = 'Connection exists';
+				array_push($this->log, 'alert_contactexists');
 			}else{
 				$item = new Connection();
 				$item->user_id_1 = Auth::user()->id;
@@ -113,11 +121,11 @@ class MessageController extends Controller
 				$item->draft2 = '';
 				$item->save();
 				
-				$msg = 'Successfully added: '.$name;
+				array_push($this->log, 'Added');
 			}
-		
+			
 		}else{
-			$msg = 'Error: User does not exist';
+			array_push($this->error, 'alert_nouser');
 		}
 		 
 		return $this->getShowConnections();
@@ -129,7 +137,6 @@ class MessageController extends Controller
 		$msg = 'Error';
 		$id = Auth::user()->id;
 		$name = request()->rmcontact_name;
-		//$name = $request['rmcontact_name'];
 		if ( User::where('first_name', $name)->exists() ){ 
 			
 			$id2 = User::where('first_name', $name)->value('id');
@@ -154,7 +161,6 @@ class MessageController extends Controller
 		}
 		
 		return $this->getShowConnections();
-		//return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
 	}
 	
 	public function connectionArray($user_id)
@@ -223,9 +229,8 @@ class MessageController extends Controller
 		
 	}
 	
-	//public function getShowMessages($id_to){
-	public function getShowMessages(){
-		$id_to = request()->contact_id;
+	public function getShowMessages($id_to=null){
+		if ($id_to==null){	$id_to = request()->contact_id; }
 		array_push($this->log, 'ShowMessages:');
 		if (!Auth::user()){
 			return redirect()->route('home');
@@ -241,7 +246,6 @@ class MessageController extends Controller
 		$unread = $this->setUserUnread($id_from);
 		$draft = $this->Draft($id_to);
 		return [
-		//return view('index', [
 						'in_contacts' => false, 
 						'in_messages' => true, 
 						'id_to'       => $id_to, 
@@ -253,7 +257,6 @@ class MessageController extends Controller
 						'unread'      => $unread, 
 						'unreads'     => '', 
 						'errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log 
-			//]) -> with(['msg'=>$msg]);
 			];
 		return ['errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log ];
 		
@@ -280,7 +283,6 @@ class MessageController extends Controller
 		$user->read = $unread;
 		$user->save();
 		return $user->read;
-		//return $unread;
 	}
 	
 	//-- unused ----------------------------------------------------------

@@ -114,8 +114,9 @@ function utter(txt, stop, rate, onend){                                  console
     else { msg.lang=common.lang; }                                       
     
     if (typeof rate != 'number'){ msg.rate=common.utter_rate; }
-    else{ msg.rate=rate; }                                               
-    if (localStorage.getItem("in_reader")!='yes'){ msg.rate=1; };
+    else{ msg.rate=rate; }     
+    var in_reader = localStorage.getItem("in_reader");                                          
+    if (in_reader=='' || in_reader==null){ msg.rate=1; };
     
     if (stop==1){ window.speechSynthesis.cancel(); }   
     
@@ -166,7 +167,8 @@ function common_play_pause(){                                            console
 		else if (common.utter_recursive_done==1){
 			common_playpause_icon(1);
 			
-			if( localStorage.getItem("in_reader")=="yes")	{
+			var in_reader = localStorage.getItem("in_reader");
+			if( in_reader!='' && in_reader!=null)	{
 				reader_utter(1, 0); 
 			}else if (common.repeat_text!=''){
 				utter_sentence(common.repeat_text, 1, 0); 

@@ -7,9 +7,9 @@ if (localStorage.getItem("isset")!="true"){
 	localStorage.setItem("delete_fname", "");       // remember fname after copying to trash
 	localStorage.setItem("url", "");                // base url, for window.href
 	
-	localStorage.setItem("in_reader", "no");
+	localStorage.setItem("in_reader", "");          // to stay in reader after reload
+	localStorage.setItem("in_messages", "");        // to stay in messages after reload
 	localStorage.setItem("reader_fname", "");
-	localStorage.setItem("reader_url", "");         // to stay in reader after reload
 }else{
 	localStorage.setItem("show_welcome", "no");
 }

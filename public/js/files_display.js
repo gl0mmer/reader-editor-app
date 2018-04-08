@@ -55,11 +55,14 @@ function files_scroll(order, i_utter){                                   console
 function files_fill_zoom(){                                              consolelog_func();
     var fname = files.get_fname();
     if (fname==undefined){fname='';}
-    var dir = user.name+' '+files.get_subdir()+'/';
-    dir = '<em style="font-style:normal;color:black;opacity:0.3;">'+dir+' </em>'; 
+    if (common.in_contacts){
+		var dir = 'Contacts: ';
+	}else{
+	    var dir = user.name+' '+files.get_subdir()+'/';
+	}
     var elem = document.getElementById('zoom_text');
     if (elem){
-		document.getElementById('zoom_text').innerHTML = dir+fname;
+		document.getElementById('zoom_text').innerHTML = '<em style="font-style:normal;color:black;opacity:0.3;">'+dir+' </em>'+fname;
 	} 
 }        
 
@@ -278,7 +281,7 @@ function files_show_files(){                                             console
 	    var y = top + (ywidth+yspace)*n_y;                               //console.log(i, x,y, xwidth, ywidth);
 	    
 	    var alert = '';
-	    if (files.unreads[i]>0){ alert='<div class="mark_box1">'+symbol_alert+'</div>'; }
+	    if (files.unreads[i]>0 && common.in_contacts){ alert='<div class="mark_box1">'+symbol_alert+'</div>'; }
 	    if (files.entrytype[i]=="folder") { symbol = symbol_folder2; } 
 		else { symbol = symbol_file3; }
 		var style = 'position:absolute;top:'+y+'px; left:'+x+'px; height:'+ywidth+'px; width:'+xwidth+'px;';

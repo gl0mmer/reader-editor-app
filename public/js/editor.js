@@ -68,6 +68,7 @@ function create_element(id, cl, parent, style, inner){                   //conso
 }
 
 function editor_start(parent, text_raw, destination, iter){              consolelog_func("darkblue"); 
+	common.ineditor = true;
 	editor.style.nlines_lvl0 = common.editor_nlines_lvl0;
 	editor.style.nlines_lvl1 = common.editor_nlines_lvl1;
 	if (text_raw==undefined) { text_raw=""; }
@@ -107,6 +108,7 @@ function editor_exit(){                                                  console
     var elem = document.getElementById('editor_bkg');
     elem.parentNode.removeChild(elem);
     
+    
     document.removeEventListener('keydown', editor_keydown);
     common.editor_text = editor.text_raw;
     common.ineditor = false;      
@@ -124,10 +126,11 @@ function editor_exit(){                                                  console
 		files_resize();                   
 	}  
 }function editor_save(){                                                 consolelog_func("darkblue"); 
-    if (editor.parent=='reader'){
+	if (common.ineditor){editor_exit();}
+    else if (editor.parent=='reader'){
 		common.editor_text = editor.text_raw;
 		common.ischanged_text = true;
-        reader_update(); 
+        reader_ajax_save(); 
     }
 }
 

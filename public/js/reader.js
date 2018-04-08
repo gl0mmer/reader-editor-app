@@ -55,8 +55,6 @@ var reader = {
 //-- start/exit/update ---------------------------------------------------
 
 function reader_start(){                                                 consolelog_func('darkblue');    
-	reader.in_messages = common.in_messages;     
-	localStorage.setItem("in_reader", "yes");	                                  
 	
 	common.style.content_border = true;
 	$("#content_box").addClass("border");
@@ -64,7 +62,7 @@ function reader_start(){                                                 console
 	var inner_e = "";
 	inner_e += "<div id='text_scroll_area' class='text_scroll' align='left' >";
 	inner_e += "<div id='title_box' > <span id='file_title'></span> </div> ";
-	inner_e += "<div id='text_from_file' class='reader_text' style='top:1vh;'> </div>";
+	inner_e += "<div id='text_from_file' class='reader_text' style='top:2vh;'> </div>";
 	inner_e += "</div>";
 	document.getElementById("content_box").innerHTML = inner_e;
 	window.onbeforeunload = reader_beforunload;                          
@@ -93,7 +91,8 @@ function reader_exit(order){
 	var elem = document.getElementById('menu_back_lvl1');                //console.log('Elem: '+elem);
 	if (elem){ menu_back('menu_back_lvl1',1, 0); } 
 	    
-	localStorage.setItem("in_reader", "no"); 
+	localStorage.setItem("in_reader", ''); 
+	localStorage.setItem("in_messages", ''); 
 	document.getElementById('created_elements').innerHTML = '';
 	
 	common.style.content_border = false;
@@ -106,14 +105,13 @@ function reader_exit(order){
 	files_start(); 	
 }
 
-function reader_update(start) {                                          consolelog_func('darkblue');                                             
-	
+function reader_update(start) {                                          consolelog_func('darkblue'); console.log(common.ischanged_text);
 	if (common.ischanged_text){
 		reader_ajax_save();
 	}
                    
     var elem = document.getElementById('title_box');                    
-    if (reader.in_messages){
+    if (common.in_messages){
 		reader_messages_tohtml();
 		var title = reader.fname.substring(reader.fname.lastIndexOf('/')+1);
 		elem.className = 'reader_title_mail';
@@ -147,7 +145,7 @@ function reader_update(start) {                                          console
     reader_set_selecttype(order=0);                                  
     reader_set_zoomtype(reader.zoomtype);                                       
     common_set_fontsize(common.r_fontsize_scale, 1);                     console.log('ReaderIter: '+reader.iter);
-    if (reader.in_messages){
+    if (common.in_messages){
         reader.iter = reader.get_id_array().length-1;                  
         reader_highlite(); 
 	}                                                                    //console.log('Save_inprocess: '+reader.save_inprocess);
@@ -162,7 +160,7 @@ function reader_ajax_save(){                                             console
 	    var text = "", text_parsed = "";
 	    reader.save_inprocess = true;
 	    
-		if (reader.in_messages){                                           
+		if (common.in_messages){                                           
 			text_parsed = $('#text_from_file').find('#mail_editable').html();     
 		}else{
 			text_parsed = reader.text_parsed;
@@ -180,13 +178,18 @@ function reader_ajax_save(){                                             console
 		document.getElementById('hidden_text').innerHTML = text_all_origin;              
 	
 		common.ischanged_text = false;                                   //console.log('NEW TEXT: '+text_all_origin);
+		common.cookie_save.call(reader);
+		common.cookie_save();  
 		
-		if (reader.in_messages){ 
-			document.getElementById('savedraft_text').value = text_all_origin;
-			document.getElementById('savedraft_submit').click();
+		if (common.in_messages){ 
+			$.ajax( {type: 'POST', dataType: 'text', url: 'save_draft', cache: false, data: {id_to:user.contact_id, draft:text_all_origin}, 
+					 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } } ) 
+		    .done(function (data) { 
+				files_load_messages(data); 	
+			}); 
 		}else{
 			if (editor.if_addtag && common.ineditor){ editor_exit(); }
-			var fname = files.get_subdir()+'/'+files.get_fname();        //console.log('Fname: '+fname);
+			var fname = files.get_subdir()+'/'+files.get_fname();        console.log('Fname: '+fname, files.iter, files.entries);
 			$.ajax( {type: 'GET', dataType: 'text', url: 'update', cache: false, data: {file_name: fname, file_text: text_all_origin}} )
 			.done( function () { reader_update(); } );
 			alert = 'File was saved.';     
@@ -196,8 +199,13 @@ function reader_ajax_save(){                                             console
 
 function reader_ajax_send(){
 	if ( common_ajax_permit() ){
-		document.getElementById('createmessage_text').value = reader.draft;
-		document.getElementById('createmessage_submit').click();
+		$.ajax( {type: 'POST', dataType: 'text', url: 'message_create', cache: false, data: {id_to:user.contact_id, message:reader.draft}, 
+					 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } } ) 
+		    .done(function (data) { 
+				var elem = document.getElementById('menu_back_lvl0');                
+				if (elem){ menu_back('menu_back_lvl0',1, 0); }
+				files_load_messages(data); 
+		});
 	}
 }
  
@@ -301,7 +309,6 @@ function reader_edittext(){                                              console
     id = reader.get_id();
     text = document.getElementById(id).innerHTML;
     text_plane = merge_text(text); 
-    common.ineditor = true;                                    
     editor_start('reader', text_plane);
 }
 

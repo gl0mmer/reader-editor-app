@@ -99,7 +99,7 @@ class LfmExtendController extends LfmController
 		$path = parent::getCurrentPath('trash');
 		if (!File::exists($path)) {
 			if (!parent::createFolderByPath($path)){
-				array_push($this->errors, 'Cannot create trash');	
+				array_push($this->log, 'Cannot create trash');	
 			}
 		}
 		return $this->getItems();
