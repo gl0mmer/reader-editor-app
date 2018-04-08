@@ -57,7 +57,7 @@ var files = {
 				else{ path = dir.substring(0,dir.lastIndexOf('/'));	}			
 			}
 			else{     
-				path = dir+'/'+this.entries[i]; }                        console.log('PP:',this.dir,'|',dir,'|',path,'|',i,'|',this.entries);  
+				path = dir+'/'+this.entries[i]; }                        
 		}   
 		return path;
 	},
@@ -105,7 +105,7 @@ function files_start(){                                                  console
 	
 
 	var in_reader = localStorage.getItem("in_reader");
-	var in_messages = localStorage.getItem("in_messages");               console.log('IN: |'+in_messages+'|'+in_reader+'|'+common.in_contacts+'|');
+	var in_messages = localStorage.getItem("in_messages");               //console.log('IN: |'+in_messages+'|'+in_reader+'|'+common.in_contacts+'|');
 	
 	if (in_reader!=''){ 
 		files_ajax_items(files.folder_path); 
@@ -122,7 +122,7 @@ function files_start(){                                                  console
 }
 
 function files_update(){                                                 consolelog_func('darkblue');                                                                              
-	                                                                     console.log('UIN: |'+localStorage.getItem("in_reader")+'|'+common.in_contacts+'|'+common.in_messages);
+	                                                                    
 	if (localStorage.getItem("in_reader")!=''){
 		reader_resize(); 		
 	}else{		                                                         
@@ -190,7 +190,7 @@ function files_ajax_enter(path){                                         console
 	utter_stop();
 }  
 
-function files_ajax_messages(id){                                          consolelog_func('orange');
+function files_ajax_messages(id){                                        consolelog_func('orange');
 	if (id==undefined) { id = files.paths[files.iter]; }
 	$.ajax( {type: 'GET', dataType: 'text', url: 'messages', cache: false, data: {contact_id: id}, 
 		 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } } )
@@ -210,7 +210,7 @@ function files_ajax_items(path){                                         console
 }
 function files_ajax_openfile(url) {                                      consolelog_func('orange');
   
-    var type = url.substring(url.lastIndexOf('.'));                      //console.log('type: '+type);
+    var type = url.substring(url.lastIndexOf('.'));                      
     if (type.replace(' ','')=='.txt'){                                   console.log('File url: '+url);
 		
 		$.ajax({type: "GET", url: url})
@@ -227,7 +227,7 @@ function files_ajax_openfile(url) {                                      console
 	}
 }
 
-function files_load_items(data){                                          consolelog_func('darkblue');
+function files_load_items(data){                                         consolelog_func('darkblue');
 	var response = JSON.parse(data);
 	common_phpresponse(response);
 	
@@ -235,7 +235,7 @@ function files_load_items(data){                                          consol
 	files.entrytype = response.entrytype;                              
 	files.dir       = response.working_dir;                            
 	files.url       = response.homedir.substring(0,response.homedir.lastIndexOf('/'));  
-	//files.unread    = response.unread; 
+	files.unread    = response.unread; 
 	
 	// move trash to the 1st position
 	var i = files.entries.indexOf('trash');                              
@@ -309,7 +309,7 @@ function files_ajax_contacts(){                                          console
 function files_ajax_create(type){                                        consolelog_func('orange');
 	if ( !common_ajax_permit() ){ return true; }
 	
-	var new_name = files.get_subdir()+common.editor_text;                console.log('New fname: '+new_name);
+	var new_name = files.get_subdir()+common.editor_text;                
 	var types = ['folder','file'];
 	type = types[type];
 	
@@ -436,24 +436,24 @@ function files_copy(){                                                   console
 	var alert = dict.alert_error;
 	if (files.get_savepath(files.iter)!='' ){
 		var short_path = files.get_savepath(files.iter);
-		localStorage.setItem("copy_shortpath", short_path);              //console.log('Copy short_path: '+short_path);
+		localStorage.setItem("copy_shortpath", short_path);              
 		alert = dict.alert_wascopied;
 	}
 	common_show_notification(alert);
 }
 
 function files_ajax_createinit(){                                        consolelog_func('orange');
-	if ( !common_ajax_permit() ){ return true; }
+	//if ( !common_ajax_permit() ){ return true; }
 	$.ajax( {type: 'GET', dataType: 'text', url: 'create_init', cache: false} )
 	.done(function(data){ files_load_items(data); });
 }
 
 function common_ajax_permit(){
 	var permit = true;                                                   
-	if (user.name=='guest'){                                             console.log('Permittion denied: '+user.name);
+	if (user.name=='guest'){                                             //console.log('Permittion denied: '+user.name);
 		permit = false;
 		permit = true;
-		//common_show_notification(dict.alert_guest);
+		common_show_notification(dict.alert_guest);
 	}
 	return permit;
 }
@@ -461,7 +461,7 @@ function common_ajax_permit(){
 //-- account functions ---------------------------------------------------
 function files_signin(){                                                 consolelog_func();
     var name = document.getElementById('edit_username').innerHTML;
-    var pass = document.getElementById('edit_userpass').innerHTML;       console.log('SignIn:',name, pass);    
+    var pass = document.getElementById('edit_userpass').innerHTML;       
     files.folder_path = '';
     
     $.ajax( {type: 'POST', dataType: 'text', url: 'signin', cache: false, data: {first_name:name, password:pass}, 
@@ -505,6 +505,8 @@ function files_load_user(data){
 	user.name = response.username;
 	user.id = response.userid;
 	files.unread = response.unread;
+	common.in_contacts = false;
+	common.in_messages = false;
 }
 
 //-- misc ----------------------------------------------------------------
@@ -519,7 +521,7 @@ function files_edittext(id){                                             console
 	var text = "";                
 	common.ineditor = true;                                    
 	if (id=="edit_filename_box"){
-		var fname = files.get_fname();                                   console.log('FNAME',fname);                            
+		var fname = files.get_fname();                                                            
 		if (files.get_ftype()!='folder'){
 			text = fname.substring(0,fname.lastIndexOf('.'));
 		}else{

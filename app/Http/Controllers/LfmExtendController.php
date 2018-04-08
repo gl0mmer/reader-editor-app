@@ -48,7 +48,6 @@ class LfmExtendController extends LfmController
         $sort_type = 'alphabetic';
 		
 		$directories = parent::sortFilesAndDirectories(parent::getDirectories($path), $sort_type);
-        //$files = parent::sortFilesAndDirectories(parent::getFilesWithInfo($path), $sort_type);   // !!Error was there
         $files = File::files($path);                                     // !!!!!
         
         $fnames_arr = array();
@@ -71,11 +70,14 @@ class LfmExtendController extends LfmController
 			array_push($names_arr, $f);
 		}
         
+        $user = User::where('id', Auth::user()->id);
+		$unread = $user -> value('read');
         return ['entries'    => $names_arr,
                 'entrytype'  => $types_arr,
                 'working_dir'=> parent::getInternalPath($path),
                 'path'       => $path0,
                 'homedir'    => $homedir,
+                'unread'     => $unread,
                 'errors'=>$this->errors, 'msg'=>$this->msg, 'log'=>$this->log
         ];
     }

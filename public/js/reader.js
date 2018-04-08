@@ -69,9 +69,9 @@ function reader_start(){                                                 console
 	
 	reader.fname = localStorage.getItem("reader_fname");                 // !!
 	window.onresize = function(){ reader_resize(); };
-	reader.cookie_suffix = "_"+reader.fname;                             //console.log('cookie_suffix: '+reader.cookie_suffix);
+	reader.cookie_suffix = "_"+reader.fname;                             
 	                 
-	                                                                     //console.log('Cookie_isset: '+cookie_get('isset_'+reader.fname)+' = '+reader.fname);
+	                                                                     
 	if (cookie_get('isset_'+reader.fname)!='isset'){                    
 	    cookie_set("isset_"+reader.fname, "isset");
 	    common.cookie_save.call(reader);
@@ -80,7 +80,7 @@ function reader_start(){                                                 console
 	if (reader.iter==undefined){                                         // !!Error may occure here
 		reader.iter=0;  
 		reader.id_prev= "p0s0w0";  
-		reader.id_curr= "p0s0w0";                                        //console.log('SET ITER'); 
+		reader.id_curr= "p0s0w0";                                        
 	} 
 	reader_update();
 }
@@ -99,7 +99,7 @@ function reader_exit(order){
 	$("#content_box").removeClass("border");
 	utter_stop();
 	
-	if (order==-1){ common.in_contacts = false; }                        console.log('F:',files.folder_path);
+	if (order==-1){ common.in_contacts = false; }                        
 	common.cookie_save.call(reader);
 	common.cookie_save();  
 	files_start(); 	
@@ -177,7 +177,7 @@ function reader_ajax_save(){                                             console
 		var text_all_origin = merge_text(text_all_parsed); 
 		document.getElementById('hidden_text').innerHTML = text_all_origin;              
 	
-		common.ischanged_text = false;                                   //console.log('NEW TEXT: '+text_all_origin);
+		common.ischanged_text = false;                                   
 		common.cookie_save.call(reader);
 		common.cookie_save();  
 		
