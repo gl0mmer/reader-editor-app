@@ -1,4 +1,4 @@
-console.log('--------------\n'+document.title);
+console.log('--------------\n');
 
 //-- files variables ---------------------------------------------------------------
 
@@ -164,7 +164,7 @@ function files_update(){                                                 console
 
 function files_ajax_enter(path){                                         consolelog_func("orange");  
 	if (path==undefined){
-		var path = files.get_enterpath(files.iter);                      //console.log('AjaxEnter:',path,files.iter,files.get_ftype());        
+		var path = files.get_enterpath(files.iter);                      //console.log('AjaxEnter:',path,files.iter,files.get_ftype(), files.entries);        
 	}                                   
 	                               
 	if (path==-1 && common.in_contacts ){                                // exit from contacts
@@ -254,9 +254,9 @@ function files_load_messages(data){                                      console
 	var msg = [];
 	for (i=0; i<response.posts.length; i++){
 		msg = response.posts[i];
-		messages.push( [msg.id, msg.user_id, msg.created_at, msg.message] );  console.log([msg.id, msg.user_id, msg.create_at, msg.message]);
+		messages.push( [msg.id, msg.user_id, msg.created_at, msg.message] );  //console.log([msg.id, msg.user_id, msg.create_at, msg.message]);
 	}
-	reader.draft = response.draft;                                       console.log('Draft: '+reader.draft);
+	reader.draft = response.draft;                                       //console.log('Draft: '+reader.draft);
 	user.contact_name = response.contactname;
 	user.contact_id = response.id_to;
 	

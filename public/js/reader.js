@@ -94,6 +94,7 @@ function reader_exit(order){
 	localStorage.setItem("in_reader", ''); 
 	localStorage.setItem("in_messages", ''); 
 	document.getElementById('created_elements').innerHTML = '';
+	document.getElementById('content_box').innerHTML = '';
 	
 	common.style.content_border = false;
 	$("#content_box").removeClass("border");
@@ -105,13 +106,13 @@ function reader_exit(order){
 	files_start(); 	
 }
 
-function reader_update(start) {                                          consolelog_func('darkblue'); console.log(common.ischanged_text);
+function reader_update(start) {                                          consolelog_func('darkblue'); //console.log(common.ischanged_text, common.in_messages);
 	if (common.ischanged_text){
 		reader_ajax_save();
 	}
                    
     var elem = document.getElementById('title_box');                    
-    if (common.in_messages){
+    if (localStorage.getItem("in_messages")!=''){
 		reader_messages_tohtml();
 		var title = reader.fname.substring(reader.fname.lastIndexOf('/')+1);
 		elem.className = 'reader_title_mail';
